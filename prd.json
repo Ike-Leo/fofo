@@ -1,0 +1,351 @@
+{
+    "projectName": "UCCP - Universal Commerce Control Platform",
+    "version": "0.2.0",
+    "phase": 8,
+    "phaseName": "UX Enhancement & Advanced Features",
+    "status": "approved",
+    "createdAt": "2026-01-14T15:02:00Z",
+    "updatedAt": "2026-01-14T15:11:00Z",
+    "chatScope": "full (employee + customer support)",
+    "overview": {
+        "description": "Phase 8 focuses on improving user experience across the admin dashboard, adding advanced product management features, enhancing order workflows, implementing customer analytics, and introducing communication and access control systems.",
+        "goals": [
+            "Improve dashboard interactivity with clickable KPIs and customer notices",
+            "Enhance product management with better variant UI, bulk import, and activity logging",
+            "Streamline order management with repeat orders, customer auto-suggest, and inline editing",
+            "Add customer analytics and profile action buttons",
+            "Implement real-time chat for employees and customer support",
+            "Create granular permission system for organization admins"
+        ]
+    },
+    "userStories": [
+        {
+            "id": "US-801",
+            "title": "Dashboard Interactivity",
+            "description": "As an admin, I want to click on dashboard KPI cards to navigate to the relevant pages so I can quickly drill down into details.",
+            "acceptanceCriteria": [
+                "Revenue card navigates to /admin/orders",
+                "Orders card navigates to /admin/orders",
+                "Customers card navigates to /admin/customers",
+                "Products card navigates to /admin/products",
+                "Cards have hover states indicating clickability"
+            ],
+            "priority": "P1",
+            "effort": "low",
+            "status": "pending"
+        },
+        {
+            "id": "US-802",
+            "title": "Customer Reviews Widget",
+            "description": "As an admin, I want to see customer notices/reviews on the dashboard so I can stay informed about customer sentiment.",
+            "acceptanceCriteria": [
+                "Widget displays under Sales Overview section",
+                "Shows recent order notes/comments as interim solution",
+                "Placeholder UI ready for future review system"
+            ],
+            "priority": "P2",
+            "effort": "medium",
+            "status": "pending"
+        },
+        {
+            "id": "US-803",
+            "title": "Variant Section UI Optimization",
+            "description": "As an admin, I want the product variant section to display content clearly so I can manage variants efficiently.",
+            "acceptanceCriteria": [
+                "Variant cards with clear visual hierarchy",
+                "Stock quantity prominently visible",
+                "Image preview for each variant if available",
+                "Responsive grid layout"
+            ],
+            "priority": "P3",
+            "effort": "medium",
+            "status": "pending"
+        },
+        {
+            "id": "US-804",
+            "title": "Categories Management",
+            "description": "As an admin, I want to add, edit, and delete product categories so I can organize my catalog effectively.",
+            "acceptanceCriteria": [
+                "Dedicated /admin/categories page",
+                "CRUD operations for categories",
+                "Hierarchical category display",
+                "Category assignment validation on product deletion"
+            ],
+            "priority": "P3",
+            "effort": "medium",
+            "status": "pending"
+        },
+        {
+            "id": "US-805",
+            "title": "Product Images Enhancement",
+            "description": "As an admin, I want to upload up to 6 images per product with optimized sizing so the storefront loads quickly.",
+            "acceptanceCriteria": [
+                "Support for 6 image URL fields",
+                "Image preview grid in product form",
+                "Validation for image URL format",
+                "Reorderable image positions"
+            ],
+            "priority": "P2",
+            "effort": "medium",
+            "status": "pending"
+        },
+        {
+            "id": "US-806",
+            "title": "Bulk Product Import",
+            "description": "As an admin, I want to import products in bulk via CSV/Excel so I can quickly populate my catalog.",
+            "acceptanceCriteria": [
+                "File upload for CSV/Excel",
+                "Column mapping interface",
+                "Preview before import",
+                "Progress indicator during import",
+                "Error report for failed rows"
+            ],
+            "priority": "P3",
+            "effort": "high",
+            "status": "pending"
+        },
+        {
+            "id": "US-807",
+            "title": "Clickable Order Fields",
+            "description": "As an admin, I want to click on customer names, product names, and order IDs to navigate directly to their details.",
+            "acceptanceCriteria": [
+                "Customer names link to customer profile",
+                "Product names link to product details",
+                "Order IDs link to order details",
+                "Applied across orders, inventory, and customers tables"
+            ],
+            "priority": "P1",
+            "effort": "low",
+            "status": "pending"
+        },
+        {
+            "id": "US-808",
+            "title": "Manual Order Phone Number",
+            "description": "As an admin, I want to add a phone number when creating manual orders so I can contact the customer.",
+            "acceptanceCriteria": [
+                "Phone field added to manual order creation form",
+                "Phone stored in customerInfo object",
+                "Phone displayed on order details page"
+            ],
+            "priority": "P1",
+            "effort": "low",
+            "status": "pending"
+        },
+        {
+            "id": "US-809",
+            "title": "Payment Status UI Update",
+            "description": "As an admin, after marking an order as paid, I want the status to update immediately without page refresh.",
+            "acceptanceCriteria": [
+                "Payment status badge updates in real-time",
+                "No manual refresh required",
+                "Optimistic UI update on action"
+            ],
+            "priority": "P1",
+            "effort": "low",
+            "status": "pending"
+        },
+        {
+            "id": "US-810",
+            "title": "Repeat and Create Orders",
+            "description": "As an admin, I want to create another order or repeat an existing order from the order details page.",
+            "acceptanceCriteria": [
+                "'Create Another Order' button opens blank order form",
+                "'Repeat Order' button duplicates current order items",
+                "Duplicate order is in draft/pending status",
+                "Quantities can be adjusted before confirming"
+            ],
+            "priority": "P2",
+            "effort": "medium",
+            "status": "pending"
+        },
+        {
+            "id": "US-811",
+            "title": "Top Customers Analytics",
+            "description": "As an admin, I want to see my top customers ranked by spend so I can identify VIPs.",
+            "acceptanceCriteria": [
+                "Widget shows top 5/10/20 customers (configurable)",
+                "Ranked by total order value",
+                "Click to view customer profile",
+                "Located at top of customers page"
+            ],
+            "priority": "P2",
+            "effort": "medium",
+            "status": "pending"
+        },
+        {
+            "id": "US-812",
+            "title": "Chat System",
+            "description": "As an admin, I want to chat with employees and customers so I can communicate in real-time within the platform.",
+            "acceptanceCriteria": [
+                "New /admin/chat page",
+                "Conversation list sidebar",
+                "Real-time message updates",
+                "Support for internal (employee) and support (customer) conversations"
+            ],
+            "priority": "P4",
+            "effort": "high",
+            "status": "pending"
+        },
+        {
+            "id": "US-813",
+            "title": "Access Control & Permissions",
+            "description": "As an org admin, I want to grant and revoke specific permissions to employees so I can control what they can access.",
+            "acceptanceCriteria": [
+                "Permission management UI per member",
+                "Granular permissions (read/write per module)",
+                "Permission check enforced on backend",
+                "Preset role templates for quick assignment"
+            ],
+            "priority": "P4",
+            "effort": "high",
+            "status": "pending"
+        },
+        {
+            "id": "US-814",
+            "title": "Customer Auto-Suggest in Orders",
+            "description": "As an admin, I want previous customers to be suggested when creating manual orders so I can quickly select them.",
+            "acceptanceCriteria": [
+                "Search by name, email, or phone",
+                "Dropdown shows matching customers",
+                "Auto-fill form on selection",
+                "Create new customer if not found"
+            ],
+            "priority": "P2",
+            "effort": "medium",
+            "status": "pending"
+        },
+        {
+            "id": "US-815",
+            "title": "Customer Profile Actions",
+            "description": "As an admin, I want quick action buttons on customer profiles to create orders, start chats, or call.",
+            "acceptanceCriteria": [
+                "'Create Order' button opens modal with customer pre-filled",
+                "'Chat' button opens chat (or placeholder)",
+                "'Call' button links to tel: for phone number"
+            ],
+            "priority": "P2",
+            "effort": "low",
+            "status": "pending"
+        },
+        {
+            "id": "US-816",
+            "title": "Product Activity Log",
+            "description": "As an admin, I want to see all activities on a product (orders, stock changes, cancellations) so I can audit its history.",
+            "acceptanceCriteria": [
+                "Timeline view on product details page",
+                "Shows: created, updated, stock added/removed, sold, cancelled, archived",
+                "Includes timestamps and user who performed action",
+                "Filter by activity type"
+            ],
+            "priority": "P3",
+            "effort": "medium",
+            "status": "pending"
+        }
+    ],
+    "technicalRequirements": {
+        "schemaChanges": [
+            {
+                "table": "productActivities",
+                "action": "create",
+                "description": "Audit log for product lifecycle events"
+            },
+            {
+                "table": "conversations",
+                "action": "create",
+                "description": "Chat conversation metadata"
+            },
+            {
+                "table": "messages",
+                "action": "create",
+                "description": "Chat messages with real-time subscription"
+            },
+            {
+                "table": "organizationMembers",
+                "action": "modify",
+                "description": "Add optional permissions array"
+            }
+        ],
+        "newPages": [
+            "/admin/categories",
+            "/admin/chat",
+            "/admin/team"
+        ],
+        "newComponents": [
+            "CustomerReviews.tsx",
+            "BulkImport.tsx",
+            "ProductActivityLog.tsx",
+            "TopCustomers.tsx",
+            "ChatWindow.tsx",
+            "PermissionEditor.tsx"
+        ],
+        "newConvexModules": [
+            "productActivities.ts",
+            "chat.ts",
+            "permissions.ts"
+        ]
+    },
+    "priorityMatrix": {
+        "P1": {
+            "label": "Critical UX Fixes",
+            "stories": [
+                "US-801",
+                "US-807",
+                "US-808",
+                "US-809"
+            ],
+            "estimatedEffort": "1-2 days"
+        },
+        "P2": {
+            "label": "High-Value Enhancements",
+            "stories": [
+                "US-802",
+                "US-805",
+                "US-810",
+                "US-811",
+                "US-814",
+                "US-815"
+            ],
+            "estimatedEffort": "3-5 days"
+        },
+        "P3": {
+            "label": "Product Management",
+            "stories": [
+                "US-803",
+                "US-804",
+                "US-806",
+                "US-816"
+            ],
+            "estimatedEffort": "5-7 days"
+        },
+        "P4": {
+            "label": "Advanced Systems",
+            "stories": [
+                "US-812",
+                "US-813"
+            ],
+            "estimatedEffort": "7-10 days"
+        }
+    },
+    "dependencies": {
+        "external": [],
+        "internal": [
+            "Convex schema migration for new tables",
+            "Real-time subscriptions for chat"
+        ]
+    },
+    "verificationPlan": {
+        "typecheck": "npm run typecheck",
+        "lint": "npm run lint",
+        "manualTests": [
+            "Click each dashboard KPI card and verify navigation",
+            "Create product with 6 images and verify storefront display",
+            "Bulk import 10 products via CSV",
+            "Create manual order with phone number and customer search",
+            "Mark order as paid and verify immediate UI update",
+            "Use 'Repeat Order' and verify items copied",
+            "View top customers widget with different counts",
+            "Open chat between two users and send messages",
+            "Grant/revoke permissions and verify access changes"
+        ]
+    }
+}

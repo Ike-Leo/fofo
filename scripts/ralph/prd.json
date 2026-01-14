@@ -1,0 +1,500 @@
+{
+    "project": "UCCP Phase 2 - Product & Catalog Engine",
+    "branchName": "ralph/phase2-products",
+    "description": "Core Product & Catalog Engine with real-time product management, variants, and categories",
+    "userStories": [
+        {
+            "id": "US-201",
+            "title": "Products Table Schema",
+            "description": "As a developer, I want a products table in the schema so that I can store product data with proper indexes",
+            "acceptanceCriteria": [
+                "Products table added to schema.ts",
+                "Fields: name, slug, description, price, compareAtPrice, status, categoryId, images, orgId, createdAt, updatedAt",
+                "Index on orgId for multi-tenant queries",
+                "Index on orgId + slug for unique lookup",
+                "Index on orgId + status for filtered listings",
+                "Typecheck passes"
+            ],
+            "priority": 1,
+            "passes": true,
+            "notes": "Foundation - must be first. Price in cents (integer)."
+        },
+        {
+            "id": "US-202",
+            "title": "Product Variants Table Schema",
+            "description": "As a developer, I want a productVariants table so that products can have size/color/etc. variants",
+            "acceptanceCriteria": [
+                "ProductVariants table added to schema",
+                "Fields: productId, orgId (denormalized), sku, name, price, stockQuantity, options, isDefault, createdAt",
+                "Index on productId for variant lookup",
+                "Index on orgId + sku for SKU uniqueness check",
+                "Typecheck passes"
+            ],
+            "priority": 2,
+            "passes": true,
+            "notes": "Depends on US-201. Denormalize orgId for efficient queries."
+        },
+        {
+            "id": "US-203",
+            "title": "Categories Table Schema",
+            "description": "As a developer, I want a categories table so that products can be organized hierarchically",
+            "acceptanceCriteria": [
+                "Categories table added to schema",
+                "Fields: name, slug, parentId (optional), position, orgId, createdAt",
+                "Index on orgId",
+                "Index on orgId + slug for unique lookup",
+                "Index on parentId for hierarchy queries",
+                "Typecheck passes"
+            ],
+            "priority": 3,
+            "passes": true,
+            "notes": "Supports nested categories via parentId"
+        },
+        {
+            "id": "US-204",
+            "title": "Create Product Mutation",
+            "description": "As an org admin, I want to create new products so that I can add items to my catalog",
+            "acceptanceCriteria": [
+                "Mutation at convex/products.ts",
+                "Validates: name (1-200 chars), slug format, price >= 0",
+                "Auto-generates slug from name if not provided",
+                "Checks slug uniqueness within org",
+                "Requires org admin or platform admin role",
+                "Sets default status to draft",
+                "Returns new product ID",
+                "Typecheck passes"
+            ],
+            "priority": 4,
+            "passes": true,
+            "notes": "Follow security patterns from AGENTS.md"
+        },
+        {
+            "id": "US-205",
+            "title": "List Products Query",
+            "description": "As an org member, I want to list products in my organization so that I can browse the catalog",
+            "acceptanceCriteria": [
+                "Query at convex/products.ts",
+                "Filters by orgId (required)",
+                "Optional status filter",
+                "Returns products ordered by createdAt desc",
+                "Requires org membership",
+                "Typecheck passes"
+            ],
+            "priority": 5,
+            "passes": true,
+            "notes": "Any org member can list products"
+        },
+        {
+            "id": "US-206",
+            "title": "Get Product Query",
+            "description": "As an org member, I want to get a single product's details so that I can view/edit it",
+            "acceptanceCriteria": [
+                "Query at convex/products.ts",
+                "Accepts productId OR (orgId + slug)",
+                "Returns product with variants attached",
+                "Validates org membership",
+                "Returns null if not found",
+                "Typecheck passes"
+            ],
+            "priority": 6,
+            "passes": true,
+            "notes": "Include variants in response for efficiency"
+        },
+        {
+            "id": "US-207",
+            "title": "Update Product Mutation",
+            "description": "As an org admin, I want to update product information so that I can keep my catalog current",
+            "acceptanceCriteria": [
+                "Mutation at convex/products.ts",
+                "Validates all input fields",
+                "Checks slug uniqueness if changed",
+                "Requires org admin or platform admin",
+                "Updates updatedAt timestamp",
+                "Typecheck passes"
+            ],
+            "priority": 7,
+            "passes": true,
+            "notes": "Check org ownership before update"
+        },
+        {
+            "id": "US-208",
+            "title": "Toggle Product Status Mutation",
+            "description": "As an org admin, I want to publish/unpublish/archive products so that I can control what's visible",
+            "acceptanceCriteria": [
+                "Mutation at convex/products.ts",
+                "Accepts productId and target status",
+                "Validates org admin role",
+                "Updates updatedAt",
+                "Typecheck passes"
+            ],
+            "priority": 8,
+            "passes": true,
+            "notes": "Status: draft | active | archived"
+        },
+        {
+            "id": "US-209",
+            "title": "Create Variant Mutation",
+            "description": "As an org admin, I want to add variants to a product so that I can offer size/color options",
+            "acceptanceCriteria": [
+                "Mutation at convex/productVariants.ts",
+                "Validates product exists and belongs to same org",
+                "Validates SKU uniqueness within org",
+                "Sets stockQuantity default to 0",
+                "First variant is marked isDefault",
+                "Typecheck passes"
+            ],
+            "priority": 9,
+            "passes": true,
+            "notes": "Denormalize orgId from product"
+        },
+        {
+            "id": "US-210",
+            "title": "Update/Delete Variant Mutations",
+            "description": "As an org admin, I want to modify or remove variants so that I can manage product options",
+            "acceptanceCriteria": [
+                "Update mutation with validation",
+                "Delete mutation with safety check",
+                "Cannot delete last variant if product is active",
+                "Requires org admin role",
+                "Typecheck passes"
+            ],
+            "priority": 10,
+            "passes": true,
+            "notes": "Safety checks prevent bad states"
+        },
+        {
+            "id": "US-211",
+            "title": "Category CRUD Mutations",
+            "description": "As an org admin, I want to manage product categories so that I can organize my catalog",
+            "acceptanceCriteria": [
+                "Create, update, delete mutations at convex/categories.ts",
+                "Validates slug uniqueness within org",
+                "Validates parentId if provided",
+                "Prevents deletion if products reference category",
+                "Typecheck passes"
+            ],
+            "priority": 11,
+            "passes": true,
+            "notes": "Hierarchical categories via parentId"
+        },
+        {
+            "id": "US-212",
+            "title": "List Categories Query",
+            "description": "As an org member, I want to see all categories so that I can categorize products",
+            "acceptanceCriteria": [
+                "Query returns flat list with parentId for frontend tree building",
+                "Sorted by position then name",
+                "Requires org membership",
+                "Typecheck passes"
+            ],
+            "priority": 12,
+            "passes": true,
+            "notes": "Frontend builds tree from flat list"
+        },
+        {
+            "id": "US-213",
+            "title": "Products List Admin Page",
+            "description": "As an org admin, I want a products management page so that I can view and manage my catalog",
+            "acceptanceCriteria": [
+                "Page at /admin/products",
+                "Shows product table with name, status, price, variant count",
+                "Status filter dropdown",
+                "Link to create new product",
+                "Requires org context from OrganizationProvider",
+                "Verify in browser",
+                "Typecheck passes"
+            ],
+            "priority": 13,
+            "passes": true,
+            "notes": "First frontend story - depends on list query"
+        },
+        {
+            "id": "US-214",
+            "title": "Create/Edit Product Form",
+            "description": "As an org admin, I want a form to create and edit products so that I can manage product details",
+            "acceptanceCriteria": [
+                "Component at components/ProductForm.tsx",
+                "Fields: name, slug, description, price, compareAtPrice, categoryId",
+                "Form validation on client",
+                "Used for both create and edit modes",
+                "Success/error feedback",
+                "Verify in browser",
+                "Typecheck passes"
+            ],
+            "priority": 14,
+            "passes": true,
+            "notes": "Reusable form component"
+        },
+        {
+            "id": "US-215",
+            "title": "Product Detail Page with Variants",
+            "description": "As an org admin, I want to see product details and manage variants so that I can configure product options",
+            "acceptanceCriteria": [
+                "Page at /admin/products/[id]",
+                "Shows product info with edit form",
+                "Variants section with add/edit/delete",
+                "SKU and stock management per variant",
+                "Status toggle button",
+                "Verify in browser",
+                "Typecheck passes"
+            ],
+            "priority": 15,
+            "passes": true,
+            "notes": "Final story - complete product management"
+        },
+        {
+            "id": "US-301",
+            "title": "Inventory Schema & Migration",
+            "description": "Define inventoryMovements table and update productVariants for atomic tracking",
+            "acceptanceCriteria": [
+                "inventoryMovements table defined",
+                "Fields: orgId, variantId, type, quantity, reason, userId",
+                "Indexes optimized for history queries",
+                "Typecheck passes"
+            ],
+            "priority": 16,
+            "passes": true,
+            "notes": "Backend Foundation"
+        },
+        {
+            "id": "US-302",
+            "title": "Atomic Stock Adjustment Mutation",
+            "description": "Secure API to adjust stock and log movement atomically",
+            "acceptanceCriteria": [
+                "api.inventory.adjust function",
+                "Updates productVariants.stockQuantity",
+                "Inserts inventoryMovements record",
+                "Prevents negative stock (validation)",
+                "Auth: Admin Only",
+                "Typecheck passes"
+            ],
+            "priority": 17,
+            "passes": true,
+            "notes": "Core Logic"
+        },
+        {
+            "id": "US-303",
+            "title": "Inventory Query By Organization",
+            "description": "List all variants with stock levels for the dashboard",
+            "acceptanceCriteria": [
+                "api.inventory.list function",
+                "Joins with product info",
+                "Supports low-stock filtering",
+                "Typecheck passes"
+            ],
+            "priority": 18,
+            "passes": true,
+            "notes": "Dashboard Data Source"
+        },
+        {
+            "id": "US-304",
+            "title": "Inventory History Query",
+            "description": "Usage history for a specific variant",
+            "acceptanceCriteria": [
+                "api.inventory.getHistory function",
+                "Paginated results",
+                "Includes user info",
+                "Typecheck passes"
+            ],
+            "priority": 19,
+            "passes": true,
+            "notes": "Audit Trail"
+        },
+        {
+            "id": "US-305",
+            "title": "Inventory Dashboard Page",
+            "description": "Admin page to view and manage inventory",
+            "acceptanceCriteria": [
+                "Page at /admin/inventory",
+                "Table with Products/Variants/Stock/Status",
+                "Low stock indicators",
+                "Verify in browser"
+            ],
+            "priority": 20,
+            "passes": true,
+            "notes": "Frontend Main View"
+        },
+        {
+            "id": "US-306",
+            "title": "Stock Adjustment Interface",
+            "description": "UI to manually adjust stock levels",
+            "acceptanceCriteria": [
+                "Adjust button/modal",
+                "Form for qty and reason",
+                "Connects to adjust mutation",
+                "Real-time update",
+                "Verify in browser"
+            ],
+            "priority": 21,
+            "passes": true,
+            "notes": "Frontend Interaction"
+        },
+        {
+            "id": "US-307",
+            "title": "Movement History View",
+            "description": "UI to view history of a variant",
+            "acceptanceCriteria": [
+                "Drawer/Modal for history",
+                "Timeline view",
+                "Verify in browser"
+            ],
+            "priority": 22,
+            "passes": true,
+            "notes": "Frontend Detail View"
+        },
+        {
+            "id": "US-308",
+            "title": "Low Stock Filtering",
+            "description": "Filter inventory list for critical items",
+            "acceptanceCriteria": [
+                "Filter toggle implementation",
+                "Visual emphasis",
+                "Verify in browser"
+            ],
+            "priority": 23,
+            "passes": true,
+            "notes": "Frontend Feature"
+        },
+        {
+            "id": "US-401",
+            "title": "Order Schema",
+            "description": "Tables for orders and items with snapshots",
+            "acceptanceCriteria": [
+                "orders table defined",
+                "orderItems table defined",
+                "Indexes for Org/Status"
+            ],
+            "priority": 25,
+            "passes": true,
+            "notes": "Backend"
+        },
+        {
+            "id": "US-402",
+            "title": "Atomic Checkout",
+            "description": "Mutation to validate stock, deduct, and create order",
+            "acceptanceCriteria": [
+                "Validates stock",
+                "Deducts stock atomically",
+                "Creates records",
+                "Transactional integrity"
+            ],
+            "priority": 26,
+            "passes": true,
+            "notes": "Backend Critical"
+        },
+        {
+            "id": "US-403",
+            "title": "Order Management API",
+            "description": "APIs for listing and updating orders",
+            "acceptanceCriteria": [
+                "list query",
+                "get query",
+                "updateStatus mutation"
+            ],
+            "priority": 27,
+            "passes": true,
+            "notes": "Backend"
+        },
+        {
+            "id": "US-404",
+            "title": "Admin Orders List",
+            "description": "UI for viewing orders",
+            "acceptanceCriteria": [
+                "/admin/orders page",
+                "Table view",
+                "Status filters"
+            ],
+            "priority": 28,
+            "passes": true,
+            "notes": "Frontend"
+        },
+        {
+            "id": "US-405",
+            "title": "Admin Order Detail",
+            "description": "UI for order details and fulfillment",
+            "acceptanceCriteria": [
+                "/admin/orders/[id] page",
+                "Items list",
+                "Status controls"
+            ],
+            "priority": 29,
+            "passes": true,
+            "notes": "Frontend"
+        },
+        {
+            "id": "US-406",
+            "title": "Manual Order Creation",
+            "description": "Admin UI to create orders (POS style)",
+            "acceptanceCriteria": [
+                "Create button",
+                "Product selection",
+                "Submit flow"
+            ],
+            "priority": 30,
+            "passes": true,
+            "notes": "Frontend"
+        },
+        {
+            "id": "US-501",
+            "title": "Customer Schema & Sync",
+            "description": "Table for customers and logic to sync from orders",
+            "acceptanceCriteria": [
+                "customers table",
+                "upsert logic in checkout",
+                "aggregation fields"
+            ],
+            "priority": 32,
+            "passes": true,
+            "notes": "Backend Architecture"
+        },
+        {
+            "id": "US-502",
+            "title": "Analytics Queries",
+            "description": "Aggregations for dashboard",
+            "acceptanceCriteria": [
+                "getDashboardStats",
+                "getSalesChart"
+            ],
+            "priority": 33,
+            "passes": true,
+            "notes": "Backend"
+        },
+        {
+            "id": "US-503",
+            "title": "Admin Dashboard UI",
+            "description": "Main landing page with charts",
+            "acceptanceCriteria": [
+                "/admin home",
+                "KPI Cards",
+                "Recharts integration"
+            ],
+            "priority": 34,
+            "passes": true,
+            "notes": "Frontend - Already implemented with KPI cards and sales chart"
+        },
+        {
+            "id": "US-504",
+            "title": "Customer CRM List",
+            "description": "List view of customers",
+            "acceptanceCriteria": [
+                "/admin/customers",
+                "Sort by LTV"
+            ],
+            "priority": 35,
+            "passes": true,
+            "notes": "Frontend - Implemented with search, VIP badges, and LTV sorting"
+        },
+        {
+            "id": "US-505",
+            "title": "Customer Detail",
+            "description": "Deep dive into customer history",
+            "acceptanceCriteria": [
+                "/admin/customers/[id]",
+                "Order history list"
+            ],
+            "priority": 36,
+            "passes": true,
+            "notes": "Frontend - Contact info, LTV stats, and order history with status badges"
+        }
+    ]
+}

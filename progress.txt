@@ -1,0 +1,77 @@
+## Codebase Patterns
+- Convex functions use `getAuthUserId(ctx)` for authentication
+- Org-scoped queries always filter by `orgId`
+- All mutations validate caller authorization before proceeding
+- Use `v.id("tableName")` for foreign key references
+- Include `createdAt: v.number()` on all records
+- **PowerShell**: Use `-LiteralPath` when deleting files/folders with brackets like `[...slug]`.
+- **Public API**: Located in `convex/public/*`. Queries accept `orgSlug`.
+- **Storefront**: Located in `app/store`. Use `StoreHeader` and `StoreFooter`.
+
+---
+# Progress Log
+---
+## 2026-01-12 - US-601 to US-605 (Phase 6 Complete)
+Thread: https://ampcode.com/threads/unknown
+- Completed Public Storefront API.
+- Implemented Products, Cart, Checkout backend logic.
+- Fixed Auth issues.
+
+## 2026-01-12 - US-701
+Thread: https://ampcode.com/threads/unknown
+- Starting Phase 7: Storefront UI & Payments.
+- Objective: Create storefront layout and home page.
+- Completed US-701 (Layout & Home) - Linting green.
+- Completed US-702 (Product Listing & Grid) - Linting green.
+- Completed US-703 (Shopping Cart Drawer) - Linting green.
+- Completed US-704 (Stripe Backend Integration) - Linting green.
+- Completed US-705 (Checkout UI & Order Success) - Linting green.
+- Phase 7 Complete.
+
+## 2026-01-14 - Phase 8 Planning
+Thread: https://ampcode.com/threads/unknown
+- Fixed 8 TypeScript errors in CartDrawer.tsx and ProductDetail.tsx.
+- Updated PROJECT_STATUS.md to reflect clean type status.
+- Created Phase 8 PRD with 16 user stories organized into 7 feature areas.
+- User Stories: US-801 to US-816
+- Chat scope confirmed: Full (employee + customer support)
+- Files created:
+  - prd.json (updated)
+  - tasks/prd-phase8-ux-enhancement.md
+- Status: Approved, ready for implementation.
+
+## 2026-01-14 - US-801, US-807, US-808, US-809 (P1 Stories Complete)
+Thread: N/A (Direct execution)
+- Completed US-801: Dashboard Interactivity
+  - Made KPI cards clickable with navigation to relevant pages
+  - Added hover states (shadow-md, border-slate-300, active:scale-[0.98])
+  - Added totalProducts to dashboard stats
+  - Revenue & Orders → /admin/orders
+  - Customers → /admin/customers
+  - Products → /admin/products
+- Completed US-807: Clickable Order Fields
+  - Order # now links to order details page
+  - Customer names link to customers page with email search filter
+  - Product names in order details link to product details
+- Completed US-808: Manual Order Phone Number
+  - Added optional phone field to manual order creation form
+  - Phone stored in customerInfo object
+  - Full-width input with placeholder
+- Completed US-809: Payment Status UI Update
+  - Implemented optimistic UI updates for status changes
+  - Payment status updates immediately when marking order as paid
+  - No page refresh required
+  - Optimistic state reverts on error
+- Files changed:
+  - my-app/app/admin/page.tsx (dashboard KPI cards)
+  - my-app/app/admin/orders/page.tsx (clickable fields, phone field)
+  - my-app/app/admin/orders/[orderId]/page.tsx (clickable products, optimistic UI)
+  - my-app/convex/analytics.ts (added totalProducts)
+- Quality checks: TypeScript passes, lint clean for changed files
+- **Learnings for future iterations:**
+  - Use optimistic UI updates for better UX when mutating data
+  - Link customer names with email search query parameter when customerId not available
+  - Add hover:shadow-md and active:scale-[0.98] for clickable cards
+  - useRouter() from 'next/navigation' for client-side navigation
+---
+
