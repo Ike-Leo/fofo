@@ -2,6 +2,7 @@ import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 import { getAuthUserId } from "@convex-dev/auth/server";
 import { isPlatformAdmin, getOrgRole } from "./helpers/auth";
+import { Id } from "./_generated/dataModel";
 
 /**
  * Create a new product
@@ -424,5 +425,148 @@ export const setStatus = mutation({
                 createdAt: Date.now(),
             });
         }
+    },
+});
+
+/**
+ * Bulk import products from CSV data
+ * Requires org admin or platform admin
+ */
+export const bulkImport = mutation({
+    args: {
+        orgId: v.id("organizations"),
+        products: v.array(
+            v.object({
+                name: v.string(),
+                slug: v.optional(v.string()),
+                description: v.optional(v.string()),
+                price: v.number(),
+                compareAtPrice: v.optional(v.number()),
+                categorySlug: v.optional(v.string()),
+                images: v.optional(v.array(v.string())),
+            })
+        ),
+    },
+    handler: async (ctx, args) => {
+        // 1. Authentication
+        const userId = await getAuthUserId(ctx);
+        if (!userId) {
+            throw new Error("Unauthenticated");
+        }
+
+        // 2. Authorization
+        const isPlatAdmin = await isPlatformAdmin(ctx, userId);
+        const orgRole = await getOrgRole(ctx, userId, args.orgId);
+
+        if (!isPlatAdmin && orgRole !== "admin") {
+            throw new Error("Unauthorized: Must be organization admin or platform admin");
+        }
+
+        // 3. Verify organization exists
+        const org = await ctx.db.get(args.orgId);
+        if (!org) {
+            throw new Error("Organization not found");
+        }
+
+        // 4. Get all categories for slug lookup
+        const allCategories = await ctx.db
+            .query("categories")
+            .withIndex("by_orgId", (q) => q.eq("orgId", args.orgId))
+            .collect();
+
+        const categorySlugToId = new Map(
+            allCategories.map((cat) => [cat.slug, cat._id])
+        );
+
+        // 5. Import products
+        const results = {
+            success: 0,
+            failed: 0,
+            errors: [] as Array<{ row: number; name: string; error: string }>,
+        };
+
+        for (let i = 0; i < args.products.length; i++) {
+            const productData = args.products[i];
+            try {
+                // Validate name
+                const trimmedName = productData.name.trim();
+                if (trimmedName.length === 0) {
+                    throw new Error("Product name cannot be empty");
+                }
+                if (trimmedName.length > 200) {
+                    throw new Error("Product name cannot exceed 200 characters");
+                }
+
+                // Generate or validate slug
+                let slug = productData.slug?.trim();
+                if (!slug) {
+                    slug = trimmedName
+                        .toLowerCase()
+                        .replace(/[^a-z0-9]+/g, "-")
+                        .replace(/^-|-$/g, "");
+                }
+
+                if (slug.length === 0) {
+                    throw new Error("Slug cannot be empty");
+                }
+                const slugRegex = /^[a-z0-9-]+$/;
+                if (!slugRegex.test(slug)) {
+                    throw new Error("Invalid slug format");
+                }
+
+                // Check uniqueness
+                const existing = await ctx.db
+                    .query("products")
+                    .withIndex("by_orgId_slug", (q) =>
+                        q.eq("orgId", args.orgId).eq("slug", slug)
+                    )
+                    .first();
+
+                if (existing) {
+                    throw new Error(`Product slug '${slug}' already exists`);
+                }
+
+                // Look up category by slug
+                let categoryId: Id<"categories"> | undefined = undefined;
+                if (productData.categorySlug) {
+                    categoryId = categorySlugToId.get(productData.categorySlug);
+                    if (!categoryId) {
+                        throw new Error(`Category '${productData.categorySlug}' not found`);
+                    }
+                }
+
+                // Validate price
+                if (productData.price < 0) {
+                    throw new Error("Price cannot be negative");
+                }
+
+                // Create product
+                const now = Date.now();
+                await ctx.db.insert("products", {
+                    orgId: args.orgId,
+                    name: trimmedName,
+                    slug,
+                    description: productData.description?.trim(),
+                    price: productData.price,
+                    compareAtPrice: productData.compareAtPrice,
+                    status: "draft",
+                    categoryId,
+                    images: productData.images ?? [],
+                    createdAt: now,
+                    updatedAt: now,
+                });
+
+                results.success++;
+            } catch (error: any) {
+                results.failed++;
+                results.errors.push({
+                    row: i + 1,
+                    name: productData.name,
+                    error: error.message,
+                });
+            }
+        }
+
+        return results;
     },
 });

@@ -1,14 +1,17 @@
 /* eslint-disable */
 "use client";
 
+import { useState } from "react";
 import { useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { useOrganization } from "@/components/OrganizationProvider";
 import Link from "next/link";
-import { PlusIcon } from "lucide-react";
+import { PlusIcon, Upload } from "lucide-react";
+import BulkProductImport from "@/components/BulkProductImport";
 
 export default function ProductsPage() {
     const { currentOrg } = useOrganization();
+    const [showBulkImport, setShowBulkImport] = useState(false);
 
     // We skip the query if no org is selected to avoid errors/unnecessary calls
     const products = useQuery(
@@ -43,13 +46,22 @@ export default function ProductsPage() {
                     <h1 className="text-3xl font-bold tracking-tight text-slate-900">Products</h1>
                     <p className="text-slate-500 mt-1">Manage your catalog for {currentOrg.name}</p>
                 </div>
-                <Link
-                    href="/admin/products/new"
-                    className="inline-flex items-center gap-2 px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white font-medium rounded-lg transition-colors"
-                >
-                    <PlusIcon size={16} />
-                    Add Product
-                </Link>
+                <div className="flex gap-2">
+                    <button
+                        onClick={() => setShowBulkImport(true)}
+                        className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-medium rounded-lg transition-colors"
+                    >
+                        <Upload size={16} />
+                        Bulk Import
+                    </button>
+                    <Link
+                        href="/admin/products/new"
+                        className="inline-flex items-center gap-2 px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white font-medium rounded-lg transition-colors"
+                    >
+                        <PlusIcon size={16} />
+                        Add Product
+                    </Link>
+                </div>
             </div>
 
             <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
@@ -105,6 +117,11 @@ export default function ProductsPage() {
                     </tbody>
                 </table>
             </div>
+
+            {/* Bulk Import Modal */}
+            {showBulkImport && currentOrg && (
+                <BulkProductImport orgId={currentOrg._id} onClose={() => setShowBulkImport(false)} />
+            )}
         </div>
     );
 }
