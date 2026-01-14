@@ -32,7 +32,7 @@
             ],
             "priority": "P1",
             "effort": "low",
-            "status": "pending"
+            "status": "completed"
         },
         {
             "id": "US-802",
@@ -116,7 +116,7 @@
             ],
             "priority": "P1",
             "effort": "low",
-            "status": "pending"
+            "status": "completed"
         },
         {
             "id": "US-808",
@@ -129,7 +129,7 @@
             ],
             "priority": "P1",
             "effort": "low",
-            "status": "pending"
+            "status": "completed"
         },
         {
             "id": "US-809",
@@ -142,7 +142,7 @@
             ],
             "priority": "P1",
             "effort": "low",
-            "status": "pending"
+            "status": "completed"
         },
         {
             "id": "US-810",
