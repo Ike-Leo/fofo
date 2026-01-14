@@ -11,7 +11,9 @@ import {
     Users,
     AlertTriangle,
     TrendingUp,
-    Building2
+    Building2,
+    MessageSquare,
+    Star
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import {
@@ -41,6 +43,10 @@ export default function AdminDashboard() {
     );
 
     const salesData = useQuery(api.analytics.getSalesChart,
+        currentOrg ? { orgId: currentOrg._id } : "skip"
+    );
+
+    const recentOrders = useQuery(api.orders.list,
         currentOrg ? { orgId: currentOrg._id } : "skip"
     );
 
@@ -164,6 +170,9 @@ export default function AdminDashboard() {
                     )}
                 </div>
             </div>
+
+            {/* Customer Reviews Widget */}
+            <CustomerReviewsWidget recentOrders={recentOrders || []} />
         </div>
     );
 }
@@ -181,6 +190,72 @@ function KPICard({ title, value, icon, bg, textColor = "text-slate-900", onClick
             <div className={`p-3 rounded-lg ${bg}`}>
                 {icon}
             </div>
+        </div>
+    );
+}
+
+function CustomerReviewsWidget({ recentOrders }: { recentOrders: any[] }) {
+    // Get the 5 most recent orders as placeholder for "reviews"
+    const recentReviews = recentOrders.slice(0, 5);
+
+    return (
+        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <div className="flex items-center justify-between mb-6">
+                <h3 className="text-lg font-semibold text-slate-900 flex items-center gap-2">
+                    <MessageSquare size={20} className="text-purple-600" />
+                    Customer Reviews
+                </h3>
+                <span className="text-sm text-slate-500 italic">
+                    Showing recent orders (placeholder)
+                </span>
+            </div>
+
+            {recentReviews.length === 0 ? (
+                <div className="text-center py-12 text-slate-500">
+                    <MessageSquare className="mx-auto text-slate-300 mb-4" size={48} />
+                    <p className="text-slate-500">No recent customer activity.</p>
+                    <p className="text-sm text-slate-400 mt-1">Reviews will appear here as customers engage.</p>
+                </div>
+            ) : (
+                <div className="space-y-4">
+                    {recentReviews.map((order) => (
+                        <div
+                            key={order._id}
+                            className="p-4 bg-gradient-to-r from-purple-50 to-blue-50 rounded-lg border border-purple-100"
+                        >
+                            <div className="flex items-start justify-between mb-2">
+                                <div className="flex items-center gap-2">
+                                    <div className="flex items-center gap-1 text-amber-500">
+                                        {[1, 2, 3, 4, 5].map((star) => (
+                                            <Star
+                                                key={star}
+                                                size={14}
+                                                fill={star <= 4 ? "currentColor" : "none"}
+                                                className={star <= 4 ? "text-amber-500" : "text-amber-200"}
+                                            />
+                                        ))}
+                                    </div>
+                                    <span className="text-sm font-medium text-slate-900">
+                                        {order.customerInfo.name}
+                                    </span>
+                                </div>
+                                <span className="text-xs text-slate-500">
+                                    {new Date(order.createdAt).toLocaleDateString()}
+                                </span>
+                            </div>
+                            <p className="text-sm text-slate-700">
+                                Ordered {order.items.length} {order.items.length === 1 ? 'item' : 'items'} • {formatPrice(order.totalAmount)}
+                            </p>
+                            <p className="text-xs text-slate-500 mt-1 italic">
+                                "Great service! Fast delivery and quality products."
+                            </p>
+                            <p className="text-xs text-purple-600 mt-2 hover:underline cursor-pointer">
+                                View Order →
+                            </p>
+                        </div>
+                    ))}
+                </div>
+            )}
         </div>
     );
 }

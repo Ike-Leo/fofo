@@ -34,11 +34,15 @@ const formatDate = (timestamp: number) => {
 export default function CustomersPage() {
     const { currentOrg } = useOrganization();
     const [search, setSearch] = useState("");
+    const [topCount, setTopCount] = useState<5 | 10 | 20>(5);
 
     const customers = useQuery(
         api.customers.list,
         currentOrg ? { orgId: currentOrg._id, search: search || undefined } : "skip"
     );
+
+    // Get top customers by total spend
+    const topCustomers = customers?.sort((a, b) => b.totalSpend - a.totalSpend).slice(0, topCount) || [];
 
     if (!currentOrg) {
         return (
@@ -77,6 +81,95 @@ export default function CustomersPage() {
                     />
                 </div>
             </div>
+
+            {/* Top Customers Widget */}
+            {customers && customers.length > 0 && (
+                <div className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-xl shadow-sm border border-amber-200 p-6">
+                    <div className="flex items-center justify-between mb-4">
+                        <h3 className="text-lg font-semibold text-amber-900 flex items-center gap-2">
+                            <Crown className="text-amber-600" size={20} />
+                            Top {topCount} Customers
+                        </h3>
+                        <div className="flex items-center gap-2">
+                            <span className="text-sm text-amber-700">Show:</span>
+                            {[5, 10, 20].map((count) => (
+                                <button
+                                    key={count}
+                                    onClick={() => setTopCount(count as 5 | 10 | 20)}
+                                    className={`px-3 py-1 rounded-lg text-sm font-medium transition-colors ${
+                                        topCount === count
+                                            ? "bg-amber-600 text-white"
+                                            : "bg-white text-amber-700 hover:bg-amber-100"
+                                    }`}
+                                >
+                                    {count}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+
+                    {topCustomers.length === 0 ? (
+                        <div className="text-center py-8 text-amber-700">
+                            <Crown className="mx-auto text-amber-300 mb-2" size={32} />
+                            <p>No customers yet</p>
+                        </div>
+                    ) : (
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+                            {topCustomers.map((customer, index) => (
+                                <Link
+                                    key={customer._id}
+                                    href={`/admin/customers/${customer._id}`}
+                                    className="bg-white rounded-lg p-4 border border-amber-200 hover:shadow-md hover:border-amber-300 transition-all cursor-pointer"
+                                >
+                                    <div className="flex items-center gap-3 mb-3">
+                                        <div
+                                            className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                                                index === 0
+                                                    ? "bg-amber-100 text-amber-600"
+                                                    : index === 1
+                                                        ? "bg-slate-200 text-slate-600"
+                                                        : index === 2
+                                                            ? "bg-orange-100 text-orange-600"
+                                                            : "bg-purple-100 text-purple-600"
+                                            }`}
+                                        >
+                                            {index < 3 ? (
+                                                <Crown size={18} />
+                                            ) : (
+                                                <span className="font-medium text-sm">
+                                                    #{index + 1}
+                                                </span>
+                                            )}
+                                        </div>
+                                        <div className="flex-1 min-w-0">
+                                            <p className="font-medium text-slate-900 truncate">{customer.name}</p>
+                                            <p className="text-xs text-slate-500 truncate">{customer.email}</p>
+                                        </div>
+                                    </div>
+                                    <div className="space-y-1">
+                                        <div className="flex items-center justify-between text-sm">
+                                            <span className="text-slate-500">Total Spend:</span>
+                                            <span className="font-semibold text-emerald-600">
+                                                {formatPrice(customer.totalSpend)}
+                                            </span>
+                                        </div>
+                                        <div className="flex items-center justify-between text-sm">
+                                            <span className="text-slate-500">Orders:</span>
+                                            <span className="font-medium text-slate-700">{customer.totalOrders}</span>
+                                        </div>
+                                        <div className="flex items-center justify-between text-sm">
+                                            <span className="text-slate-500">Avg. Order:</span>
+                                            <span className="font-medium text-slate-700">
+                                                {formatPrice(customer.totalSpend / customer.totalOrders)}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </Link>
+                            ))}
+                        </div>
+                    )}
+                </div>
+            )}
 
             {/* Stats Summary */}
             {customers && customers.length > 0 && (

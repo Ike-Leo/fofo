@@ -155,6 +155,7 @@ function OrderStatusBadge({ status }: { status: string }) {
 function CreateOrderModal({ orgId, onClose }: { orgId: Id<"organizations">, onClose: () => void }) {
     const createOrder = useMutation(api.orders.create);
     const inventory = useQuery(api.inventory.list, { orgId });
+    const allCustomers = useQuery(api.customers.list, { orgId });
 
     const [lineItems, setLineItems] = useState<Array<{ variantId: string, quantity: number, price: number, name: string }>>([]);
     const [selectedVariantId, setSelectedVariantId] = useState("");
@@ -162,12 +163,36 @@ function CreateOrderModal({ orgId, onClose }: { orgId: Id<"organizations">, onCl
     const [customerName, setCustomerName] = useState("");
     const [customerEmail, setCustomerEmail] = useState("");
     const [customerPhone, setCustomerPhone] = useState("");
+    const [customerSearch, setCustomerSearch] = useState("");
+    const [showCustomerDropdown, setShowCustomerDropdown] = useState(false);
 
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
     const availableVariants = inventory?.filter(i => i.stock > 0) || [];
     const selectedVariant = availableVariants.find(v => v._id === selectedVariantId);
+
+    // Filter customers based on search
+    const filteredCustomers = allCustomers?.filter(customer =>
+        customer.name.toLowerCase().includes(customerSearch.toLowerCase()) ||
+        customer.email.toLowerCase().includes(customerSearch.toLowerCase()) ||
+        customer.phone?.includes(customerSearch)
+    ).slice(0, 10) || [];
+
+    const selectCustomer = (customer: any) => {
+        setCustomerName(customer.name);
+        setCustomerEmail(customer.email);
+        setCustomerPhone(customer.phone || "");
+        setCustomerSearch("");
+        setShowCustomerDropdown(false);
+    };
+
+    const clearCustomer = () => {
+        setCustomerName("");
+        setCustomerEmail("");
+        setCustomerPhone("");
+        setCustomerSearch("");
+    };
 
     const addItem = () => {
         if (!selectedVariant) return;
@@ -316,7 +341,72 @@ function CreateOrderModal({ orgId, onClose }: { orgId: Id<"organizations">, onCl
 
                     {/* Customer Info */}
                     <div className="space-y-4">
-                        <h4 className="text-sm font-medium text-slate-700">Customer Details</h4>
+                        <div className="flex items-center justify-between">
+                            <h4 className="text-sm font-medium text-slate-700">Customer Details</h4>
+                            {(customerName || customerEmail) && (
+                                <button
+                                    type="button"
+                                    onClick={clearCustomer}
+                                    className="text-xs text-purple-600 hover:text-purple-800"
+                                >
+                                    Clear customer
+                                </button>
+                            )}
+                        </div>
+
+                        {/* Customer Search */}
+                        <div className="relative">
+                            <label className="block text-xs font-medium text-slate-500 mb-1">
+                                Search Existing Customers
+                            </label>
+                            <div className="relative">
+                                <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                                <input
+                                    type="text"
+                                    className="w-full pl-10 pr-4 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                    placeholder="Search by name, email, or phone..."
+                                    value={customerSearch}
+                                    onChange={(e) => {
+                                        setCustomerSearch(e.target.value);
+                                        setShowCustomerDropdown(true);
+                                    }}
+                                    onFocus={() => setShowCustomerDropdown(true)}
+                                />
+                            </div>
+
+                            {/* Customer Dropdown */}
+                            {showCustomerDropdown && customerSearch && (
+                                <div className="absolute z-10 w-full mt-1 bg-white border border-slate-200 rounded-lg shadow-lg max-h-60 overflow-auto">
+                                    {filteredCustomers.length === 0 ? (
+                                        <div className="p-3 text-sm text-slate-500 text-center">
+                                            No customers found. Create a new customer below.
+                                        </div>
+                                    ) : (
+                                        filteredCustomers.map((customer) => (
+                                            <button
+                                                key={customer._id}
+                                                type="button"
+                                                onClick={() => selectCustomer(customer)}
+                                                className="w-full px-4 py-3 text-left hover:bg-purple-50 transition-colors border-b border-slate-100 last:border-b-0"
+                                            >
+                                                <div className="font-medium text-slate-900">{customer.name}</div>
+                                                <div className="text-sm text-slate-500">{customer.email}</div>
+                                                {customer.phone && (
+                                                    <div className="text-xs text-slate-400">{customer.phone}</div>
+                                                )}
+                                                <div className="text-xs text-purple-600 mt-1">
+                                                    {customer.totalOrders} order{customer.totalOrders !== 1 ? 's' : ''} • {formatPrice(customer.totalSpend)}
+                                                </div>
+                                            </button>
+                                        ))
+                                    )}
+                                </div>
+                            )}
+                        </div>
+
+                        <div className="text-center text-xs text-slate-400">- OR -</div>
+
+                        {/* New Customer Form */}
                         <div className="grid grid-cols-2 gap-4">
                             <div>
                                 <label className="block text-xs font-medium text-slate-500 mb-1">Name</label>
@@ -325,7 +415,11 @@ function CreateOrderModal({ orgId, onClose }: { orgId: Id<"organizations">, onCl
                                     required
                                     className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"
                                     value={customerName}
-                                    onChange={(e) => setCustomerName(e.target.value)}
+                                    onChange={(e) => {
+                                        setCustomerName(e.target.value);
+                                        setShowCustomerDropdown(false);
+                                    }}
+                                    placeholder="Enter customer name"
                                 />
                             </div>
                             <div>
@@ -335,7 +429,11 @@ function CreateOrderModal({ orgId, onClose }: { orgId: Id<"organizations">, onCl
                                     required
                                     className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"
                                     value={customerEmail}
-                                    onChange={(e) => setCustomerEmail(e.target.value)}
+                                    onChange={(e) => {
+                                        setCustomerEmail(e.target.value);
+                                        setShowCustomerDropdown(false);
+                                    }}
+                                    placeholder="customer@email.com"
                                 />
                             </div>
                             <div className="col-span-2">
@@ -344,7 +442,10 @@ function CreateOrderModal({ orgId, onClose }: { orgId: Id<"organizations">, onCl
                                     type="tel"
                                     className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"
                                     value={customerPhone}
-                                    onChange={(e) => setCustomerPhone(e.target.value)}
+                                    onChange={(e) => {
+                                        setCustomerPhone(e.target.value);
+                                        setShowCustomerDropdown(false);
+                                    }}
                                     placeholder="+1 (555) 123-4567"
                                 />
                             </div>

@@ -7,7 +7,7 @@ import { api } from "../convex/_generated/api";
 import { Id } from "../convex/_generated/dataModel";
 import { useOrganization } from "./OrganizationProvider";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Save, AlertCircle } from "lucide-react";
+import { ArrowLeft, Save, AlertCircle, X, Image as ImageIcon } from "lucide-react";
 import Link from "next/link";
 
 interface ProductFormProps {
@@ -43,6 +43,8 @@ export default function ProductForm({ initialData, mode }: ProductFormProps) {
         categoryId: initialData?.categoryId?.toString() || "",
     });
 
+    const [images, setImages] = useState<string[]>(initialData?.images || ["", "", "", "", "", ""]);
+
     // Auto-generate slug from name if in create mode and slug is untouched
     const [isSlugTouched, setIsSlugTouched] = useState(false);
 
@@ -69,6 +71,9 @@ export default function ProductForm({ initialData, mode }: ProductFormProps) {
 
             const categoryId = formData.categoryId ? (formData.categoryId as Id<"categories">) : undefined;
 
+            // Filter out empty image URLs
+            const validImages = images.filter(img => img.trim() !== "");
+
             if (mode === "create") {
                 await createProduct({
                     orgId: currentOrg._id,
@@ -78,7 +83,7 @@ export default function ProductForm({ initialData, mode }: ProductFormProps) {
                     price: priceCents,
                     compareAtPrice: compareAtPriceCents,
                     categoryId,
-                    images: [], // TODO: Image upload
+                    images: validImages,
                 });
             } else if (initialData) {
                 await updateProduct({
@@ -175,6 +180,86 @@ export default function ProductForm({ initialData, mode }: ProductFormProps) {
                                     placeholder="Describe your product..."
                                 />
                             </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Images Card */}
+                <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6 space-y-6">
+                    <div>
+                        <h2 className="text-lg font-semibold text-slate-900 mb-2">Product Images</h2>
+                        <p className="text-sm text-slate-500 mb-4">Add up to 6 image URLs. The first image will be the main product image.</p>
+
+                        {/* Image Preview Grid */}
+                        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
+                            {images.map((imageUrl, index) => (
+                                <div key={index} className="relative group">
+                                    <div className="aspect-square bg-slate-50 border-2 border-dashed border-slate-200 rounded-lg overflow-hidden hover:border-slate-300 transition-colors">
+                                        {imageUrl ? (
+                                            <img
+                                                src={imageUrl}
+                                                alt={`Product image ${index + 1}`}
+                                                className="w-full h-full object-cover"
+                                                onError={(e) => {
+                                                    (e.target as HTMLImageElement).src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23f1f5f9'/%3E%3Ctext x='50' y='50' text-anchor='middle' dy='.3em' fill='%2394a3b8' font-size='12'%3EInvalid%3C/text%3E%3C/svg%3E";
+                                                }}
+                                            />
+                                        ) : (
+                                            <div className="w-full h-full flex items-center justify-center">
+                                                <ImageIcon className="text-slate-300" size={32} />
+                                            </div>
+                                        )}
+                                    </div>
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            const newImages = [...images];
+                                            newImages[index] = "";
+                                            setImages(newImages);
+                                        }}
+                                        className={`absolute top-2 right-2 p-1 bg-red-500 text-white rounded-md shadow-sm opacity-0 group-hover:opacity-100 transition-opacity ${!imageUrl ? 'hidden' : ''}`}
+                                    >
+                                        <X size={14} />
+                                    </button>
+                                    <div className="absolute bottom-2 left-2 px-2 py-1 bg-black/50 text-white text-xs rounded-md">
+                                        {index === 0 ? "Main" : `#${index + 1}`}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+
+                        {/* Image URL Inputs */}
+                        <div className="space-y-3">
+                            {images.map((imageUrl, index) => (
+                                <div key={index} className="flex items-center gap-3">
+                                    <span className="text-xs font-medium text-slate-500 w-16">
+                                        Image {index + 1}
+                                    </span>
+                                    <input
+                                        type="url"
+                                        value={imageUrl}
+                                        onChange={(e) => {
+                                            const newImages = [...images];
+                                            newImages[index] = e.target.value;
+                                            setImages(newImages);
+                                        }}
+                                        className="flex-1 px-3 py-2 bg-white border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-transparent transition-all"
+                                        placeholder="https://example.com/image.jpg"
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            const newImages = [...images];
+                                            newImages[index] = "";
+                                            setImages(newImages);
+                                        }}
+                                        className={`p-2 text-slate-400 hover:text-red-500 transition-colors ${!imageUrl ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                        disabled={!imageUrl}
+                                    >
+                                        <X size={18} />
+                                    </button>
+                                </div>
+                            ))}
                         </div>
                     </div>
                 </div>
