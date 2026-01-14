@@ -6,6 +6,7 @@ import { api } from "../../../../convex/_generated/api";
 import { Id } from "../../../../convex/_generated/dataModel";
 import ProductForm from "@/components/ProductForm";
 import ProductVariants from "@/components/ProductVariants";
+import ProductActivityLog from "@/components/ProductActivityLog";
 import { Archive, PlayCircle, EyeOff } from "lucide-react";
 
 export default function ProductDetailPage({
@@ -93,6 +94,9 @@ export default function ProductDetailPage({
                     <div className="sticky top-8 space-y-6">
                         <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
                             <ProductVariants productId={normalizedProductId} variants={product.variants} />
+                        </div>
+                        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+                            <ProductActivityLog productId={normalizedProductId} />
                         </div>
                     </div>
                 </div>

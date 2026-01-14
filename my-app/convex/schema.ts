@@ -112,6 +112,34 @@ export default defineSchema({
     .index("by_variantId", ["variantId"]) // For history
     .index("by_productId", ["productId"]), // For product-level history
 
+  productActivities: defineTable({
+    orgId: v.id("organizations"),
+    productId: v.id("products"),
+    type: v.union(
+      v.literal("created"),
+      v.literal("updated"),
+      v.literal("stock_added"),
+      v.literal("stock_removed"),
+      v.literal("sold"),
+      v.literal("cancelled"),
+      v.literal("archived")
+    ),
+    description: v.string(),
+    userId: v.optional(v.id("users")),
+    metadata: v.optional(v.object({
+      variantId: v.optional(v.id("productVariants")),
+      variantName: v.optional(v.string()),
+      quantity: v.optional(v.number()),
+      orderId: v.optional(v.id("orders")),
+      orderNumber: v.optional(v.string()),
+      changes: v.optional(v.string()),
+    })),
+    createdAt: v.number(),
+  })
+    .index("by_orgId", ["orgId"])
+    .index("by_productId", ["productId"])
+    .index("by_productId_createdAt", ["productId", "createdAt"]), // For timeline view
+
   orders: defineTable({
     orgId: v.id("organizations"),
     orderNumber: v.string(),

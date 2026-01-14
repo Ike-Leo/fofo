@@ -22,6 +22,7 @@ import type * as orders from "../orders.js";
 import type * as organizationMembers from "../organizationMembers.js";
 import type * as organizations from "../organizations.js";
 import type * as platformAdmins from "../platformAdmins.js";
+import type * as productActivities from "../productActivities.js";
 import type * as productVariants from "../productVariants.js";
 import type * as products from "../products.js";
 import type * as public_cart from "../public/cart.js";
@@ -50,6 +51,7 @@ declare const fullApi: ApiFromModules<{
   organizationMembers: typeof organizationMembers;
   organizations: typeof organizations;
   platformAdmins: typeof platformAdmins;
+  productActivities: typeof productActivities;
   productVariants: typeof productVariants;
   products: typeof products;
   "public/cart": typeof public_cart;

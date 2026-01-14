@@ -112,6 +112,16 @@ export const create = mutation({
             updatedAt: now,
         });
 
+        // 10. Log activity
+        await ctx.db.insert("productActivities", {
+            orgId: args.orgId,
+            productId,
+            type: "created",
+            description: `Product "${trimmedName}" was created`,
+            userId,
+            createdAt: now,
+        });
+
         return productId;
     },
 });
@@ -336,6 +346,30 @@ export const update = mutation({
 
         // 5. Apply updates
         await ctx.db.patch(args.productId, updates);
+
+        // 6. Log activity
+        const changes = [];
+        if (args.name !== undefined && args.name !== product.name) changes.push("name");
+        if (args.slug !== undefined && args.slug !== product.slug) changes.push("slug");
+        if (args.description !== undefined) changes.push("description");
+        if (args.price !== undefined && args.price !== product.price) changes.push("price");
+        if (args.compareAtPrice !== undefined) changes.push("compareAtPrice");
+        if (args.categoryId !== undefined && args.categoryId !== product.categoryId) changes.push("category");
+        if (args.images !== undefined) changes.push("images");
+
+        if (changes.length > 0) {
+            await ctx.db.insert("productActivities", {
+                orgId: product.orgId,
+                productId: args.productId,
+                type: "updated",
+                description: `Product updated: ${changes.join(", ")}`,
+                userId,
+                metadata: {
+                    changes: changes.join(", "),
+                },
+                createdAt: Date.now(),
+            });
+        }
     },
 });
 
@@ -378,5 +412,17 @@ export const setStatus = mutation({
             status: args.status,
             updatedAt: Date.now(),
         });
+
+        // 5. Log activity
+        if (args.status === "archived") {
+            await ctx.db.insert("productActivities", {
+                orgId: product.orgId,
+                productId: args.productId,
+                type: "archived",
+                description: `Product "${product.name}" was archived`,
+                userId,
+                createdAt: Date.now(),
+            });
+        }
     },
 });

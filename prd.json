@@ -59,7 +59,7 @@
             ],
             "priority": "P3",
             "effort": "medium",
-            "status": "pending"
+            "status": "completed"
         },
         {
             "id": "US-804",
@@ -239,7 +239,7 @@
             ],
             "priority": "P3",
             "effort": "medium",
-            "status": "pending"
+            "status": "completed"
         }
     ],
     "technicalRequirements": {

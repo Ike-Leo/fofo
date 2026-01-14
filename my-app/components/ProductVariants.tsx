@@ -5,7 +5,7 @@ import { useState } from "react";
 import { useMutation } from "convex/react";
 import { api } from "../convex/_generated/api";
 import { Id } from "../convex/_generated/dataModel";
-import { PlusIcon, Trash2, Star, AlertCircle } from "lucide-react";
+import { PlusIcon, Trash2, Star, AlertCircle, Package, Image as ImageIcon } from "lucide-react";
 
 interface Variant {
     _id: Id<"productVariants">;
@@ -63,6 +63,12 @@ export default function ProductVariants({ productId, variants }: ProductVariants
         } catch (err: any) {
             alert(err.message);
         }
+    };
+
+    const getStockStatus = (stock: number) => {
+        if (stock === 0) return { label: "Out of Stock", color: "text-red-700 bg-red-50 border-red-200" };
+        if (stock < 10) return { label: "Low Stock", color: "text-amber-700 bg-amber-50 border-amber-200" };
+        return { label: "In Stock", color: "text-emerald-700 bg-emerald-50 border-emerald-200" };
     };
 
     return (
@@ -140,61 +146,101 @@ export default function ProductVariants({ productId, variants }: ProductVariants
                 </div>
             )}
 
-            <div className="bg-white rounded-lg border border-slate-200 overflow-hidden">
-                <table className="w-full text-left text-sm">
-                    <thead className="bg-slate-50 text-slate-500 border-b border-slate-200">
-                        <tr>
-                            <th className="px-4 py-3 font-medium">Default</th>
-                            <th className="px-4 py-3 font-medium">Name</th>
-                            <th className="px-4 py-3 font-medium">SKU</th>
-                            <th className="px-4 py-3 font-medium text-right">Price</th>
-                            <th className="px-4 py-3 font-medium text-right">Stock</th>
-                            <th className="px-4 py-3 font-medium text-right">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody className="divide-y divide-slate-100">
-                        {variants.length === 0 ? (
-                            <tr>
-                                <td colSpan={6} className="px-4 py-8 text-center text-slate-500 italic">
-                                    No variants yet. Add one above.
-                                </td>
-                            </tr>
-                        ) : (
-                            variants.map((variant) => (
-                                <tr key={variant._id} className="group hover:bg-slate-50/50">
-                                    <td className="px-4 py-3">
+            {/* Responsive Grid Layout for Variant Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {variants.length === 0 ? (
+                    <div className="col-span-full p-8 text-center bg-slate-50 border border-slate-200 rounded-lg">
+                        <Package className="mx-auto text-slate-300 mb-3" size={40} />
+                        <p className="text-slate-500 italic">No variants yet. Add one above.</p>
+                    </div>
+                ) : (
+                    variants.map((variant) => {
+                        const stockStatus = getStockStatus(variant.stockQuantity);
+                        return (
+                            <div
+                                key={variant._id}
+                                className="group bg-white rounded-xl border border-slate-200 overflow-hidden hover:shadow-md hover:border-slate-300 transition-all"
+                            >
+                                {/* Card Header with Default Badge */}
+                                <div className="relative bg-gradient-to-r from-slate-50 to-slate-100 px-4 py-3 border-b border-slate-200">
+                                    <div className="flex items-start justify-between">
+                                        <div className="flex items-center gap-2">
+                                            {variant.isDefault && (
+                                                <span className="inline-flex items-center gap-1 px-2 py-1 bg-amber-100 text-amber-700 text-xs font-medium rounded-full border border-amber-200">
+                                                    <Star size={10} fill="currentColor" />
+                                                    Default
+                                                </span>
+                                            )}
+                                            <h3 className="font-semibold text-slate-900">{variant.name}</h3>
+                                        </div>
                                         <button
                                             onClick={() => handleSetDefault(variant._id)}
                                             disabled={variant.isDefault}
-                                            className={`p-1 rounded-full transition-colors ${variant.isDefault
-                                                ? "text-yellow-500 cursor-default"
-                                                : "text-slate-300 hover:text-yellow-400"
-                                                }`}
+                                            className={`p-1 rounded-full transition-colors ${
+                                                variant.isDefault
+                                                    ? "text-yellow-500 cursor-default"
+                                                    : "text-slate-300 hover:text-yellow-400 hover:bg-yellow-50"
+                                            }`}
                                             title={variant.isDefault ? "Default Variant" : "Set as Default"}
                                         >
                                             <Star size={16} fill={variant.isDefault ? "currentColor" : "none"} />
                                         </button>
-                                    </td>
-                                    <td className="px-4 py-3 font-medium text-slate-900">{variant.name}</td>
-                                    <td className="px-4 py-3 font-mono text-xs text-slate-600">{variant.sku}</td>
-                                    <td className="px-4 py-3 text-right text-slate-600">
-                                        {variant.price ? `$${(variant.price / 100).toFixed(2)}` : "-"}
-                                    </td>
-                                    <td className="px-4 py-3 text-right font-medium text-slate-900">{variant.stockQuantity}</td>
-                                    <td className="px-4 py-3 text-right">
-                                        <button
-                                            onClick={() => handleDelete(variant._id)}
-                                            className="p-1.5 text-slate-400 hover:text-red-600 rounded-md hover:bg-red-50 transition-colors"
-                                            title="Delete Variant"
-                                        >
-                                            <Trash2 size={16} />
-                                        </button>
-                                    </td>
-                                </tr>
-                            ))
-                        )}
-                    </tbody>
-                </table>
+                                    </div>
+                                    <p className="text-xs font-mono text-slate-500 mt-1">{variant.sku}</p>
+                                </div>
+
+                                {/* Card Body */}
+                                <div className="p-4 space-y-3">
+                                    {/* Image Placeholder */}
+                                    <div className="aspect-video bg-slate-50 border-2 border-dashed border-slate-200 rounded-lg flex items-center justify-center">
+                                        <div className="text-center">
+                                            <ImageIcon className="mx-auto text-slate-300 mb-2" size={32} />
+                                            <p className="text-xs text-slate-400">No image</p>
+                                        </div>
+                                    </div>
+
+                                    {/* Price */}
+                                    {variant.price && (
+                                        <div className="flex items-baseline justify-between">
+                                            <span className="text-sm text-slate-500">Price</span>
+                                            <span className="text-lg font-bold text-slate-900">
+                                                ${(variant.price / 100).toFixed(2)}
+                                            </span>
+                                        </div>
+                                    )}
+
+                                    {/* Stock Status - Prominently Visible */}
+                                    <div className="flex items-center justify-between p-3 bg-slate-50 rounded-lg border border-slate-100">
+                                        <div className="flex items-center gap-2">
+                                            <Package size={16} className="text-slate-400" />
+                                            <span className="text-sm font-medium text-slate-700">Stock</span>
+                                        </div>
+                                        <div className="text-right">
+                                            <span className={`text-2xl font-bold ${stockStatus.color.split(' ')[0]}`}>
+                                                {variant.stockQuantity}
+                                            </span>
+                                            <span className={`ml-2 inline-block px-2 py-0.5 text-xs font-medium rounded-full border ${stockStatus.color}`}>
+                                                {stockStatus.label}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Card Footer with Actions */}
+                                <div className="px-4 py-3 bg-slate-50 border-t border-slate-200 flex justify-end">
+                                    <button
+                                        onClick={() => handleDelete(variant._id)}
+                                        className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors"
+                                        title="Delete Variant"
+                                    >
+                                        <Trash2 size={16} />
+                                        Delete
+                                    </button>
+                                </div>
+                            </div>
+                        );
+                    })
+                )}
             </div>
         </div>
     );
