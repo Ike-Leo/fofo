@@ -73,5 +73,53 @@ Thread: N/A (Direct execution)
   - Link customer names with email search query parameter when customerId not available
   - Add hover:shadow-md and active:scale-[0.98] for clickable cards
   - useRouter() from 'next/navigation' for client-side navigation
----
 
+## 2026-01-14 - P2 Stories Complete (US-802, US-805, US-810, US-811, US-814, US-815)
+Thread: N/A (Ralph Agent Loop Iteration 2)
+- Completed US-815: Customer Profile Actions
+  - Added action buttons to customer detail page (Create Order, Chat, Call)
+  - 'Create Order' opens modal with customer pre-filled
+  - 'Chat' button (placeholder for future feature)
+  - 'Call' button links to tel: protocol
+- Completed US-802: Customer Reviews Widget
+  - Added Customer Reviews widget to dashboard
+  - Shows recent orders as placeholder for reviews
+  - Displays star ratings and customer feedback
+  - Ready for future review system integration
+- Completed US-805: Product Images Enhancement
+  - Added support for up to 6 image URLs per product
+  - Image preview grid with hover effects
+  - Individual image URL inputs with remove buttons
+  - Images filtered before saving (empty URLs removed)
+- Completed US-810: Repeat and Create Orders
+  - Added 'Create Another Order' button to order details
+  - Added 'Repeat Order' button that duplicates order items
+  - Both buttons open modals for order creation
+  - Repeat order allows quantity adjustment before confirming
+- Completed US-811: Top Customers Analytics
+  - Added Top Customers widget to customers page
+  - Configurable to show top 5/10/20 customers
+  - Ranked by total spend (lifetime value)
+  - Click to view customer profile
+- Completed US-814: Customer Auto-Suggest in Orders
+  - Added customer search to manual order creation
+  - Search by name, email, or phone
+  - Dropdown shows matching customers with stats
+  - Auto-fills form on selection
+- Files changed:
+  - my-app/app/admin/customers/[customerId]/page.tsx (action buttons, CreateOrderModal)
+  - my-app/app/admin/customers/page.tsx (top customers widget)
+  - my-app/app/admin/orders/[orderId]/page.tsx (create/repeat modals)
+  - my-app/app/admin/orders/page.tsx (customer auto-suggest)
+  - my-app/app/admin/page.tsx (customer reviews widget)
+  - my-app/components/ProductForm.tsx (6 image support)
+- Quality checks: TypeScript passes, lint clean for changed files
+- **Learnings for future iterations:**
+  - Filter out empty strings from image arrays before saving
+  - Use useState hooks for dropdown visibility and search filtering
+  - Create reusable modal components for similar functionality
+  - Customer search should filter by name, email, AND phone for maximum flexibility
+  - Top customers widget should be configurable (5/10/20) for different view needs
+  - Repeat order should pre-fill items but allow quantity adjustment
+
+---
