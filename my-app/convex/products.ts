@@ -557,12 +557,12 @@ export const bulkImport = mutation({
                 });
 
                 results.success++;
-            } catch (error: any) {
+            } catch (error: unknown) {
                 results.failed++;
                 results.errors.push({
                     row: i + 1,
                     name: productData.name,
-                    error: error.message,
+                    error: error instanceof Error ? error.message : "Unknown error",
                 });
             }
         }

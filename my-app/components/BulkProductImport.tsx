@@ -36,7 +36,6 @@ export default function BulkProductImport({ orgId, onClose }: BulkProductImportP
     const bulkImport = useMutation(api.products.bulkImport);
 
     const [step, setStep] = useState<"upload" | "mapping" | "preview" | "importing" | "complete">("upload");
-    const [file, setFile] = useState<File | null>(null);
     const [csvData, setCsvData] = useState<string[][]>([]);
     const [headers, setHeaders] = useState<string[]>([]);
     const [columnMapping, setColumnMapping] = useState<ColumnMapping | null>(null);
@@ -98,7 +97,6 @@ export default function BulkProductImport({ orgId, onClose }: BulkProductImportP
             return;
         }
 
-        setFile(selectedFile);
         setError(null);
 
         const reader = new FileReader();
@@ -183,14 +181,13 @@ export default function BulkProductImport({ orgId, onClose }: BulkProductImportP
             const results = await bulkImport({ orgId, products: parsedProducts });
             setImportResults(results);
             setStep("complete");
-        } catch (err: any) {
-            setError(err.message || "Failed to import products");
+        } catch (err: unknown) {
+            setError(err instanceof Error ? err.message : "Failed to import products");
             setStep("preview");
         }
     };
 
     const reset = () => {
-        setFile(null);
         setCsvData([]);
         setHeaders([]);
         setColumnMapping(null);
@@ -239,7 +236,7 @@ export default function BulkProductImport({ orgId, onClose }: BulkProductImportP
                             <div>
                                 <h3 className="text-lg font-semibold text-slate-900 mb-2">Upload CSV File</h3>
                                 <p className="text-slate-600 mb-4">
-                                    Upload a CSV file with your product data. You'll map columns in the next step.
+                                    Upload a CSV file with your product data. You&apos;ll map columns in the next step.
                                 </p>
                             </div>
 
