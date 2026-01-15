@@ -5,7 +5,7 @@ import { useState } from "react";
 import { useMutation } from "convex/react";
 import { api } from "../convex/_generated/api";
 import { Id } from "../convex/_generated/dataModel";
-import { PlusIcon, Trash2, Star, AlertCircle, Package, Image as ImageIcon } from "lucide-react";
+import { PlusIcon, Trash2, Star, AlertCircle, Package, Image as ImageIcon, Pencil, Check, X } from "lucide-react";
 
 interface Variant {
     _id: Id<"productVariants">;
@@ -29,6 +29,47 @@ export default function ProductVariants({ productId, variants }: ProductVariants
     const [isAdding, setIsAdding] = useState(false);
     const [newVariant, setNewVariant] = useState({ sku: "", name: "", stock: "0", price: "" });
     const [error, setError] = useState<string | null>(null);
+
+    // Editing state
+    const [editingId, setEditingId] = useState<Id<"productVariants"> | null>(null);
+    const [editData, setEditData] = useState({ name: "", sku: "", price: "", stock: "" });
+    const [isSaving, setIsSaving] = useState(false);
+
+    const startEditing = (variant: Variant) => {
+        setEditingId(variant._id);
+        setEditData({
+            name: variant.name,
+            sku: variant.sku,
+            price: variant.price ? (variant.price / 100).toString() : "",
+            stock: variant.stockQuantity.toString(),
+        });
+    };
+
+    const cancelEditing = () => {
+        setEditingId(null);
+        setEditData({ name: "", sku: "", price: "", stock: "" });
+    };
+
+    const handleSaveEdit = async () => {
+        if (!editingId) return;
+
+        setIsSaving(true);
+        setError(null);
+        try {
+            await updateVariant({
+                variantId: editingId,
+                name: editData.name,
+                sku: editData.sku,
+                price: editData.price ? Math.round(parseFloat(editData.price) * 100) : undefined,
+            });
+            setEditingId(null);
+            setEditData({ name: "", sku: "", price: "", stock: "" });
+        } catch (err: any) {
+            setError(err.message);
+        } finally {
+            setIsSaving(false);
+        }
+    };
 
     const handleAdd = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -176,11 +217,10 @@ export default function ProductVariants({ productId, variants }: ProductVariants
                                         <button
                                             onClick={() => handleSetDefault(variant._id)}
                                             disabled={variant.isDefault}
-                                            className={`p-1 rounded-full transition-colors ${
-                                                variant.isDefault
-                                                    ? "text-yellow-500 cursor-default"
-                                                    : "text-slate-300 hover:text-yellow-400 hover:bg-yellow-50"
-                                            }`}
+                                            className={`p-1 rounded-full transition-colors ${variant.isDefault
+                                                ? "text-yellow-500 cursor-default"
+                                                : "text-slate-300 hover:text-yellow-400 hover:bg-yellow-50"
+                                                }`}
                                             title={variant.isDefault ? "Default Variant" : "Set as Default"}
                                         >
                                             <Star size={16} fill={variant.isDefault ? "currentColor" : "none"} />
@@ -227,7 +267,15 @@ export default function ProductVariants({ productId, variants }: ProductVariants
                                 </div>
 
                                 {/* Card Footer with Actions */}
-                                <div className="px-4 py-3 bg-slate-50 border-t border-slate-200 flex justify-end">
+                                <div className="px-4 py-3 bg-slate-50 border-t border-slate-200 flex justify-between">
+                                    <button
+                                        onClick={() => startEditing(variant)}
+                                        className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-lg transition-colors"
+                                        title="Edit Variant"
+                                    >
+                                        <Pencil size={16} />
+                                        Edit
+                                    </button>
                                     <button
                                         onClick={() => handleDelete(variant._id)}
                                         className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors"
@@ -242,6 +290,85 @@ export default function ProductVariants({ productId, variants }: ProductVariants
                     })
                 )}
             </div>
+
+            {/* Edit Modal */}
+            {editingId && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm">
+                    <div className="bg-white rounded-xl shadow-xl max-w-md w-full overflow-hidden">
+                        <div className="px-6 py-4 border-b border-slate-200 flex justify-between items-center bg-slate-50">
+                            <h3 className="font-semibold text-lg text-slate-900">Edit Variant</h3>
+                            <button onClick={cancelEditing} className="text-slate-400 hover:text-slate-600">
+                                <X size={20} />
+                            </button>
+                        </div>
+
+                        <div className="p-6 space-y-4">
+                            <div>
+                                <label className="block text-sm font-medium text-slate-700 mb-1">Name</label>
+                                <input
+                                    type="text"
+                                    value={editData.name}
+                                    onChange={(e) => setEditData({ ...editData, name: e.target.value })}
+                                    className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-slate-900"
+                                    placeholder="Variant name"
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-slate-700 mb-1">SKU</label>
+                                <input
+                                    type="text"
+                                    value={editData.sku}
+                                    onChange={(e) => setEditData({ ...editData, sku: e.target.value })}
+                                    className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm font-mono focus:outline-none focus:ring-2 focus:ring-slate-900"
+                                    placeholder="PROD-SKU"
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-slate-700 mb-1">Price ($)</label>
+                                <div className="relative">
+                                    <span className="absolute left-3 top-2 text-slate-500">$</span>
+                                    <input
+                                        type="number"
+                                        min="0"
+                                        step="0.01"
+                                        value={editData.price}
+                                        onChange={(e) => setEditData({ ...editData, price: e.target.value })}
+                                        className="w-full pl-7 pr-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-slate-900"
+                                        placeholder="0.00"
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="bg-slate-50 rounded-lg p-3 text-sm text-slate-500">
+                                <p>💡 To adjust stock, use the Inventory page.</p>
+                            </div>
+                        </div>
+
+                        <div className="px-6 py-4 border-t border-slate-200 bg-slate-50 flex justify-end gap-3">
+                            <button
+                                onClick={cancelEditing}
+                                className="px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100 rounded-lg"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={handleSaveEdit}
+                                disabled={isSaving}
+                                className="px-4 py-2 text-sm font-medium text-white bg-slate-900 hover:bg-slate-800 rounded-lg disabled:opacity-50 flex items-center gap-2"
+                            >
+                                {isSaving ? (
+                                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                                ) : (
+                                    <Check size={16} />
+                                )}
+                                Save Changes
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

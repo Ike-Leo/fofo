@@ -244,7 +244,7 @@ function CustomerReviewsWidget({ recentOrders }: { recentOrders: any[] }) {
                                 </span>
                             </div>
                             <p className="text-sm text-slate-700">
-                                Ordered {order.items.length} {order.items.length === 1 ? 'item' : 'items'} • {formatPrice(order.totalAmount)}
+                                Ordered {order.items?.length ?? 0} {(order.items?.length ?? 0) === 1 ? 'item' : 'items'} • {formatPrice(order.totalAmount ?? 0)}
                             </p>
                             <p className="text-xs text-slate-500 mt-1 italic">
                                 "Great service! Fast delivery and quality products."

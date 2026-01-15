@@ -25,11 +25,32 @@ const formatPrice = (cents: number) => {
 export default function OrdersPage() {
     const { currentOrg } = useOrganization();
     const [isCreateOpen, setIsCreateOpen] = useState(false);
+    const [searchQuery, setSearchQuery] = useState("");
+    const [statusFilter, setStatusFilter] = useState<string>("all");
 
     const orders = useQuery(
         api.orders.list,
         currentOrg ? { orgId: currentOrg._id } : "skip"
     );
+
+    // Filter orders based on search and status
+    const filteredOrders = orders?.filter(order => {
+        // Status filter
+        if (statusFilter !== "all" && order.status !== statusFilter) {
+            return false;
+        }
+
+        // Search filter
+        if (searchQuery.trim()) {
+            const query = searchQuery.toLowerCase();
+            const matchesOrderNumber = order.orderNumber.toLowerCase().includes(query);
+            const matchesCustomerName = order.customerInfo.name.toLowerCase().includes(query);
+            const matchesCustomerEmail = order.customerInfo.email.toLowerCase().includes(query);
+            return matchesOrderNumber || matchesCustomerName || matchesCustomerEmail;
+        }
+
+        return true;
+    });
 
     if (!currentOrg) {
         return <div className="p-12 text-center text-slate-500">Select an organization first.</div>;
@@ -54,6 +75,57 @@ export default function OrdersPage() {
                 </div>
             </div>
 
+            {/* Search and Filter Section */}
+            <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-4 mb-6">
+                <div className="flex flex-col sm:flex-row gap-4">
+                    {/* Search Input */}
+                    <div className="relative flex-1">
+                        <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                        <input
+                            type="text"
+                            placeholder="Search by order #, customer name or email..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            className="w-full pl-10 pr-4 py-2.5 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/10 focus:border-slate-300"
+                        />
+                        {searchQuery && (
+                            <button
+                                onClick={() => setSearchQuery("")}
+                                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                            >
+                                <X size={16} />
+                            </button>
+                        )}
+                    </div>
+
+                    {/* Status Filter */}
+                    <div className="flex items-center gap-2">
+                        <Filter size={16} className="text-slate-400" />
+                        <select
+                            value={statusFilter}
+                            onChange={(e) => setStatusFilter(e.target.value)}
+                            className="px-3 py-2.5 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/10 focus:border-slate-300 bg-white"
+                        >
+                            <option value="all">All Statuses</option>
+                            <option value="pending">Pending</option>
+                            <option value="paid">Paid</option>
+                            <option value="processing">Processing</option>
+                            <option value="shipped">Shipped</option>
+                            <option value="delivered">Delivered</option>
+                            <option value="cancelled">Cancelled</option>
+                        </select>
+                    </div>
+                </div>
+
+                {/* Results count */}
+                {orders && (
+                    <div className="mt-3 text-sm text-slate-500">
+                        Showing {filteredOrders?.length || 0} of {orders.length} orders
+                        {searchQuery && <span className="ml-1">matching &quot;{searchQuery}&quot;</span>}
+                    </div>
+                )}
+            </div>
+
             <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
                 <div className="overflow-x-auto">
                     <table className="w-full text-left">
@@ -74,14 +146,16 @@ export default function OrdersPage() {
                                         <td colSpan={6} className="px-6 py-4"><div className="h-4 bg-slate-100 rounded w-full"></div></td>
                                     </tr>
                                 ))
-                            ) : orders.length === 0 ? (
+                            ) : filteredOrders && filteredOrders.length === 0 ? (
                                 <tr>
                                     <td colSpan={6} className="px-6 py-12 text-center text-slate-500 italic">
-                                        No orders found.
+                                        {searchQuery || statusFilter !== "all"
+                                            ? "No orders match your search criteria."
+                                            : "No orders found."}
                                     </td>
                                 </tr>
                             ) : (
-                                orders.map((order) => (
+                                filteredOrders?.map((order) => (
                                     <tr key={order._id} className="hover:bg-slate-50/50 transition-colors">
                                         <td className="px-6 py-4 font-mono text-sm">
                                             <Link

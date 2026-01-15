@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useMutation, useQuery } from "convex/react";
 import { api } from "../convex/_generated/api";
 import { Id } from "../convex/_generated/dataModel";
 import { useOrganization } from "./OrganizationProvider";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Save, AlertCircle, X, Image as ImageIcon } from "lucide-react";
+import { ArrowLeft, Save, AlertCircle, X, Image as ImageIcon, Plus, Upload } from "lucide-react";
 import Link from "next/link";
 
 interface ProductFormProps {
@@ -29,10 +29,63 @@ export default function ProductForm({ initialData, mode }: ProductFormProps) {
     const { currentOrg } = useOrganization();
     const createProduct = useMutation(api.products.create);
     const updateProduct = useMutation(api.products.update);
+    const createCategory = useMutation(api.categories.create);
     const categories = useQuery(api.categories.list, currentOrg ? { orgId: currentOrg._id } : "skip");
 
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+
+    // Inline category creation state
+    const [showNewCategory, setShowNewCategory] = useState(false);
+    const [newCategoryName, setNewCategoryName] = useState("");
+    const [isCreatingCategory, setIsCreatingCategory] = useState(false);
+
+    // Image upload state
+    const generateUploadUrl = useMutation(api.upload.generateUploadUrl);
+    const getStorageUrl = useMutation(api.upload.getImageUrl);
+    const fileInputRef = useRef<HTMLInputElement>(null);
+    const [uploadingIndex, setUploadingIndex] = useState<number | null>(null);
+
+    const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file || uploadingIndex === null) return;
+
+        try {
+            // 1. Get upload URL
+            const postUrl = await generateUploadUrl();
+
+            // 2. Upload file
+            const result = await fetch(postUrl, {
+                method: "POST",
+                headers: { "Content-Type": file.type },
+                body: file,
+            });
+
+            if (!result.ok) throw new Error("Upload failed");
+
+            const { storageId } = await result.json();
+
+            // 3. Get public URL
+            const url = await getStorageUrl({ storageId });
+
+            if (url) {
+                const newImages = [...images];
+                newImages[uploadingIndex] = url;
+                setImages(newImages);
+            }
+        } catch (err) {
+            console.error(err);
+            setError("Failed to upload image");
+        } finally {
+            setUploadingIndex(null);
+            if (fileInputRef.current) fileInputRef.current.value = "";
+        }
+    };
+
+    const triggerUpload = (index: number) => {
+        setUploadingIndex(index);
+        fileInputRef.current?.click();
+    };
 
     const [formData, setFormData] = useState({
         name: initialData?.name || "",
@@ -102,6 +155,33 @@ export default function ProductForm({ initialData, mode }: ProductFormProps) {
             setError(err.message || "An error occurred");
         } finally {
             setIsLoading(false);
+        }
+    };
+
+    const handleCreateCategory = async () => {
+        if (!currentOrg || !newCategoryName.trim()) return;
+
+        setIsCreatingCategory(true);
+        try {
+            const slug = newCategoryName
+                .toLowerCase()
+                .replace(/[^a-z0-9]+/g, "-")
+                .replace(/^-|-$/g, "");
+
+            const newCategoryId = await createCategory({
+                orgId: currentOrg._id,
+                name: newCategoryName.trim(),
+                slug,
+            });
+
+            // Select the new category
+            setFormData(prev => ({ ...prev, categoryId: newCategoryId }));
+            setNewCategoryName("");
+            setShowNewCategory(false);
+        } catch (err: any) {
+            setError(err.message || "Failed to create category");
+        } finally {
+            setIsCreatingCategory(false);
         }
     };
 
@@ -190,11 +270,20 @@ export default function ProductForm({ initialData, mode }: ProductFormProps) {
                         <h2 className="text-lg font-semibold text-slate-900 mb-2">Product Images</h2>
                         <p className="text-sm text-slate-500 mb-4">Add up to 6 image URLs. The first image will be the main product image.</p>
 
+                        {/* Hidden file input */}
+                        <input
+                            type="file"
+                            ref={fileInputRef}
+                            className="hidden"
+                            accept="image/*"
+                            onChange={handleImageUpload}
+                        />
+
                         {/* Image Preview Grid */}
                         <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
                             {images.map((imageUrl, index) => (
                                 <div key={index} className="relative group">
-                                    <div className="aspect-square bg-slate-50 border-2 border-dashed border-slate-200 rounded-lg overflow-hidden hover:border-slate-300 transition-colors">
+                                    <div className="aspect-square bg-slate-50 border-2 border-dashed border-slate-200 rounded-lg overflow-hidden hover:border-slate-300 transition-colors relative">
                                         {imageUrl ? (
                                             <img
                                                 src={imageUrl}
@@ -205,8 +294,15 @@ export default function ProductForm({ initialData, mode }: ProductFormProps) {
                                                 }}
                                             />
                                         ) : (
-                                            <div className="w-full h-full flex items-center justify-center">
-                                                <ImageIcon className="text-slate-300" size={32} />
+                                            <div className="w-full h-full flex flex-col items-center justify-center gap-2 group-hover:bg-slate-100 transition-colors cursor-pointer" onClick={() => triggerUpload(index)}>
+                                                {uploadingIndex === index ? (
+                                                    <div className="w-8 h-8 border-2 border-slate-300 border-t-slate-600 rounded-full animate-spin" />
+                                                ) : (
+                                                    <>
+                                                        <ImageIcon className="text-slate-300 group-hover:text-slate-400" size={32} />
+                                                        <span className="text-xs font-medium text-slate-400 group-hover:text-slate-600">Upload</span>
+                                                    </>
+                                                )}
                                             </div>
                                         )}
                                     </div>
@@ -310,18 +406,68 @@ export default function ProductForm({ initialData, mode }: ProductFormProps) {
                                 <label className="block text-sm font-medium text-slate-700 mb-1">
                                     Category
                                 </label>
-                                <select
-                                    value={formData.categoryId}
-                                    onChange={(e) => setFormData({ ...formData, categoryId: e.target.value })}
-                                    className="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-transparent transition-all"
-                                >
-                                    <option value="">Uncategorized</option>
-                                    {categories?.map((category) => (
-                                        <option key={category._id} value={category._id}>
-                                            {category.name}
-                                        </option>
-                                    ))}
-                                </select>
+                                {showNewCategory ? (
+                                    <div className="flex gap-2">
+                                        <input
+                                            type="text"
+                                            value={newCategoryName}
+                                            onChange={(e) => setNewCategoryName(e.target.value)}
+                                            placeholder="New category name..."
+                                            className="flex-1 px-3 py-2 bg-white border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-transparent transition-all"
+                                            autoFocus
+                                            onKeyDown={(e) => {
+                                                if (e.key === "Enter") {
+                                                    e.preventDefault();
+                                                    handleCreateCategory();
+                                                } else if (e.key === "Escape") {
+                                                    setShowNewCategory(false);
+                                                    setNewCategoryName("");
+                                                }
+                                            }}
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={handleCreateCategory}
+                                            disabled={isCreatingCategory || !newCategoryName.trim()}
+                                            className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
+                                        >
+                                            {isCreatingCategory ? "..." : "Add"}
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                setShowNewCategory(false);
+                                                setNewCategoryName("");
+                                            }}
+                                            className="px-3 py-2 text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors"
+                                        >
+                                            <X size={18} />
+                                        </button>
+                                    </div>
+                                ) : (
+                                    <div className="flex gap-2">
+                                        <select
+                                            value={formData.categoryId}
+                                            onChange={(e) => setFormData({ ...formData, categoryId: e.target.value })}
+                                            className="flex-1 px-3 py-2 bg-white border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-transparent transition-all"
+                                        >
+                                            <option value="">Uncategorized</option>
+                                            {categories?.map((category) => (
+                                                <option key={category._id} value={category._id}>
+                                                    {category.name}
+                                                </option>
+                                            ))}
+                                        </select>
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowNewCategory(true)}
+                                            className="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg transition-colors flex items-center gap-1"
+                                            title="Create new category"
+                                        >
+                                            <Plus size={18} />
+                                        </button>
+                                    </div>
+                                )}
                             </div>
                         </div>
                     </div>

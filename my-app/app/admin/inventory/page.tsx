@@ -21,6 +21,8 @@ export default function InventoryPage() {
     const { currentOrg } = useOrganization();
     const [lowStockOnly, setLowStockOnly] = useState(false);
     const [adjustmentItem, setAdjustmentItem] = useState<any | null>(null);
+    const [searchQuery, setSearchQuery] = useState("");
+    const [stockFilter, setStockFilter] = useState<"all" | "in_stock" | "low" | "out">("all");
 
     const inventory = useQuery(
         api.inventory.list,
@@ -28,6 +30,35 @@ export default function InventoryPage() {
             ? { orgId: currentOrg._id, lowStockThreshold: lowStockOnly ? 10 : undefined }
             : "skip"
     );
+
+    // Filter inventory based on search and stock status
+    const filteredInventory = inventory?.filter(item => {
+        // Stock status filter
+        if (stockFilter !== "all") {
+            if (stockFilter === "out" && item.stock !== 0) return false;
+            if (stockFilter === "low" && (item.stock === 0 || item.stock > 10)) return false;
+            if (stockFilter === "in_stock" && item.stock <= 10) return false;
+        }
+
+        // Search filter
+        if (searchQuery.trim()) {
+            const query = searchQuery.toLowerCase();
+            const matchesProductName = item.productName.toLowerCase().includes(query);
+            const matchesSku = item.sku.toLowerCase().includes(query);
+            const matchesVariantName = item.variantName.toLowerCase().includes(query);
+            return matchesProductName || matchesSku || matchesVariantName;
+        }
+
+        return true;
+    });
+
+    // Count by status
+    const statusCounts = inventory ? {
+        all: inventory.length,
+        in_stock: inventory.filter(i => i.stock > 10).length,
+        low: inventory.filter(i => i.stock > 0 && i.stock <= 10).length,
+        out: inventory.filter(i => i.stock === 0).length,
+    } : { all: 0, in_stock: 0, low: 0, out: 0 };
 
     if (!currentOrg) {
         return (
@@ -57,8 +88,64 @@ export default function InventoryPage() {
                         <AlertTriangle size={16} className={lowStockOnly ? "fill-amber-700" : ""} />
                         {lowStockOnly ? "Low Stock Only" : "Show Low Stock"}
                     </button>
-                    {/* Placeholder for future search/export */}
                 </div>
+            </div>
+
+            {/* Search and Filter Section */}
+            <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-4 mb-6">
+                <div className="flex flex-col sm:flex-row gap-4">
+                    {/* Search Input */}
+                    <div className="relative flex-1">
+                        <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                        <input
+                            type="text"
+                            placeholder="Search by product name, SKU, or variant..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            className="w-full pl-10 pr-4 py-2.5 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/10 focus:border-slate-300"
+                        />
+                        {searchQuery && (
+                            <button
+                                onClick={() => setSearchQuery("")}
+                                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                            >
+                                <X size={16} />
+                            </button>
+                        )}
+                    </div>
+
+                    {/* Stock Status Filter */}
+                    <div className="flex items-center gap-1 bg-slate-100 rounded-lg p-1">
+                        {[
+                            { value: "all", label: "All", count: statusCounts.all },
+                            { value: "in_stock", label: "In Stock", count: statusCounts.in_stock },
+                            { value: "low", label: "Low", count: statusCounts.low },
+                            { value: "out", label: "Out", count: statusCounts.out },
+                        ].map((filter) => (
+                            <button
+                                key={filter.value}
+                                onClick={() => setStockFilter(filter.value as typeof stockFilter)}
+                                className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${stockFilter === filter.value
+                                    ? "bg-white text-slate-900 shadow-sm"
+                                    : "text-slate-600 hover:text-slate-900"
+                                    }`}
+                            >
+                                {filter.label}
+                                <span className={`ml-1 text-xs ${stockFilter === filter.value ? "text-slate-500" : "text-slate-400"}`}>
+                                    ({filter.count})
+                                </span>
+                            </button>
+                        ))}
+                    </div>
+                </div>
+
+                {/* Results count */}
+                {inventory && (
+                    <div className="mt-3 text-sm text-slate-500">
+                        Showing {filteredInventory?.length || 0} of {inventory.length} items
+                        {searchQuery && <span className="ml-1">matching &quot;{searchQuery}&quot;</span>}
+                    </div>
+                )}
             </div>
 
             <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
@@ -85,14 +172,16 @@ export default function InventoryPage() {
                                         <td className="px-6 py-4"></td>
                                     </tr>
                                 ))
-                            ) : inventory.length === 0 ? (
+                            ) : filteredInventory && filteredInventory.length === 0 ? (
                                 <tr>
                                     <td colSpan={5} className="px-6 py-12 text-center text-slate-500 italic">
-                                        No inventory found.
+                                        {searchQuery || stockFilter !== "all"
+                                            ? "No items match your search criteria."
+                                            : "No inventory found."}
                                     </td>
                                 </tr>
                             ) : (
-                                inventory.map((item) => (
+                                filteredInventory?.map((item) => (
                                     <tr key={item._id} className="hover:bg-slate-50/50 transition-colors group">
                                         <td className="px-6 py-4">
                                             <div className="flex items-center gap-3">

@@ -1,5 +1,5 @@
 import { v } from "convex/values";
-import { query } from "./_generated/server";
+import { query, mutation } from "./_generated/server";
 import { getAuthUserId } from "@convex-dev/auth/server";
 import { isPlatformAdmin, getOrgRole } from "./helpers/auth";
 
@@ -76,5 +76,41 @@ export const get = query({
             ...customer,
             orders: customerOrders,
         };
+    },
+});
+
+/**
+ * Update customer profile details.
+ * Only admins can update customer information.
+ */
+export const update = mutation({
+    args: {
+        customerId: v.id("customers"),
+        name: v.optional(v.string()),
+        phone: v.optional(v.string()),
+    },
+    handler: async (ctx, args) => {
+        const userId = await getAuthUserId(ctx);
+        if (!userId) throw new Error("Unauthorized");
+
+        const customer = await ctx.db.get(args.customerId);
+        if (!customer) throw new Error("Customer not found");
+
+        // Verify access
+        const isPlatAdmin = await isPlatformAdmin(ctx, userId);
+        const orgRole = await getOrgRole(ctx, userId, customer.orgId);
+        if (!isPlatAdmin && !orgRole) {
+            throw new Error("Unauthorized");
+        }
+
+        // Build update object
+        const updates: Partial<typeof customer> = {};
+        if (args.name !== undefined) updates.name = args.name;
+        if (args.phone !== undefined) updates.phone = args.phone;
+
+        // Update customer
+        await ctx.db.patch(args.customerId, updates);
+
+        return { success: true };
     },
 });

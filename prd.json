@@ -1,351 +1,274 @@
 {
-    "projectName": "UCCP - Universal Commerce Control Platform",
-    "version": "0.2.0",
+    "projectName": "UCCP - Frontend UX Enhancement",
+    "version": "0.8.0",
     "phase": 8,
-    "phaseName": "UX Enhancement & Advanced Features",
+    "phaseName": "UX Enhancement",
     "status": "approved",
-    "createdAt": "2026-01-14T15:02:00Z",
-    "updatedAt": "2026-01-14T16:30:00Z",
-    "chatScope": "full (employee + customer support)",
+    "createdAt": "2026-01-15T04:30:00Z",
+    "updatedAt": "2026-01-15T04:30:00Z",
     "overview": {
-        "description": "Phase 8 focuses on improving user experience across the admin dashboard, adding advanced product management features, enhancing order workflows, implementing customer analytics, and introducing communication and access control systems.",
+        "description": "Phase 8 applies the frontend design skill principles to optimize the admin interface with a distinctive Twitter-inspired theme. Focus on typography, motion, spatial composition, and visual details while avoiding generic AI aesthetics.",
         "goals": [
-            "Improve dashboard interactivity with clickable KPIs and customer notices",
-            "Enhance product management with better variant UI, bulk import, and activity logging",
-            "Streamline order management with repeat orders, customer auto-suggest, and inline editing",
-            "Add customer analytics and profile action buttons",
-            "Implement real-time chat for employees and customer support",
-            "Create granular permission system for organization admins"
+            "Apply Twitter color theme with OKLCH color system",
+            "Replace generic fonts (Inter) with distinctive typography (Open Sans, Georgia)",
+            "Add refined animations and micro-interactions",
+            "Enhance spatial composition and visual hierarchy",
+            "Apply consistent theming across all admin components",
+            "Ensure smooth light/dark theme transitions"
         ]
     },
     "userStories": [
         {
             "id": "US-801",
-            "title": "Dashboard Interactivity",
-            "description": "As an admin, I want to click on dashboard KPI cards to navigate to the relevant pages so I can quickly drill down into details.",
+            "title": "Apply Twitter Theme to globals.css",
+            "description": "Replace the current color scheme with the Twitter-inspired theme using OKLCH color values. The theme features a primary blue (#1D9BF0), clean whites, and refined dark mode.",
             "acceptanceCriteria": [
-                "Revenue card navigates to /admin/orders",
-                "Orders card navigates to /admin/orders",
-                "Customers card navigates to /admin/customers",
-                "Products card navigates to /admin/products",
-                "Cards have hover states indicating clickability"
+                "Update :root with Twitter light theme colors (OKLCH format)",
+                "Update .dark with Twitter dark theme colors (pure black background)",
+                "Set font-sans to 'Open Sans' instead of Inter",
+                "Set font-serif to Georgia and font-mono to Menlo",
+                "Increase border radius to 1.3rem for rounded aesthetic",
+                "Update shadow values for subtle depth",
+                "All CSS variables properly mapped in @theme inline"
             ],
             "priority": "P1",
             "effort": "low",
-            "status": "completed"
+            "status": "pending",
+            "passes": false
         },
         {
             "id": "US-802",
-            "title": "Customer Reviews Widget",
-            "description": "As an admin, I want to see customer notices/reviews on the dashboard so I can stay informed about customer sentiment.",
+            "title": "Enhance Typography System",
+            "description": "Establish a distinctive typography hierarchy that avoids generic fonts. Use Open Sans for UI text, Georgia for editorial content, and Menlo for code/technical details.",
             "acceptanceCriteria": [
-                "Widget displays under Sales Overview section",
-                "Shows recent order notes/comments as interim solution",
-                "Placeholder UI ready for future review system"
+                "Add font-face declarations or Google Fonts import for Open Sans",
+                "Update font stack to prioritize distinctive fonts over system defaults",
+                "Add tracking and line-height improvements for readability",
+                "Ensure proper font weights (400, 600, 700) are available",
+                "Test typography in both light and dark themes"
             ],
-            "priority": "P2",
+            "priority": "P1",
             "effort": "medium",
-            "status": "completed"
+            "status": "pending",
+            "passes": false
         },
         {
             "id": "US-803",
-            "title": "Variant Section UI Optimization",
-            "description": "As an admin, I want the product variant section to display content clearly so I can manage variants efficiently.",
+            "title": "Add Motion Animations",
+            "description": "Implement CSS animations for page transitions, hover states, and micro-interactions. Focus on high-impact moments like page load and button interactions.",
             "acceptanceCriteria": [
-                "Variant cards with clear visual hierarchy",
-                "Stock quantity prominently visible",
-                "Image preview for each variant if available",
-                "Responsive grid layout"
+                "Add staggered fade-in animations for list items (0.05s delay increments)",
+                "Add scale/hover effects to buttons and cards",
+                "Implement smooth theme transition (0.3s ease)",
+                "Add slide-in animation for toasts and modals",
+                "Add pulse effect for loading states",
+                "All animations use CSS-only (no JS required)"
             ],
-            "priority": "P3",
+            "priority": "P2",
             "effort": "medium",
-            "status": "completed"
+            "status": "pending",
+            "passes": false
         },
         {
             "id": "US-804",
-            "title": "Categories Management",
-            "description": "As an admin, I want to add, edit, and delete product categories so I can organize my catalog effectively.",
+            "title": "Enhance Spatial Composition",
+            "description": "Improve spacing, padding, and visual hierarchy throughout the admin interface. Use generous negative space and consistent spacing scales.",
             "acceptanceCriteria": [
-                "Dedicated /admin/categories page",
-                "CRUD operations for categories",
-                "Hierarchical category display",
-                "Category assignment validation on product deletion"
+                "Add consistent padding scale (4px, 8px, 16px, 24px, 32px)",
+                "Improve card spacing and shadow depth",
+                "Add subtle borders with proper border colors from theme",
+                "Enhance button spacing and sizing",
+                "Improve table row spacing and hover states",
+                "Add visual separators between content sections"
             ],
-            "priority": "P3",
+            "priority": "P2",
             "effort": "medium",
-            "status": "completed"
+            "status": "pending",
+            "passes": false
         },
         {
             "id": "US-805",
-            "title": "Product Images Enhancement",
-            "description": "As an admin, I want to upload up to 6 images per product with optimized sizing so the storefront loads quickly.",
+            "title": "Update AdminHeader Component",
+            "description": "Apply the new Twitter theme to the AdminHeader component with improved typography, spacing, and hover states.",
             "acceptanceCriteria": [
-                "Support for 6 image URL fields",
-                "Image preview grid in product form",
-                "Validation for image URL format",
-                "Reorderable image positions"
+                "Apply Twitter primary color to logo/brand elements",
+                "Add hover effects to navigation items",
+                "Improve spacing between header elements",
+                "Ensure theme toggle uses proper colors",
+                "Add subtle shadow to header",
+                "Test in both light and dark modes"
             ],
-            "priority": "P2",
+            "priority": "P1",
             "effort": "medium",
-            "status": "completed"
+            "status": "pending",
+            "passes": false
         },
         {
             "id": "US-806",
-            "title": "Bulk Product Import",
-            "description": "As an admin, I want to import products in bulk via CSV/Excel so I can quickly populate my catalog.",
+            "title": "Update ProductForm Component",
+            "description": "Refine the ProductForm component with the new theme, focusing on form field styling, button hierarchy, and visual feedback.",
             "acceptanceCriteria": [
-                "File upload for CSV/Excel",
-                "Column mapping interface",
-                "Preview before import",
-                "Progress indicator during import",
-                "Error report for failed rows"
+                "Style form inputs with proper border colors and focus states",
+                "Apply Twitter primary color to submit buttons",
+                "Add hover and active states to all buttons",
+                "Improve form field spacing and labels",
+                "Add visual feedback for validation states",
+                "Ensure image upload area has proper styling"
             ],
-            "priority": "P3",
-            "effort": "high",
-            "status": "completed"
+            "priority": "P1",
+            "effort": "medium",
+            "status": "pending",
+            "passes": false
         },
         {
             "id": "US-807",
-            "title": "Clickable Order Fields",
-            "description": "As an admin, I want to click on customer names, product names, and order IDs to navigate directly to their details.",
+            "title": "Update ProductVariants Component",
+            "description": "Apply the Twitter theme to ProductVariants with improved table styling, row hover states, and action buttons.",
             "acceptanceCriteria": [
-                "Customer names link to customer profile",
-                "Product names link to product details",
-                "Order IDs link to order details",
-                "Applied across orders, inventory, and customers tables"
+                "Style variant table with proper borders and spacing",
+                "Add hover states to table rows",
+                "Style edit/delete buttons with appropriate colors",
+                "Improve inline editing appearance",
+                "Add subtle shadows to variant cards on mobile",
+                "Ensure proper contrast in both themes"
             ],
-            "priority": "P1",
-            "effort": "low",
-            "status": "completed"
+            "priority": "P2",
+            "effort": "medium",
+            "status": "pending",
+            "passes": false
         },
         {
             "id": "US-808",
-            "title": "Manual Order Phone Number",
-            "description": "As an admin, I want to add a phone number when creating manual orders so I can contact the customer.",
+            "title": "Update Orders Page",
+            "description": "Enhance the orders page with the new theme, focusing on status badges, search styling, and order card presentation.",
             "acceptanceCriteria": [
-                "Phone field added to manual order creation form",
-                "Phone stored in customerInfo object",
-                "Phone displayed on order details page"
+                "Apply theme colors to status badges (paid, pending, shipped, etc.)",
+                "Style search input with proper focus ring",
+                "Improve order card spacing and shadows",
+                "Add hover effects to order rows",
+                "Ensure action buttons use proper colors",
+                "Test with empty states and loading states"
             ],
             "priority": "P1",
-            "effort": "low",
-            "status": "completed"
+            "effort": "medium",
+            "status": "pending",
+            "passes": false
         },
         {
             "id": "US-809",
-            "title": "Payment Status UI Update",
-            "description": "As an admin, after marking an order as paid, I want the status to update immediately without page refresh.",
+            "title": "Update Inventory Page",
+            "description": "Apply the Twitter theme to the inventory page with emphasis on stock status indicators and filter styling.",
             "acceptanceCriteria": [
-                "Payment status badge updates in real-time",
-                "No manual refresh required",
-                "Optimistic UI update on action"
+                "Style low stock/out of stock badges with proper colors",
+                "Improve filter button styling and active states",
+                "Add hover effects to product rows",
+                "Ensure search input matches theme",
+                "Apply proper shadows to product cards",
+                "Test with various stock status combinations"
             ],
             "priority": "P1",
-            "effort": "low",
-            "status": "completed"
+            "effort": "medium",
+            "status": "pending",
+            "passes": false
         },
         {
             "id": "US-810",
-            "title": "Repeat and Create Orders",
-            "description": "As an admin, I want to create another order or repeat an existing order from the order details page.",
+            "title": "Update Customers Page",
+            "description": "Refine the customers page with the new theme, improving customer card styling and action button hierarchy.",
             "acceptanceCriteria": [
-                "'Create Another Order' button opens blank order form",
-                "'Repeat Order' button duplicates current order items",
-                "Duplicate order is in draft/pending status",
-                "Quantities can be adjusted before confirming"
+                "Apply theme colors to customer cards",
+                "Add hover effects to customer rows",
+                "Style action buttons (view, edit) with proper colors",
+                "Improve spacing between customer info",
+                "Ensure proper contrast for customer names/email",
+                "Test with empty state"
             ],
             "priority": "P2",
             "effort": "medium",
-            "status": "completed"
+            "status": "pending",
+            "passes": false
         },
         {
             "id": "US-811",
-            "title": "Top Customers Analytics",
-            "description": "As an admin, I want to see my top customers ranked by spend so I can identify VIPs.",
+            "title": "Update Dashboard Page",
+            "description": "Enhance the dashboard with the Twitter theme, focusing on stat cards, chart styling, and widget presentation.",
             "acceptanceCriteria": [
-                "Widget shows top 5/10/20 customers (configurable)",
-                "Ranked by total order value",
-                "Click to view customer profile",
-                "Located at top of customers page"
+                "Apply theme colors to stat cards with subtle shadows",
+                "Add hover effects to dashboard widgets",
+                "Ensure chart colors match theme palette",
+                "Improve spacing between dashboard sections",
+                "Style action buttons consistently",
+                "Test with loading and empty states"
             ],
             "priority": "P2",
             "effort": "medium",
-            "status": "completed"
+            "status": "pending",
+            "passes": false
         },
         {
             "id": "US-812",
-            "title": "Chat System",
-            "description": "As an admin, I want to chat with employees and customers so I can communicate in real-time within the platform.",
+            "title": "Verify Cross-Theme Consistency",
+            "description": "Test all admin pages in both light and dark themes to ensure consistent styling, proper contrast, and smooth transitions.",
             "acceptanceCriteria": [
-                "New /admin/chat page",
-                "Conversation list sidebar",
-                "Real-time message updates",
-                "Support for internal (employee) and support (customer) conversations"
+                "Navigate through all admin pages in light mode",
+                "Toggle to dark mode and verify all pages update correctly",
+                "Check contrast ratios meet accessibility standards",
+                "Ensure theme transition is smooth (0.3s ease)",
+                "Verify no color flashes during theme switch",
+                "Test on mobile responsive views"
             ],
-            "priority": "P4",
-            "effort": "high",
-            "status": "pending"
-        },
-        {
-            "id": "US-813",
-            "title": "Access Control & Permissions",
-            "description": "As an org admin, I want to grant and revoke specific permissions to employees so I can control what they can access.",
-            "acceptanceCriteria": [
-                "Permission management UI per member",
-                "Granular permissions (read/write per module)",
-                "Permission check enforced on backend",
-                "Preset role templates for quick assignment"
-            ],
-            "priority": "P4",
-            "effort": "high",
-            "status": "pending"
-        },
-        {
-            "id": "US-814",
-            "title": "Customer Auto-Suggest in Orders",
-            "description": "As an admin, I want previous customers to be suggested when creating manual orders so I can quickly select them.",
-            "acceptanceCriteria": [
-                "Search by name, email, or phone",
-                "Dropdown shows matching customers",
-                "Auto-fill form on selection",
-                "Create new customer if not found"
-            ],
-            "priority": "P2",
-            "effort": "medium",
-            "status": "completed"
-        },
-        {
-            "id": "US-815",
-            "title": "Customer Profile Actions",
-            "description": "As an admin, I want quick action buttons on customer profiles to create orders, start chats, or call.",
-            "acceptanceCriteria": [
-                "'Create Order' button opens modal with customer pre-filled",
-                "'Chat' button opens chat (or placeholder)",
-                "'Call' button links to tel: for phone number"
-            ],
-            "priority": "P2",
+            "priority": "P1",
             "effort": "low",
-            "status": "completed"
-        },
-        {
-            "id": "US-816",
-            "title": "Product Activity Log",
-            "description": "As an admin, I want to see all activities on a product (orders, stock changes, cancellations) so I can audit its history.",
-            "acceptanceCriteria": [
-                "Timeline view on product details page",
-                "Shows: created, updated, stock added/removed, sold, cancelled, archived",
-                "Includes timestamps and user who performed action",
-                "Filter by activity type"
-            ],
-            "priority": "P3",
-            "effort": "medium",
-            "status": "completed"
+            "status": "pending",
+            "passes": false
         }
     ],
     "technicalRequirements": {
-        "schemaChanges": [
-            {
-                "table": "productActivities",
-                "action": "create",
-                "description": "Audit log for product lifecycle events"
-            },
-            {
-                "table": "conversations",
-                "action": "create",
-                "description": "Chat conversation metadata"
-            },
-            {
-                "table": "messages",
-                "action": "create",
-                "description": "Chat messages with real-time subscription"
-            },
-            {
-                "table": "organizationMembers",
-                "action": "modify",
-                "description": "Add optional permissions array"
-            }
+        "frontend": [
+            "Use CSS custom properties for all theme values",
+            "Implement CSS-only animations where possible",
+            "Use OKLCH color space for better color manipulation",
+            "Apply Twitter's design tokens (radius: 1.3rem, specific shadows)",
+            "Ensure proper font loading and fallbacks",
+            "Test in both light and dark themes"
         ],
-        "newPages": [
-            "/admin/categories",
-            "/admin/chat",
-            "/admin/team"
-        ],
-        "newComponents": [
-            "CustomerReviews.tsx",
-            "BulkImport.tsx",
-            "ProductActivityLog.tsx",
-            "TopCustomers.tsx",
-            "ChatWindow.tsx",
-            "PermissionEditor.tsx"
-        ],
-        "newConvexModules": [
-            "productActivities.ts",
-            "chat.ts",
-            "permissions.ts"
+        "designPrinciples": [
+            "Avoid generic fonts (Inter, Roboto, Arial)",
+            "Avoid purple gradient cliches",
+            "Use distinctive typography (Open Sans, Georgia)",
+            "Bold primary color with refined accents",
+            "High-impact animations for key moments",
+            "Generous spacing and visual hierarchy"
         ]
     },
     "priorityMatrix": {
-        "P1": {
-            "label": "Critical UX Fixes",
-            "stories": [
-                "US-801",
-                "US-807",
-                "US-808",
-                "US-809"
-            ],
-            "estimatedEffort": "1-2 days"
-        },
-        "P2": {
-            "label": "High-Value Enhancements",
-            "stories": [
-                "US-802",
-                "US-805",
-                "US-810",
-                "US-811",
-                "US-814",
-                "US-815"
-            ],
-            "estimatedEffort": "3-5 days"
-        },
-        "P3": {
-            "label": "Product Management",
-            "stories": [
-                "US-803",
-                "US-804",
-                "US-806",
-                "US-816"
-            ],
-            "estimatedEffort": "5-7 days"
-        },
-        "P4": {
-            "label": "Advanced Systems",
-            "stories": [
-                "US-812",
-                "US-813"
-            ],
-            "estimatedEffort": "7-10 days"
-        }
-    },
-    "dependencies": {
-        "external": [],
-        "internal": [
-            "Convex schema migration for new tables",
-            "Real-time subscriptions for chat"
+        "P1_Critical": [
+            "US-801: Apply Twitter Theme to globals.css",
+            "US-802: Enhance Typography System",
+            "US-805: Update AdminHeader Component",
+            "US-806: Update ProductForm Component",
+            "US-808: Update Orders Page",
+            "US-809: Update Inventory Page",
+            "US-812: Verify Cross-Theme Consistency"
+        ],
+        "P2_Important": [
+            "US-803: Add Motion Animations",
+            "US-804: Enhance Spatial Composition",
+            "US-807: Update ProductVariants Component",
+            "US-810: Update Customers Page",
+            "US-811: Update Dashboard Page"
         ]
     },
-    "verificationPlan": {
-        "typecheck": "npm run typecheck",
-        "lint": "npm run lint",
-        "manualTests": [
-            "Click each dashboard KPI card and verify navigation",
-            "Create product with 6 images and verify storefront display",
-            "Bulk import 10 products via CSV",
-            "Create manual order with phone number and customer search",
-            "Mark order as paid and verify immediate UI update",
-            "Use 'Repeat Order' and verify items copied",
-            "View top customers widget with different counts",
-            "Open chat between two users and send messages",
-            "Grant/revoke permissions and verify access changes"
-        ]
-    }
+    "testCases": [
+        "Verify globals.css has Twitter theme colors",
+        "Check that Open Sans is loaded and applied",
+        "Test theme toggle and verify smooth transition",
+        "Hover over buttons and verify scale/color change",
+        "Navigate admin pages and verify consistent styling",
+        "Test all pages in dark mode",
+        "Check contrast ratios with accessibility tools",
+        "Verify animations don't cause performance issues",
+        "Test responsive views on mobile viewport"
+    ],
+    "branchName": "phase8-ux-enhancement"
 }

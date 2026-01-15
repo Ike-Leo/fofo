@@ -123,9 +123,14 @@ export async function createOrderImpl(
     }
 
     // 6. Update Customer (CRM)
+    const email = args.customerInfo.email.trim();
+    if (!email) {
+        throw new Error("Customer email is required");
+    }
+
     const existingCustomer = await ctx.db
         .query("customers")
-        .withIndex("by_orgId_email", q => q.eq("orgId", args.orgId).eq("email", args.customerInfo.email))
+        .withIndex("by_orgId_email", q => q.eq("orgId", args.orgId).eq("email", email))
         .first();
 
     if (existingCustomer) {
@@ -141,7 +146,7 @@ export async function createOrderImpl(
     } else {
         await ctx.db.insert("customers", {
             orgId: args.orgId,
-            email: args.customerInfo.email,
+            email: email, // Use trimmed email
             name: args.customerInfo.name,
             phone: args.customerInfo.phone,
             address: args.customerInfo.address,

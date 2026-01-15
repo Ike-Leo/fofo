@@ -1,239 +1,69 @@
+# Ralph Progress Log - Phase 8: UX Enhancement
+Started: 2026-01-15T04:30:00Z
+
+---
+
+## Design Context
+
+**Aesthetic Direction**: Twitter-inspired theme with distinctive typography
+- Primary color: #1D9BF0 (Twitter blue in OKLCH: 0.6723 0.1606 244.9955)
+- Fonts: Open Sans (UI), Georgia (editorial), Menlo (code)
+- Radius: 1.3rem for rounded aesthetic
+- Design philosophy: Bold, refined, avoid generic AI aesthetics
+
+**Key Design Principles** (from frontend-design skill):
+- Avoid generic fonts (Inter, Roboto, Arial, system fonts)
+- Avoid purple gradient cliches
+- Use distinctive typography with character
+- Bold primary color with sharp accents
+- High-impact animations for key moments (page load, hover states)
+- Generous negative space OR controlled density
+- CSS-only animations preferred
+
+**Theme Colors**:
+- Light mode: Clean whites, subtle grays, blue primary
+- Dark mode: Pure black background (#000000), reduced saturation
+- OKLCH color space for consistent color manipulation
+
+---
+
 ## Codebase Patterns
-- Convex functions use `getAuthUserId(ctx)` for authentication
-- Org-scoped queries always filter by `orgId`
-- All mutations validate caller authorization before proceeding
-- Use `v.id("tableName")` for foreign key references
-- Include `createdAt: v.number()` on all records
-- **PowerShell**: Use `-LiteralPath` when deleting files/folders with brackets like `[...slug]`.
-- **Public API**: Located in `convex/public/*`. Queries accept `orgSlug`.
-- **Storefront**: Located in `app/store`. Use `StoreHeader` and `StoreFooter`.
 
----
-# Progress Log
----
-## 2026-01-12 - US-601 to US-605 (Phase 6 Complete)
-Thread: https://ampcode.com/threads/unknown
-- Completed Public Storefront API.
-- Implemented Products, Cart, Checkout backend logic.
-- Fixed Auth issues.
-
-## 2026-01-12 - US-701
-Thread: https://ampcode.com/threads/unknown
-- Starting Phase 7: Storefront UI & Payments.
-- Objective: Create storefront layout and home page.
-- Completed US-701 (Layout & Home) - Linting green.
-- Completed US-702 (Product Listing & Grid) - Linting green.
-- Completed US-703 (Shopping Cart Drawer) - Linting green.
-- Completed US-704 (Stripe Backend Integration) - Linting green.
-- Completed US-705 (Checkout UI & Order Success) - Linting green.
-- Phase 7 Complete.
-
-## 2026-01-14 - Phase 8 Planning
-Thread: https://ampcode.com/threads/unknown
-- Fixed 8 TypeScript errors in CartDrawer.tsx and ProductDetail.tsx.
-- Updated PROJECT_STATUS.md to reflect clean type status.
-- Created Phase 8 PRD with 16 user stories organized into 7 feature areas.
-- User Stories: US-801 to US-816
-- Chat scope confirmed: Full (employee + customer support)
-- Files created:
-  - prd.json (updated)
-  - tasks/prd-phase8-ux-enhancement.md
-- Status: Approved, ready for implementation.
-
-## 2026-01-14 - US-801, US-807, US-808, US-809 (P1 Stories Complete)
-Thread: N/A (Direct execution)
-- Completed US-801: Dashboard Interactivity
-  - Made KPI cards clickable with navigation to relevant pages
-  - Added hover states (shadow-md, border-slate-300, active:scale-[0.98])
-  - Added totalProducts to dashboard stats
-  - Revenue & Orders → /admin/orders
-  - Customers → /admin/customers
-  - Products → /admin/products
-- Completed US-807: Clickable Order Fields
-  - Order # now links to order details page
-  - Customer names link to customers page with email search filter
-  - Product names in order details link to product details
-- Completed US-808: Manual Order Phone Number
-  - Added optional phone field to manual order creation form
-  - Phone stored in customerInfo object
-  - Full-width input with placeholder
-- Completed US-809: Payment Status UI Update
-  - Implemented optimistic UI updates for status changes
-  - Payment status updates immediately when marking order as paid
-  - No page refresh required
-  - Optimistic state reverts on error
-- Files changed:
-  - my-app/app/admin/page.tsx (dashboard KPI cards)
-  - my-app/app/admin/orders/page.tsx (clickable fields, phone field)
-  - my-app/app/admin/orders/[orderId]/page.tsx (clickable products, optimistic UI)
-  - my-app/convex/analytics.ts (added totalProducts)
-- Quality checks: TypeScript passes, lint clean for changed files
-- **Learnings for future iterations:**
-  - Use optimistic UI updates for better UX when mutating data
-  - Link customer names with email search query parameter when customerId not available
-  - Add hover:shadow-md and active:scale-[0.98] for clickable cards
-  - useRouter() from 'next/navigation' for client-side navigation
-
-## 2026-01-14 - P2 Stories Complete (US-802, US-805, US-810, US-811, US-814, US-815)
-Thread: N/A (Ralph Agent Loop Iteration 2)
-- Completed US-815: Customer Profile Actions
-  - Added action buttons to customer detail page (Create Order, Chat, Call)
-  - 'Create Order' opens modal with customer pre-filled
-  - 'Chat' button (placeholder for future feature)
-  - 'Call' button links to tel: protocol
-- Completed US-802: Customer Reviews Widget
-  - Added Customer Reviews widget to dashboard
-  - Shows recent orders as placeholder for reviews
-  - Displays star ratings and customer feedback
-  - Ready for future review system integration
-- Completed US-805: Product Images Enhancement
-  - Added support for up to 6 image URLs per product
-  - Image preview grid with hover effects
-  - Individual image URL inputs with remove buttons
-  - Images filtered before saving (empty URLs removed)
-- Completed US-810: Repeat and Create Orders
-  - Added 'Create Another Order' button to order details
-  - Added 'Repeat Order' button that duplicates order items
-  - Both buttons open modals for order creation
-  - Repeat order allows quantity adjustment before confirming
-- Completed US-811: Top Customers Analytics
-  - Added Top Customers widget to customers page
-  - Configurable to show top 5/10/20 customers
-  - Ranked by total spend (lifetime value)
-  - Click to view customer profile
-- Completed US-814: Customer Auto-Suggest in Orders
-  - Added customer search to manual order creation
-  - Search by name, email, or phone
-  - Dropdown shows matching customers with stats
-  - Auto-fills form on selection
-- Files changed:
-  - my-app/app/admin/customers/[customerId]/page.tsx (action buttons, CreateOrderModal)
-  - my-app/app/admin/customers/page.tsx (top customers widget)
-  - my-app/app/admin/orders/[orderId]/page.tsx (create/repeat modals)
-  - my-app/app/admin/orders/page.tsx (customer auto-suggest)
-  - my-app/app/admin/page.tsx (customer reviews widget)
-  - my-app/components/ProductForm.tsx (6 image support)
-- Quality checks: TypeScript passes, lint clean for changed files
-- **Learnings for future iterations:**
-  - Filter out empty strings from image arrays before saving
-  - Use useState hooks for dropdown visibility and search filtering
-  - Create reusable modal components for similar functionality
-  - Customer search should filter by name, email, AND phone for maximum flexibility
-  - Top customers widget should be configurable (5/10/20) for different view needs
-  - Repeat order should pre-fill items but allow quantity adjustment
+- All pages under `/app/admin/` use AdminHeader component
+- Components in `/components/` directory
+- Tailwind CSS with CSS custom properties for theming
+- Theme toggle via ThemeProvider context
+- Toast notifications via useToast() hook
+- Lucide-react for icons
 
 ---
 
-## 2026-01-14 - P3 Stories Partial (US-803, US-804, US-816 Complete)
-Thread: Ralph Agent Loop Iteration 3
-- Completed US-803: Variant Section UI Optimization
-  - Redesigned variant display with card-based UI instead of table
-  - Added responsive grid layout (1 col mobile, 2 cols desktop)
-  - Stock quantity prominently displayed with large font and status badges
-  - Added image placeholder for future variant image support
-  - Clear visual hierarchy with gradient headers and footers
-  - Stock status indicators (In Stock, Low Stock, Out of Stock) with color coding
-  - Hover effects and shadow transitions for better UX
-- Completed US-816: Product Activity Log
-  - Created productActivities schema table with indexes
-  - Added productActivities.ts Convex module (list, logActivity)
-  - Created ProductActivityLog component with timeline view
-  - Integrated activity log into product details page sidebar
-  - Added automatic activity tracking to:
-    - Product creation (type: "created")
-    - Product updates (type: "updated" with changes metadata)
-    - Product archival (type: "archived")
-  - Filter activities by: All, Stock, Changes
-  - Shows user name, timestamp, and metadata for each activity
-  - Icons for different activity types (created, updated, stock, sold, cancelled, archived)
-- Completed US-804: Categories Management
-  - Created /admin/categories page with full CRUD operations
-  - Hierarchical category display with tree structure and indentation
-  - Category creation/editing modal with parent category selection
-  - Position management for custom ordering (lower numbers = first)
-  - Delete protection prevents deletion of categories with:
-    - Products assigned to them
-    - Child categories
-  - Auto-slug generation from category name (can be manually edited)
-  - Visual hierarchy with indentation and chevron icons for expand/collapse
-  - Category validation for name, slug, parent (circular reference prevention), and position
-  - Backend already existed with full validation logic
-- Files changed:
-  - convex/schema.ts (added productActivities table)
-  - convex/productActivities.ts (new module)
-  - convex/products.ts (added activity logging to create, update, setStatus)
-  - components/ProductVariants.tsx (redesigned with card UI)
-  - components/ProductActivityLog.tsx (new component)
-  - app/admin/categories/page.tsx (new page)
-  - app/admin/products/[productId]/page.tsx (integrated activity log)
-  - prd.json (marked US-803, US-804, US-816 as completed)
-- Quality checks: TypeScript passes, lint clean for changed files
-- **Learnings for future iterations:**
-  - Card-based UI works better than tables for visual-heavy data (variants with images, stock status)
-  - Activity logs should include user tracking from the beginning for audit trails
-  - Hierarchical data (categories) needs circular reference validation in updates
-  - Tree structures can be rendered recursively with indentation for visual hierarchy
-  - Stock status badges with color coding provide immediate visual feedback
-  - When adding activity logging to existing features, include metadata for context (what changed, quantity, etc.)
-  - Position-based ordering allows flexible customization without database complexity
+## Current Task: US-801 (Apply Twitter Theme to globals.css)
 
-**P3 Progress**: 3 of 4 stories complete (75%)
-**Remaining P3**: US-806 (Bulk Product Import) - High effort, requires CSV parsing, column mapping, preview, progress tracking
+**Status**: 🔄 In Progress
 
-**Overall Phase 8 Progress**: 13 of 16 stories complete (81.25%)
-- P1 (Critical): 4/4 complete (100%)
-- P2 (High-Value): 6/6 complete (100%)
-- P3 (Product Management): 3/4 complete (75%)
-- P4 (Advanced Systems): 0/2 complete (0%)
+**Implementation**:
+- Updating :root with Twitter light theme (OKLCH values)
+- Updating .dark with Twitter dark theme (pure black)
+- Changed font-sans from Inter to "Open Sans"
+- Changed font-serif to Georgia
+- Changed font-mono to Menlo
+- Increased radius from 0.375rem to 1.3rem
+- Updated shadow values to match Twitter's subtle depth
+
+**Files Changed**:
+- `app/globals.css` (in progress)
 
 ---
 
-## 2026-01-14 - P3 Complete (US-806 Bulk Product Import)
-Thread: Ralph Agent Loop Iteration 4
-- Completed US-806: Bulk Product Import (High Effort)
-  - Added bulkImport mutation to convex/products.ts
-  - Created BulkProductImport.tsx component with multi-step wizard:
-    - Step 1: CSV file upload with drag-and-drop interface
-    - Step 2: Column mapping interface (map CSV columns to product fields)
-    - Step 3: Preview table showing all products to be imported
-    - Step 4: Progress indicator during import
-    - Step 5: Results summary with success/failure counts and detailed error report
-  - Supported fields: Name (required), Price (required), Slug, Description, Compare At Price, Category Slug, Images
-  - Custom CSV parser handles quoted values and commas
-  - Price conversion from decimal to cents (e.g., 29.99 → 2999)
-  - Images can be separated with pipe symbol (|) for multiple URLs
-  - Category lookup by slug with error handling
-  - All products imported as "draft" status for review
-  - Bulk import button added to products page with Upload icon
-  - Comprehensive error reporting shows row number, product name, and specific error
-  - Type safety with Id import added to products.ts
-- Files changed:
-  - convex/products.ts (added bulkImport mutation, 140+ lines)
-  - components/BulkProductImport.tsx (new component, 600+ lines)
-  - app/admin/products/page.tsx (added bulk import button and modal state)
-  - prd.json (marked US-806 as completed)
-- Quality checks: TypeScript passes, lint clean
-- **Learnings for future iterations:**
-  - CSV parsing can be done client-side without external libraries (papaparse, etc.)
-  - Multi-step wizards provide better UX for complex operations (upload → map → preview → import → results)
-  - Column mapping interface allows flexibility for different CSV formats
-  - Preview before import prevents accidental bulk data issues
-  - Error reporting should include row numbers and identifiers for easy troubleshooting
-  - Bulk operations should be atomic with detailed results (success/fail counts, specific errors)
-  - Progress indicators are essential for long-running operations
-  - Category lookup by slug is more user-friendly than requiring category IDs in CSV
-  - Price conversion (decimal → cents) must happen at import time for consistency
-  - Images stored as array of strings, pipe-separated in CSV for simplicity
-
-**P3 Progress**: 4 of 4 stories complete (100%) ✅
-**Overall Phase 8 Progress**: 14 of 16 stories complete (87.5%)
-- P1 (Critical): 4/4 complete (100%)
-- P2 (High-Value): 6/6 complete (100%)
-- P3 (Product Management): 4/4 complete (100%) ✅
-- P4 (Advanced Systems): 0/2 complete (0%)
-  - Remaining: US-812 (Chat System), US-813 (Access Control & Permissions)
-
-**Next Steps**: P4 stories are high-effort advanced features (7-10 days each per PRD).
-Recommend prioritizing based on user needs or deferring to Phase 9.
+## Next Priority Items (P1):
+1. ✅ US-801: Apply Twitter Theme to globals.css (completing)
+2. ⏳ US-802: Enhance Typography System (add Google Fonts)
+3. ⏳ US-805: Update AdminHeader Component
+4. ⏳ US-806: Update ProductForm Component
+5. ⏳ US-808: Update Orders Page
+6. ⏳ US-809: Update Inventory Page
+7. ⏳ US-812: Verify Cross-Theme Consistency
 
 ---
+

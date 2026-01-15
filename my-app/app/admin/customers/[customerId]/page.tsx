@@ -1,7 +1,7 @@
 /* eslint-disable */
 "use client";
 
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useQuery } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import { Id } from "../../../../convex/_generated/dataModel";
@@ -21,10 +21,14 @@ import {
     Truck,
     XCircle,
     MessageSquare,
+    Pencil,
+    Check,
+    X,
 } from "lucide-react";
 import { useState } from "react";
 import { useOrganization } from "@/components/OrganizationProvider";
 import { useMutation } from "convex/react";
+import { useToast } from "@/components/Toast";
 
 const formatPrice = (cents: number) => {
     return new Intl.NumberFormat("en-US", {
@@ -91,11 +95,82 @@ const statusConfig: Record<string, { icon: React.ReactNode; color: string; bg: s
 
 export default function CustomerDetailPage() {
     const params = useParams();
+    const router = useRouter();
     const customerId = params.customerId as Id<"customers">;
     const { currentOrg } = useOrganization();
+    const toast = useToast();
     const [isCreateOrderOpen, setIsCreateOrderOpen] = useState(false);
 
+    // Edit mode state
+    const [isEditing, setIsEditing] = useState(false);
+    const [editName, setEditName] = useState("");
+    const [editPhone, setEditPhone] = useState("");
+    const [isSaving, setIsSaving] = useState(false);
+
+    // Chat state
+    const [isCreatingChat, setIsCreatingChat] = useState(false);
+
+    const updateCustomer = useMutation(api.customers.update);
+    const createChat = useMutation(api.chat.create);
     const customerData = useQuery(api.customers.get, { customerId });
+
+    // Initialize edit fields when customer data loads
+    const handleStartChat = async () => {
+        if (!currentOrg || !customerData) return;
+
+        setIsCreatingChat(true);
+        try {
+            const conversationId = await createChat({
+                orgId: currentOrg._id,
+                type: "support",
+                title: `Support: ${customerData.name}`,
+                participantIds: [], // Initially no internal participants assigned
+                customerInfo: {
+                    name: customerData.name,
+                    email: customerData.email,
+                    customerId: customerData._id,
+                },
+            });
+
+            router.push(`/admin/chat?conversationId=${conversationId}`);
+        } catch (error) {
+            console.error("Failed to start chat:", error);
+            toast.error("Error", "Failed to start chat conversation");
+        } finally {
+            setIsCreatingChat(false);
+        }
+    };
+
+    const startEditing = () => {
+        if (customerData) {
+            setEditName(customerData.name);
+            setEditPhone(customerData.phone || "");
+            setIsEditing(true);
+        }
+    };
+
+    const cancelEditing = () => {
+        setIsEditing(false);
+        setEditName("");
+        setEditPhone("");
+    };
+
+    const saveChanges = async () => {
+        setIsSaving(true);
+        try {
+            await updateCustomer({
+                customerId,
+                name: editName,
+                phone: editPhone || undefined,
+            });
+            toast.success("Customer Updated", "Profile changes saved successfully");
+            setIsEditing(false);
+        } catch (error) {
+            toast.error("Update Failed", String(error));
+        } finally {
+            setIsSaving(false);
+        }
+    };
 
     if (customerData === undefined) {
         return (
@@ -148,10 +223,15 @@ export default function CustomerDetailPage() {
                         Create Order
                     </button>
                     <button
-                        onClick={() => alert("Chat feature coming soon!")}
-                        className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors shadow-sm font-medium"
+                        onClick={handleStartChat}
+                        disabled={isCreatingChat}
+                        className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors shadow-sm font-medium disabled:opacity-75 disabled:cursor-not-allowed"
                     >
-                        <MessageSquare size={18} />
+                        {isCreatingChat ? (
+                            <div className="h-4.5 w-4.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                        ) : (
+                            <MessageSquare size={18} />
+                        )}
                         Chat
                     </button>
                     {customer.phone && (
@@ -170,33 +250,100 @@ export default function CustomerDetailPage() {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 {/* Contact Info Card */}
                 <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-                    <h3 className="font-semibold text-slate-900 mb-4 flex items-center gap-2">
-                        <User size={18} className="text-purple-600" />
-                        Contact Information
-                    </h3>
-                    <div className="space-y-3">
-                        <div className="flex items-center gap-3 text-slate-600">
-                            <Mail size={16} className="text-slate-400" />
-                            <a
-                                href={`mailto:${customer.email}`}
-                                className="text-purple-600 hover:underline"
+                    <div className="flex items-center justify-between mb-4">
+                        <h3 className="font-semibold text-slate-900 flex items-center gap-2">
+                            <User size={18} className="text-purple-600" />
+                            Contact Information
+                        </h3>
+                        {!isEditing ? (
+                            <button
+                                onClick={startEditing}
+                                className="p-2 text-slate-400 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-colors"
+                                title="Edit customer"
                             >
-                                {customer.email}
-                            </a>
-                        </div>
-                        {customer.phone && (
-                            <div className="flex items-center gap-3 text-slate-600">
-                                <Phone size={16} className="text-slate-400" />
-                                {customer.phone}
-                            </div>
-                        )}
-                        {customer.address && (
-                            <div className="flex items-start gap-3 text-slate-600">
-                                <MapPin size={16} className="text-slate-400 mt-0.5" />
-                                <span className="whitespace-pre-wrap">{customer.address}</span>
+                                <Pencil size={16} />
+                            </button>
+                        ) : (
+                            <div className="flex items-center gap-2">
+                                <button
+                                    onClick={saveChanges}
+                                    disabled={isSaving}
+                                    className="p-2 text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors disabled:opacity-50"
+                                    title="Save"
+                                >
+                                    <Check size={16} />
+                                </button>
+                                <button
+                                    onClick={cancelEditing}
+                                    disabled={isSaving}
+                                    className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50"
+                                    title="Cancel"
+                                >
+                                    <X size={16} />
+                                </button>
                             </div>
                         )}
                     </div>
+
+                    {isEditing ? (
+                        <div className="space-y-4">
+                            <div>
+                                <label className="block text-xs font-medium text-slate-500 mb-1">Name</label>
+                                <input
+                                    type="text"
+                                    value={editName}
+                                    onChange={(e) => setEditName(e.target.value)}
+                                    className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                    placeholder="Customer name"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-xs font-medium text-slate-500 mb-1">Email (read-only)</label>
+                                <div className="flex items-center gap-3 px-3 py-2 bg-slate-50 rounded-lg text-slate-500 text-sm">
+                                    <Mail size={14} />
+                                    {customer.email}
+                                </div>
+                            </div>
+                            <div>
+                                <label className="block text-xs font-medium text-slate-500 mb-1">Phone</label>
+                                <input
+                                    type="tel"
+                                    value={editPhone}
+                                    onChange={(e) => setEditPhone(e.target.value)}
+                                    className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                    placeholder="+1 (555) 123-4567"
+                                />
+                            </div>
+                        </div>
+                    ) : (
+                        <div className="space-y-3">
+                            <div className="flex items-center gap-3 text-slate-600">
+                                <User size={16} className="text-slate-400" />
+                                <span className="font-medium">{customer.name}</span>
+                            </div>
+                            <div className="flex items-center gap-3 text-slate-600">
+                                <Mail size={16} className="text-slate-400" />
+                                <a
+                                    href={`mailto:${customer.email}`}
+                                    className="text-purple-600 hover:underline"
+                                >
+                                    {customer.email}
+                                </a>
+                            </div>
+                            {customer.phone && (
+                                <div className="flex items-center gap-3 text-slate-600">
+                                    <Phone size={16} className="text-slate-400" />
+                                    {customer.phone}
+                                </div>
+                            )}
+                            {customer.address && (
+                                <div className="flex items-start gap-3 text-slate-600">
+                                    <MapPin size={16} className="text-slate-400 mt-0.5" />
+                                    <span className="whitespace-pre-wrap">{customer.address}</span>
+                                </div>
+                            )}
+                        </div>
+                    )}
                 </div>
 
                 {/* Lifetime Value Card */}

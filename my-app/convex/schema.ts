@@ -29,10 +29,13 @@ export default defineSchema({
       v.literal("manager"),
       v.literal("staff"),
     ),
+    // Granular permissions for access control (US-813)
+    permissions: v.optional(v.array(v.string())),
     joinedAt: v.number(),
   })
     .index("by_userId", ["userId"])
-    .index("by_orgId_userId", ["orgId", "userId"]),
+    .index("by_orgId_userId", ["orgId", "userId"])
+    .index("by_orgId", ["orgId"]),
   platformAdmins: defineTable({
     userId: v.id("users"),
     grantedAt: v.number(),
@@ -222,4 +225,54 @@ export default defineSchema({
   })
     .index("by_cartId", ["cartId"])
     .index("by_cartId_variantId", ["cartId", "variantId"]),
+
+  // Phase 8: Chat System (US-812)
+  conversations: defineTable({
+    orgId: v.id("organizations"),
+    type: v.union(
+      v.literal("internal"),    // Employee-to-employee
+      v.literal("support")      // Customer support
+    ),
+    title: v.optional(v.string()),
+    participantIds: v.array(v.id("users")),
+    // For support conversations, store customer info
+    customerInfo: v.optional(v.object({
+      name: v.string(),
+      email: v.string(),
+      customerId: v.optional(v.id("customers")),
+    })),
+    lastMessageAt: v.optional(v.number()),
+    lastMessagePreview: v.optional(v.string()),
+    status: v.union(
+      v.literal("active"),
+      v.literal("archived"),
+      v.literal("resolved")     // For support tickets
+    ),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index("by_orgId", ["orgId"])
+    .index("by_orgId_type", ["orgId", "type"])
+    .index("by_orgId_status", ["orgId", "status"])
+    .index("by_participantIds", ["participantIds"]),
+
+  messages: defineTable({
+    conversationId: v.id("conversations"),
+    orgId: v.id("organizations"),  // Denormalized for efficient queries
+    senderId: v.id("users"),
+    senderName: v.string(),        // Cached for display
+    content: v.string(),
+    type: v.union(
+      v.literal("text"),
+      v.literal("system"),         // System messages like "User joined"
+      v.literal("attachment")
+    ),
+    attachmentUrl: v.optional(v.string()),
+    isRead: v.boolean(),
+    readBy: v.array(v.id("users")),
+    createdAt: v.number(),
+  })
+    .index("by_conversationId", ["conversationId"])
+    .index("by_conversationId_createdAt", ["conversationId", "createdAt"])
+    .index("by_orgId", ["orgId"]),
 });

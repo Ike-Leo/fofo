@@ -73,3 +73,29 @@ export const logActivity = mutation({
     });
   },
 });
+
+
+import { internalMutation } from "./_generated/server";
+
+export const cleanupOldActivities = internalMutation({
+  args: {},
+  handler: async (ctx) => {
+    const ninetyDaysAgo = Date.now() - 90 * 24 * 60 * 60 * 1000;
+
+    // Scan efficiently using index if possible, but we don't have a global creation time index
+    // We'll iterate over all activities and check createdAt
+    // Note: For production, we should ideally have an index on createdAt or by_orgId_createdAt
+
+    const oldActivities = await ctx.db
+      .query("productActivities")
+      .filter((q) => q.lt(q.field("createdAt"), ninetyDaysAgo))
+      .take(100); // Process in batches to avoid timeout
+
+    for (const activity of oldActivities) {
+      await ctx.db.delete(activity._id);
+    }
+
+    // If we deleted 100, there might be more, but the cron will pick them up next time
+    console.log(`Cleaned up ${oldActivities.length} old activity logs`);
+  },
+});

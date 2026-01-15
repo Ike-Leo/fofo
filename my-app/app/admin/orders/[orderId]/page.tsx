@@ -269,6 +269,7 @@ export default function OrderDetailsPage() {
                 <CreateOrderModal
                     orgId={order.orgId}
                     onClose={() => setIsCreateModalOpen(false)}
+                    prefillCustomer={order.customerInfo}
                 />
             )}
 
@@ -322,16 +323,20 @@ function ActionButton({ onClick, label, icon, color, loading }: any) {
     );
 }
 
-function CreateOrderModal({ orgId, onClose }: { orgId: Id<"organizations">, onClose: () => void }) {
+function CreateOrderModal({ orgId, onClose, prefillCustomer }: {
+    orgId: Id<"organizations">,
+    onClose: () => void,
+    prefillCustomer?: { name: string; email: string; phone?: string; }
+}) {
     const createOrder = useMutation(api.orders.create);
     const inventory = useQuery(api.inventory.list, { orgId });
 
     const [lineItems, setLineItems] = useState<Array<{ variantId: string, quantity: number, price: number, name: string }>>([]);
     const [selectedVariantId, setSelectedVariantId] = useState("");
     const [quantity, setQuantity] = useState("1");
-    const [customerName, setCustomerName] = useState("");
-    const [customerEmail, setCustomerEmail] = useState("");
-    const [customerPhone, setCustomerPhone] = useState("");
+    const [customerName, setCustomerName] = useState(prefillCustomer?.name || "");
+    const [customerEmail, setCustomerEmail] = useState(prefillCustomer?.email || "");
+    const [customerPhone, setCustomerPhone] = useState(prefillCustomer?.phone || "");
 
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState<string | null>(null);
