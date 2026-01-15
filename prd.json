@@ -83,8 +83,8 @@
             ],
             "priority": "P2",
             "effort": "medium",
-            "status": "pending",
-            "passes": false
+            "status": "completed",
+            "passes": true
         },
         {
             "id": "US-805",
