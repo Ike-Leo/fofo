@@ -190,18 +190,18 @@ export default function ProductForm({ initialData, mode }: ProductFormProps) {
             <div className="mb-6">
                 <Link
                     href="/admin/products"
-                    className="inline-flex items-center text-sm text-slate-500 hover:text-slate-900 transition-colors mb-2"
+                    className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground transition-colors mb-2 button-hover"
                 >
                     <ArrowLeft size={16} className="mr-1" />
                     Back to Products
                 </Link>
-                <h1 className="text-3xl font-bold tracking-tight text-slate-900">
+                <h1 className="text-3xl font-bold tracking-tight text-foreground">
                     {mode === "create" ? "Create Product" : "Edit Product"}
                 </h1>
             </div>
 
             {error && (
-                <div className="mb-6 p-4 bg-red-50 text-red-700 rounded-lg flex items-start gap-3">
+                <div className="mb-6 p-4 bg-destructive/10 text-destructive border border-destructive/20 rounded-xl flex items-start gap-3 card-hover">
                     <AlertCircle size={20} className="mt-0.5 flex-shrink-0" />
                     <div>
                         <h3 className="font-semibold text-sm">Error</h3>
@@ -212,12 +212,12 @@ export default function ProductForm({ initialData, mode }: ProductFormProps) {
 
             <form onSubmit={handleSubmit} className="space-y-8">
                 {/* Basic Info Card */}
-                <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6 space-y-6">
+                <div className="bg-card rounded-xl shadow-sm border border-border p-6 space-y-6">
                     <div>
-                        <h2 className="text-lg font-semibold text-slate-900 mb-4">Basic Information</h2>
+                        <h2 className="text-lg font-semibold text-foreground mb-4">Basic Information</h2>
                         <div className="grid gap-6">
                             <div>
-                                <label className="block text-sm font-medium text-slate-700 mb-1">
+                                <label className="block text-sm font-medium text-foreground mb-1">
                                     Product Name
                                 </label>
                                 <input
@@ -225,13 +225,13 @@ export default function ProductForm({ initialData, mode }: ProductFormProps) {
                                     required
                                     value={formData.name}
                                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                    className="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-transparent transition-all"
+                                    className="w-full px-4 py-2.5 bg-background border border-input rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all"
                                     placeholder="e.g. Vintage Leather Jacket"
                                 />
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-slate-700 mb-1">
+                                <label className="block text-sm font-medium text-foreground mb-1">
                                     Slug
                                 </label>
                                 <input
@@ -242,21 +242,21 @@ export default function ProductForm({ initialData, mode }: ProductFormProps) {
                                         setFormData({ ...formData, slug: e.target.value });
                                         setIsSlugTouched(true);
                                     }}
-                                    className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg font-mono text-sm text-slate-600 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-transparent transition-all"
+                                    className="w-full px-4 py-2.5 bg-muted/30 border border-input rounded-xl font-mono text-sm text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all"
                                     placeholder="vintage-leather-jacket"
                                 />
-                                <p className="mt-1 text-xs text-slate-500">URL-friendly ID</p>
+                                <p className="mt-1 text-xs text-muted-foreground">URL-friendly ID</p>
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-slate-700 mb-1">
+                                <label className="block text-sm font-medium text-foreground mb-1">
                                     Description
                                 </label>
                                 <textarea
                                     rows={4}
                                     value={formData.description}
                                     onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                                    className="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-transparent transition-all resize-y"
+                                    className="w-full px-4 py-2.5 bg-card border border-input rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all resize-y"
                                     placeholder="Describe your product..."
                                 />
                             </div>
@@ -265,10 +265,10 @@ export default function ProductForm({ initialData, mode }: ProductFormProps) {
                 </div>
 
                 {/* Images Card */}
-                <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6 space-y-6">
+                <div className="bg-card rounded-xl shadow-sm border border-border p-6 space-y-6">
                     <div>
-                        <h2 className="text-lg font-semibold text-slate-900 mb-2">Product Images</h2>
-                        <p className="text-sm text-slate-500 mb-4">Add up to 6 image URLs. The first image will be the main product image.</p>
+                        <h2 className="text-lg font-semibold text-foreground mb-2">Product Images</h2>
+                        <p className="text-sm text-muted-foreground mb-4">Add up to 6 image URLs. The first image will be the main product image.</p>
 
                         {/* Hidden file input */}
                         <input
@@ -283,7 +283,7 @@ export default function ProductForm({ initialData, mode }: ProductFormProps) {
                         <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
                             {images.map((imageUrl, index) => (
                                 <div key={index} className="relative group">
-                                    <div className="aspect-square bg-slate-50 border-2 border-dashed border-slate-200 rounded-lg overflow-hidden hover:border-slate-300 transition-colors relative">
+                                    <div className="aspect-square bg-muted/30 border-2 border-dashed border-border rounded-xl overflow-hidden hover:border-input transition-colors relative">
                                         {imageUrl ? (
                                             <img
                                                 src={imageUrl}
@@ -294,13 +294,13 @@ export default function ProductForm({ initialData, mode }: ProductFormProps) {
                                                 }}
                                             />
                                         ) : (
-                                            <div className="w-full h-full flex flex-col items-center justify-center gap-2 group-hover:bg-slate-100 transition-colors cursor-pointer" onClick={() => triggerUpload(index)}>
+                                            <div className="w-full h-full flex flex-col items-center justify-center gap-2 group-hover:bg-muted transition-colors cursor-pointer" onClick={() => triggerUpload(index)}>
                                                 {uploadingIndex === index ? (
-                                                    <div className="w-8 h-8 border-2 border-slate-300 border-t-slate-600 rounded-full animate-spin" />
+                                                    <div className="w-8 h-8 border-2 border-input border-t-slate-600 rounded-full animate-spin" />
                                                 ) : (
                                                     <>
-                                                        <ImageIcon className="text-slate-300 group-hover:text-slate-400" size={32} />
-                                                        <span className="text-xs font-medium text-slate-400 group-hover:text-slate-600">Upload</span>
+                                                        <ImageIcon className="text-slate-300 group-hover:text-muted-foreground" size={32} />
+                                                        <span className="text-xs font-medium text-muted-foreground group-hover:text-muted-foreground">Upload</span>
                                                     </>
                                                 )}
                                             </div>
@@ -328,7 +328,7 @@ export default function ProductForm({ initialData, mode }: ProductFormProps) {
                         <div className="space-y-3">
                             {images.map((imageUrl, index) => (
                                 <div key={index} className="flex items-center gap-3">
-                                    <span className="text-xs font-medium text-slate-500 w-16">
+                                    <span className="text-xs font-medium text-muted-foreground w-16">
                                         Image {index + 1}
                                     </span>
                                     <input
@@ -339,7 +339,7 @@ export default function ProductForm({ initialData, mode }: ProductFormProps) {
                                             newImages[index] = e.target.value;
                                             setImages(newImages);
                                         }}
-                                        className="flex-1 px-3 py-2 bg-white border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-transparent transition-all"
+                                        className="flex-1 px-4 py-2.5 bg-card border border-input rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
                                         placeholder="https://example.com/image.jpg"
                                     />
                                     <button
@@ -349,7 +349,7 @@ export default function ProductForm({ initialData, mode }: ProductFormProps) {
                                             newImages[index] = "";
                                             setImages(newImages);
                                         }}
-                                        className={`p-2 text-slate-400 hover:text-red-500 transition-colors ${!imageUrl ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                        className={`p-2 text-muted-foreground hover:text-red-500 transition-colors ${!imageUrl ? 'opacity-50 cursor-not-allowed' : ''}`}
                                         disabled={!imageUrl}
                                     >
                                         <X size={18} />
@@ -361,16 +361,16 @@ export default function ProductForm({ initialData, mode }: ProductFormProps) {
                 </div>
 
                 {/* Pricing & Organization Card */}
-                <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6 space-y-6">
+                <div className="bg-card rounded-xl shadow-sm border border-border p-6 space-y-6">
                     <div>
-                        <h2 className="text-lg font-semibold text-slate-900 mb-4">Pricing & Organization</h2>
+                        <h2 className="text-lg font-semibold text-foreground mb-4">Pricing & Organization</h2>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
-                                <label className="block text-sm font-medium text-slate-700 mb-1">
+                                <label className="block text-sm font-medium text-foreground mb-1">
                                     Price ($)
                                 </label>
                                 <div className="relative">
-                                    <span className="absolute left-3 top-2 text-slate-500">$</span>
+                                    <span className="absolute left-3 top-2 text-muted-foreground">$</span>
                                     <input
                                         type="number"
                                         min="0"
@@ -378,32 +378,32 @@ export default function ProductForm({ initialData, mode }: ProductFormProps) {
                                         required
                                         value={formData.price}
                                         onChange={(e) => setFormData({ ...formData, price: e.target.value })}
-                                        className="w-full pl-7 pr-3 py-2 bg-white border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-transparent transition-all"
+                                        className="w-full pl-7 pr-3 py-2 bg-card border border-input rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
                                         placeholder="0.00"
                                     />
                                 </div>
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-slate-700 mb-1">
+                                <label className="block text-sm font-medium text-foreground mb-1">
                                     Compare at Price ($)
                                 </label>
                                 <div className="relative">
-                                    <span className="absolute left-3 top-2 text-slate-500">$</span>
+                                    <span className="absolute left-3 top-2 text-muted-foreground">$</span>
                                     <input
                                         type="number"
                                         min="0"
                                         step="0.01"
                                         value={formData.compareAtPrice}
                                         onChange={(e) => setFormData({ ...formData, compareAtPrice: e.target.value })}
-                                        className="w-full pl-7 pr-3 py-2 bg-white border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-transparent transition-all"
+                                        className="w-full pl-7 pr-3 py-2 bg-card border border-input rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
                                         placeholder="0.00"
                                     />
                                 </div>
                             </div>
 
                             <div className="md:col-span-2">
-                                <label className="block text-sm font-medium text-slate-700 mb-1">
+                                <label className="block text-sm font-medium text-foreground mb-1">
                                     Category
                                 </label>
                                 {showNewCategory ? (
@@ -413,7 +413,7 @@ export default function ProductForm({ initialData, mode }: ProductFormProps) {
                                             value={newCategoryName}
                                             onChange={(e) => setNewCategoryName(e.target.value)}
                                             placeholder="New category name..."
-                                            className="flex-1 px-3 py-2 bg-white border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-transparent transition-all"
+                                            className="flex-1 px-4 py-2.5 bg-card border border-input rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
                                             autoFocus
                                             onKeyDown={(e) => {
                                                 if (e.key === "Enter") {
@@ -429,7 +429,7 @@ export default function ProductForm({ initialData, mode }: ProductFormProps) {
                                             type="button"
                                             onClick={handleCreateCategory}
                                             disabled={isCreatingCategory || !newCategoryName.trim()}
-                                            className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
+                                            className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-sm font-medium transition-colors disabled:opacity-50"
                                         >
                                             {isCreatingCategory ? "..." : "Add"}
                                         </button>
@@ -439,7 +439,7 @@ export default function ProductForm({ initialData, mode }: ProductFormProps) {
                                                 setShowNewCategory(false);
                                                 setNewCategoryName("");
                                             }}
-                                            className="px-3 py-2 text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors"
+                                            className="px-4 py-2.5 text-muted-foreground hover:text-foreground hover:bg-muted rounded-xl transition-colors"
                                         >
                                             <X size={18} />
                                         </button>
@@ -449,7 +449,7 @@ export default function ProductForm({ initialData, mode }: ProductFormProps) {
                                         <select
                                             value={formData.categoryId}
                                             onChange={(e) => setFormData({ ...formData, categoryId: e.target.value })}
-                                            className="flex-1 px-3 py-2 bg-white border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-transparent transition-all"
+                                            className="flex-1 px-4 py-2.5 bg-card border border-input rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
                                         >
                                             <option value="">Uncategorized</option>
                                             {categories?.map((category) => (
@@ -461,7 +461,7 @@ export default function ProductForm({ initialData, mode }: ProductFormProps) {
                                         <button
                                             type="button"
                                             onClick={() => setShowNewCategory(true)}
-                                            className="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg transition-colors flex items-center gap-1"
+                                            className="px-4 py-2.5 bg-muted hover:bg-accent/50 text-foreground rounded-xl transition-colors flex items-center gap-1"
                                             title="Create new category"
                                         >
                                             <Plus size={18} />
@@ -477,10 +477,10 @@ export default function ProductForm({ initialData, mode }: ProductFormProps) {
                     <button
                         type="submit"
                         disabled={isLoading}
-                        className="inline-flex items-center gap-2 px-6 py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-slate-900/10"
+                        className="inline-flex items-center gap-2 px-6 py-2.5 bg-primary hover:bg-primary/90 text-primary-foreground font-medium rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-lg button-hover"
                     >
                         {isLoading ? (
-                            <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                            <div className="w-5 h-5 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
                         ) : (
                             <Save size={18} />
                         )}
