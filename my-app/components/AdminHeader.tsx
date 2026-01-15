@@ -15,12 +15,12 @@ export default function AdminHeader() {
     const isActive = (path: string) => pathname?.startsWith(path);
 
     return (
-        <header className="sticky top-0 z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800">
+        <header className="sticky top-0 z-50 bg-background/95 dark:bg-card/95 backdrop-blur-md border-b border-border shadow-sm">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between items-center h-16">
                     <div className="flex items-center gap-8">
-                        <Link href="/" className="flex items-center gap-2 font-bold text-xl text-slate-900 dark:text-white">
-                            <div className="w-8 h-8 bg-slate-900 dark:bg-white rounded-lg flex items-center justify-center text-white dark:text-slate-900">
+                        <Link href="/" className="flex items-center gap-2 font-bold text-xl text-foreground button-hover">
+                            <div className="w-8 h-8 bg-primary rounded-xl flex items-center justify-center text-primary-foreground shadow-md">
                                 U
                             </div>
                             <span>UCCP</span>
@@ -29,9 +29,9 @@ export default function AdminHeader() {
                         <nav className="hidden md:flex gap-1">
                             <Link
                                 href="/admin"
-                                className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${pathname === "/admin"
-                                    ? "bg-slate-100 text-slate-900"
-                                    : "text-slate-500 hover:text-slate-900 hover:bg-slate-50"
+                                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all button-hover ${pathname === "/admin"
+                                    ? "bg-accent text-accent-foreground shadow-sm"
+                                    : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
                                     }`}
                             >
                                 <LayoutDashboard size={18} />
@@ -39,9 +39,9 @@ export default function AdminHeader() {
                             </Link>
                             <Link
                                 href="/admin/products"
-                                className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${isActive("/admin/products")
-                                    ? "bg-primary/10 text-primary"
-                                    : "text-slate-500 hover:text-slate-900 hover:bg-slate-50"
+                                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all button-hover ${isActive("/admin/products")
+                                    ? "bg-primary/10 text-primary shadow-sm"
+                                    : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
                                     }`}
                             >
                                 <Package size={18} />
@@ -49,9 +49,9 @@ export default function AdminHeader() {
                             </Link>
                             <Link
                                 href="/admin/orders"
-                                className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${isActive("/admin/orders")
-                                    ? "bg-primary/10 text-primary"
-                                    : "text-slate-500 hover:text-slate-900 hover:bg-slate-50"
+                                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all button-hover ${isActive("/admin/orders")
+                                    ? "bg-primary/10 text-primary shadow-sm"
+                                    : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
                                     }`}
                             >
                                 <ShoppingBag size={18} />
@@ -59,9 +59,9 @@ export default function AdminHeader() {
                             </Link>
                             <Link
                                 href="/admin/customers"
-                                className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${isActive("/admin/customers")
-                                    ? "bg-primary/10 text-primary"
-                                    : "text-slate-500 hover:text-slate-900 hover:bg-slate-50"
+                                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all button-hover ${isActive("/admin/customers")
+                                    ? "bg-primary/10 text-primary shadow-sm"
+                                    : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
                                     }`}
                             >
                                 <Users size={18} />
@@ -69,9 +69,9 @@ export default function AdminHeader() {
                             </Link>
                             <Link
                                 href="/admin/inventory"
-                                className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${isActive("/admin/inventory")
-                                    ? "bg-primary/10 text-primary"
-                                    : "text-slate-500 hover:text-slate-900 hover:bg-slate-50"
+                                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all button-hover ${isActive("/admin/inventory")
+                                    ? "bg-primary/10 text-primary shadow-sm"
+                                    : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
                                     }`}
                             >
                                 <ClipboardList size={18} />
@@ -79,9 +79,9 @@ export default function AdminHeader() {
                             </Link>
                             <Link
                                 href="/admin/chat"
-                                className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${isActive("/admin/chat")
-                                    ? "bg-purple-100 text-purple-700"
-                                    : "text-slate-500 hover:text-slate-900 hover:bg-slate-50"
+                                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all button-hover ${isActive("/admin/chat")
+                                    ? "bg-accent text-accent-foreground shadow-sm"
+                                    : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
                                     }`}
                             >
                                 <MessageSquare size={18} />
@@ -89,9 +89,9 @@ export default function AdminHeader() {
                             </Link>
                             <Link
                                 href="/admin/team"
-                                className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${isActive("/admin/team")
-                                    ? "bg-indigo-100 text-indigo-700"
-                                    : "text-slate-500 hover:text-slate-900 hover:bg-slate-50"
+                                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all button-hover ${isActive("/admin/team")
+                                    ? "bg-accent text-accent-foreground shadow-sm"
+                                    : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
                                     }`}
                             >
                                 <Shield size={18} />
@@ -100,14 +100,14 @@ export default function AdminHeader() {
                         </nav>
                     </div>
 
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-3">
                         <OrganizationSwitcher />
-                        <div className="h-6 w-px bg-slate-200 dark:bg-slate-700" />
+                        <div className="h-6 w-px bg-border" />
                         <ThemeToggle />
-                        <div className="h-6 w-px bg-slate-200 dark:bg-slate-700" />
+                        <div className="h-6 w-px bg-border" />
                         <button
                             onClick={() => signOut()}
-                            className="text-slate-500 hover:text-red-600 transition-colors p-2 rounded-md hover:bg-slate-50 dark:hover:bg-slate-800"
+                            className="text-muted-foreground hover:text-destructive transition-all p-2 rounded-xl hover:bg-destructive/10 button-hover"
                             title="Sign out"
                         >
                             <LogOut size={18} />

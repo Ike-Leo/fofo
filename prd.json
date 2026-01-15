@@ -49,8 +49,8 @@
             ],
             "priority": "P1",
             "effort": "medium",
-            "status": "pending",
-            "passes": false
+            "status": "completed",
+            "passes": true
         },
         {
             "id": "US-803",
@@ -66,8 +66,8 @@
             ],
             "priority": "P2",
             "effort": "medium",
-            "status": "pending",
-            "passes": false
+            "status": "completed",
+            "passes": true
         },
         {
             "id": "US-804",
