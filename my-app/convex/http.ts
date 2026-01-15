@@ -36,10 +36,14 @@ function errorResponse(message: string, status = 400) {
     });
 }
 
-// --- Product Endpoints ---
-
-// GET /api/store/:orgSlug/products
-// GET /api/store/:orgSlug/products/:id
+// GET /api/store/:orgSlug/products (with pagination & filters)
+// GET /api/store/:orgSlug/products/search?q=<query>&limit=<n>
+// GET /api/store/:orgSlug/products/:productSlug
+// GET /api/store/:orgSlug/products/:productSlug/related
+// GET /api/store/:orgSlug/categories
+// GET /api/store/:orgSlug/categories/:categorySlug
+// GET /api/store/:orgSlug/categories/:categorySlug/products
+// GET /api/store/:orgSlug/orders/:orderNumber?email=<email>
 // GET /api/store/:orgSlug/cart
 http.route({
     pathPrefix: "/api/store/",
@@ -47,36 +51,133 @@ http.route({
     handler: httpAction(async (ctx, request) => {
         const url = new URL(request.url);
         const pathParts = url.pathname.split("/");
-        // pathParts format: ["", "api", "store", ":orgSlug", ":resource", ":resourceId"?]
+        // pathParts format: ["", "api", "store", ":orgSlug", ":resource", ":resourceId"?, ":subResource"?]
 
         const orgSlug = pathParts[3];
         const resource = pathParts[4];
         const resourceId = pathParts[5];
+        const subResource = pathParts[6];
 
         if (!orgSlug) return errorResponse("Missing Organization Slug", 400);
 
-        // 1. Products List
-        if (resource === "products" && !resourceId) {
-            const products = await ctx.runQuery(api.public.products.list, { orgSlug });
+        // --- PRODUCTS ---
+
+        // 1. Product Search: GET /api/store/:orgSlug/products/search?q=<query>
+        if (resource === "products" && resourceId === "search") {
+            const query = url.searchParams.get("q") || "";
+            const limit = parseInt(url.searchParams.get("limit") || "20", 10);
+
+            const products = await ctx.runQuery(api.public.products.search, {
+                orgSlug,
+                query,
+                limit,
+            });
             return jsonResponse(products);
         }
 
-        // 2. Product Detail
+        // 2. Related Products: GET /api/store/:orgSlug/products/:productSlug/related
+        if (resource === "products" && resourceId && subResource === "related") {
+            const limit = parseInt(url.searchParams.get("limit") || "4", 10);
+
+            const relatedProducts = await ctx.runQuery(api.public.products.getRelated, {
+                orgSlug,
+                productSlug: resourceId,
+                limit,
+            });
+            return jsonResponse(relatedProducts);
+        }
+
+        // 3. Product Detail: GET /api/store/:orgSlug/products/:productSlug
         if (resource === "products" && resourceId) {
-            const product = await ctx.runQuery(api.public.products.get, { orgSlug, productSlug: resourceId });
+            const product = await ctx.runQuery(api.public.products.get, {
+                orgSlug,
+                productSlug: resourceId,
+            });
             if (!product) return errorResponse("Product not found", 404);
             return jsonResponse(product);
         }
 
-        // 3. Get Cart
+        // 4. Products List (with pagination & filters): GET /api/store/:orgSlug/products
+        if (resource === "products" && !resourceId) {
+            const limit = parseInt(url.searchParams.get("limit") || "20", 10);
+            const cursor = url.searchParams.get("cursor") || undefined;
+            const minPrice = url.searchParams.get("minPrice")
+                ? parseInt(url.searchParams.get("minPrice")!, 10)
+                : undefined;
+            const maxPrice = url.searchParams.get("maxPrice")
+                ? parseInt(url.searchParams.get("maxPrice")!, 10)
+                : undefined;
+            const inStockOnly = url.searchParams.get("inStockOnly") === "true";
+
+            const result = await ctx.runQuery(api.public.products.list, {
+                orgSlug,
+                limit,
+                cursor,
+                minPrice,
+                maxPrice,
+                inStockOnly: inStockOnly || undefined,
+            });
+            return jsonResponse(result);
+        }
+
+        // --- CATEGORIES ---
+
+        // 5. Category Products: GET /api/store/:orgSlug/categories/:categorySlug/products
+        if (resource === "categories" && resourceId && subResource === "products") {
+            const limit = parseInt(url.searchParams.get("limit") || "20", 10);
+
+            const products = await ctx.runQuery(api.public.products.listByCategory, {
+                orgSlug,
+                categorySlug: resourceId,
+                limit,
+            });
+            return jsonResponse(products);
+        }
+
+        // 6. Category Detail: GET /api/store/:orgSlug/categories/:categorySlug
+        if (resource === "categories" && resourceId) {
+            const category = await ctx.runQuery(api.public.categories.get, {
+                orgSlug,
+                categorySlug: resourceId,
+            });
+            if (!category) return errorResponse("Category not found", 404);
+            return jsonResponse(category);
+        }
+
+        // 7. Categories List: GET /api/store/:orgSlug/categories
+        if (resource === "categories" && !resourceId) {
+            const categories = await ctx.runQuery(api.public.categories.list, {
+                orgSlug,
+            });
+            return jsonResponse(categories);
+        }
+
+        // --- ORDERS ---
+
+        // 8. Order Status: GET /api/store/:orgSlug/orders/:orderNumber?email=<email>
+        if (resource === "orders" && resourceId) {
+            const email = url.searchParams.get("email");
+            if (!email) return errorResponse("Missing email parameter", 400);
+
+            const orderStatus = await ctx.runQuery(api.public.orders.getStatus, {
+                orgSlug,
+                orderNumber: resourceId,
+                email,
+            });
+            if (!orderStatus) return errorResponse("Order not found", 404);
+            return jsonResponse(orderStatus);
+        }
+
+        // --- CART ---
+
+        // 9. Get Cart: GET /api/store/:orgSlug/cart?sessionId=<sessionId>
         if (resource === "cart" && !resourceId) {
-            const urlParams = url.searchParams;
-            const sessionId = urlParams.get("sessionId");
+            const sessionId = url.searchParams.get("sessionId");
             if (!sessionId) return errorResponse("Missing sessionId", 400);
 
             const cart = await ctx.runQuery(api.public.cart.get, {
                 orgId: undefined,
-                sessionId
+                sessionId,
             });
             return jsonResponse(cart || { items: [], totalAmount: 0 });
         }

@@ -14,89 +14,45 @@ export default function AdminHeader() {
 
     const isActive = (path: string) => pathname?.startsWith(path);
 
+    const navItems = [
+        { href: "/admin", label: "Platform", icon: LayoutDashboard, exact: true },
+        { href: "/admin/products", label: "Products", icon: Package },
+        { href: "/admin/orders", label: "Orders", icon: ShoppingBag },
+        { href: "/admin/customers", label: "Customers", icon: Users },
+        { href: "/admin/inventory", label: "Inventory", icon: ClipboardList },
+        { href: "/admin/chat", label: "Chat", icon: MessageSquare },
+        { href: "/admin/team", label: "Team", icon: Shield },
+    ];
+
     return (
-        <header className="sticky top-0 z-50 bg-background/95 dark:bg-card/95 backdrop-blur-md border-b border-border shadow-sm">
+        <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-xl border-b border-border shadow-sm">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between items-center h-16">
                     <div className="flex items-center gap-8">
                         <Link href="/" className="flex items-center gap-2 font-bold text-xl text-foreground button-hover">
-                            <div className="w-8 h-8 bg-primary rounded-xl flex items-center justify-center text-primary-foreground shadow-md">
+                            <div className="w-8 h-8 bg-primary rounded-xl flex items-center justify-center text-primary-foreground shadow-sm">
                                 U
                             </div>
                             <span>UCCP</span>
                         </Link>
 
                         <nav className="hidden md:flex gap-1">
-                            <Link
-                                href="/admin"
-                                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all button-hover ${pathname === "/admin"
-                                    ? "bg-accent text-accent-foreground shadow-sm"
-                                    : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
-                                    }`}
-                            >
-                                <LayoutDashboard size={18} />
-                                Platform
-                            </Link>
-                            <Link
-                                href="/admin/products"
-                                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all button-hover ${isActive("/admin/products")
-                                    ? "bg-primary/10 text-primary shadow-sm"
-                                    : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
-                                    }`}
-                            >
-                                <Package size={18} />
-                                Products
-                            </Link>
-                            <Link
-                                href="/admin/orders"
-                                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all button-hover ${isActive("/admin/orders")
-                                    ? "bg-primary/10 text-primary shadow-sm"
-                                    : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
-                                    }`}
-                            >
-                                <ShoppingBag size={18} />
-                                Orders
-                            </Link>
-                            <Link
-                                href="/admin/customers"
-                                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all button-hover ${isActive("/admin/customers")
-                                    ? "bg-primary/10 text-primary shadow-sm"
-                                    : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
-                                    }`}
-                            >
-                                <Users size={18} />
-                                Customers
-                            </Link>
-                            <Link
-                                href="/admin/inventory"
-                                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all button-hover ${isActive("/admin/inventory")
-                                    ? "bg-primary/10 text-primary shadow-sm"
-                                    : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
-                                    }`}
-                            >
-                                <ClipboardList size={18} />
-                                Inventory
-                            </Link>
-                            <Link
-                                href="/admin/chat"
-                                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all button-hover ${isActive("/admin/chat")
-                                    ? "bg-accent text-accent-foreground shadow-sm"
-                                    : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
-                                    }`}
-                            >
-                                <MessageSquare size={18} />
-                                Chat
-                            </Link>
-                            <Link
-                                href="/admin/team"
-                                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all button-hover ${isActive("/admin/team")
-                                    ? "bg-accent text-accent-foreground shadow-sm"
-                                    : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
-                                    }`}
-                            >
-                                <Shield size={18} />
-                                Team
-                            </Link>
+                            {navItems.map((item) => {
+                                const active = item.exact ? pathname === item.href : isActive(item.href);
+                                return (
+                                    <Link
+                                        key={item.href}
+                                        href={item.href}
+                                        className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm transition-all duration-200 ${active
+                                            ? "bg-primary text-primary-foreground font-bold shadow-md"
+                                            : "text-muted-foreground hover:text-foreground hover:bg-muted/50 font-medium"
+                                            }`}
+                                    >
+                                        <item.icon size={20} />
+                                        {item.label}
+                                    </Link>
+                                );
+                            })}
                         </nav>
                     </div>
 
@@ -107,7 +63,7 @@ export default function AdminHeader() {
                         <div className="h-6 w-px bg-border" />
                         <button
                             onClick={() => signOut()}
-                            className="text-muted-foreground hover:text-destructive transition-all p-2 rounded-xl hover:bg-destructive/10 button-hover"
+                            className="text-muted-foreground hover:text-destructive transition-all p-2 rounded-xl hover:bg-destructive/10"
                             title="Sign out"
                         >
                             <LogOut size={18} />

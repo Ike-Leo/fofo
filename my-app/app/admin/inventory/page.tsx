@@ -71,21 +71,21 @@ export default function InventoryPage() {
 
     return (
         <div className="p-8 max-w-7xl mx-auto">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                 <div>
                     <h1 className="text-3xl font-bold tracking-tight text-foreground">Inventory</h1>
-                    <p className="text-muted-foreground mt-1">Real-time stock management for {currentOrg.name}</p>
+                    <p className="text-muted-foreground mt-1">Real-time stock management for <span className="capitalize">{currentOrg.name}</span></p>
                 </div>
 
                 <div className="flex items-center gap-3">
                     <button
                         onClick={() => setLowStockOnly(!lowStockOnly)}
-                        className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium border transition-colors ${lowStockOnly
-                            ? "bg-amber-50 text-amber-700 border-amber-200"
-                            : "bg-card text-muted-foreground border-border hover:bg-muted/30"
+                        className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-medium transition-all ${lowStockOnly
+                            ? "bg-amber-100 text-amber-700 shadow-inner"
+                            : "bg-card text-muted-foreground border border-border hover:bg-muted/50 hover:text-foreground shadow-sm"
                             }`}
                     >
-                        <AlertTriangle size={16} className={lowStockOnly ? "fill-amber-700" : ""} />
+                        <AlertTriangle size={18} className={lowStockOnly ? "fill-amber-700 stroke-amber-700" : ""} />
                         {lowStockOnly ? "Low Stock Only" : "Show Low Stock"}
                     </button>
                 </div>
@@ -102,12 +102,12 @@ export default function InventoryPage() {
                             placeholder="Search by product name, SKU, or variant..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full pl-10 pr-4 py-2.5 border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/10 focus:border-input"
+                            className="w-full pl-10 pr-4 py-2.5 bg-background border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 text-foreground placeholder:text-muted-foreground"
                         />
                         {searchQuery && (
                             <button
                                 onClick={() => setSearchQuery("")}
-                                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-muted-foreground"
+                                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
                             >
                                 <X size={16} />
                             </button>
@@ -115,7 +115,7 @@ export default function InventoryPage() {
                     </div>
 
                     {/* Stock Status Filter */}
-                    <div className="flex items-center gap-1 bg-slate-100 rounded-xl p-1">
+                    <div className="flex items-center gap-1 bg-muted rounded-xl p-1">
                         {[
                             { value: "all", label: "All", count: statusCounts.all },
                             { value: "in_stock", label: "In Stock", count: statusCounts.in_stock },
@@ -131,7 +131,7 @@ export default function InventoryPage() {
                                     }`}
                             >
                                 {filter.label}
-                                <span className={`ml-1 text-xs ${stockFilter === filter.value ? "text-muted-foreground" : "text-muted-foreground"}`}>
+                                <span className={`ml-1 text-xs text-muted-foreground`}>
                                     ({filter.count})
                                 </span>
                             </button>
@@ -160,15 +160,15 @@ export default function InventoryPage() {
                                 <th className="px-6 py-4 font-semibold text-xs text-muted-foreground uppercase tracking-wider text-right">Actions</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-slate-100">
+                        <tbody className="divide-y divide-border">
                             {!inventory ? (
                                 // Loading State
                                 Array.from({ length: 5 }).map((_, i) => (
                                     <tr key={i} className="animate-pulse">
-                                        <td className="px-6 py-4"><div className="h-10 w-40 bg-slate-100 rounded"></div></td>
-                                        <td className="px-6 py-4"><div className="h-4 w-24 bg-slate-100 rounded"></div></td>
-                                        <td className="px-6 py-4 text-right"><div className="h-6 w-12 bg-slate-100 rounded ml-auto"></div></td>
-                                        <td className="px-6 py-4 text-right"><div className="h-6 w-20 bg-slate-100 rounded ml-auto"></div></td>
+                                        <td className="px-6 py-4"><div className="h-10 w-40 bg-muted rounded"></div></td>
+                                        <td className="px-6 py-4"><div className="h-4 w-24 bg-muted rounded"></div></td>
+                                        <td className="px-6 py-4 text-right"><div className="h-6 w-12 bg-muted rounded ml-auto"></div></td>
+                                        <td className="px-6 py-4 text-right"><div className="h-6 w-20 bg-muted rounded ml-auto"></div></td>
                                         <td className="px-6 py-4"></td>
                                     </tr>
                                 ))
@@ -182,10 +182,10 @@ export default function InventoryPage() {
                                 </tr>
                             ) : (
                                 filteredInventory?.map((item) => (
-                                    <tr key={item._id} className="hover:bg-muted/30/50 transition-colors group">
+                                    <tr key={item._id} className="hover:bg-muted/30 transition-colors group">
                                         <td className="px-6 py-4">
                                             <div className="flex items-center gap-3">
-                                                <div className="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center shrink-0 border border-border overflow-hidden">
+                                                <div className="w-10 h-10 bg-muted rounded-xl flex items-center justify-center shrink-0 border border-border overflow-hidden">
                                                     {item.images ? (
                                                         <img src={item.images} alt={item.productName} className="w-full h-full object-cover" />
                                                     ) : (
@@ -198,14 +198,14 @@ export default function InventoryPage() {
                                             </div>
                                         </td>
                                         <td className="px-6 py-4">
-                                            <div className="font-mono text-xs text-muted-foreground bg-slate-100 px-1.5 py-0.5 rounded inline-block mb-1">
+                                            <div className="font-mono text-xs text-muted-foreground bg-muted px-1.5 py-0.5 rounded inline-block mb-1 border border-border">
                                                 {item.sku}
                                             </div>
-                                            <div className="text-sm text-muted-foreground">{item.variantName}</div>
+                                            <div className="text-sm text-foreground/80">{item.variantName}</div>
                                         </td>
                                         <td className="px-6 py-4 text-right">
-                                            <span className={`text-lg font-bold font-mono ${item.stock === 0 ? "text-red-600" :
-                                                item.stock <= 10 ? "text-amber-600" :
+                                            <span className={`text-lg font-bold font-mono ${item.stock === 0 ? "text-red-500" :
+                                                item.stock <= 10 ? "text-amber-500" :
                                                     "text-foreground"
                                                 }`}>
                                                 {item.stock}
@@ -213,15 +213,15 @@ export default function InventoryPage() {
                                         </td>
                                         <td className="px-6 py-4 text-right">
                                             {item.stock === 0 ? (
-                                                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-700 border border-red-200">
+                                                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-500/10 text-red-500 border border-red-500/20">
                                                     Out of Stock
                                                 </span>
                                             ) : item.stock <= 10 ? (
-                                                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-700 border border-amber-200">
+                                                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-500/10 text-amber-500 border border-amber-500/20">
                                                     Low Stock
                                                 </span>
                                             ) : (
-                                                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-700 border border-emerald-200">
+                                                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
                                                     In Stock
                                                 </span>
                                             )}
@@ -230,12 +230,12 @@ export default function InventoryPage() {
                                             <div className="flex items-center justify-end gap-2">
                                                 <button
                                                     onClick={() => setAdjustmentItem(item)}
-                                                    className="text-sm text-blue-600 hover:text-blue-700 font-medium px-2 py-1 hover:bg-blue-50 rounded"
+                                                    className="text-sm text-primary hover:text-primary/80 font-medium px-2 py-1 hover:bg-primary/10 rounded"
                                                 >
                                                     Adjust
                                                 </button>
                                                 <button
-                                                    className="text-muted-foreground hover:text-muted-foreground p-1.5 hover:bg-accent/50 rounded"
+                                                    className="text-muted-foreground hover:text-foreground p-1.5 hover:bg-muted/50 rounded"
                                                     title="View History (Next Sprint)"
                                                 >
                                                     <History size={16} />
@@ -278,13 +278,6 @@ function AdjustmentModal({ item, onClose }: { item: any, onClose: () => void }) 
             if (isNaN(qty) || qty <= 0) throw new Error("Invalid quantity");
 
             const delta = type === "add" ? qty : -qty;
-            const reasons = {
-                add: "received",
-                remove: "sold" // or adjusted
-            };
-            // Map simple adjust UI to backend types
-            // If removing, maybe "audit" or "return" or just "adjusted"
-            // Let's us "adjusted" for generic corrections unless specific reason given
 
             await adjustStock({
                 variantId: item._id,
@@ -301,36 +294,36 @@ function AdjustmentModal({ item, onClose }: { item: any, onClose: () => void }) 
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm animate-fadeIn">
-            <div className="bg-card rounded-xl shadow-xl max-w-md w-full overflow-hidden">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fadeIn">
+            <div className="bg-card rounded-xl shadow-xl max-w-md w-full overflow-hidden border border-border">
                 <div className="px-6 py-4 border-b border-border flex justify-between items-center">
                     <h3 className="font-semibold text-lg text-foreground">Adjust Stock</h3>
-                    <button onClick={onClose} className="text-muted-foreground hover:text-muted-foreground">
+                    <button onClick={onClose} className="text-muted-foreground hover:text-foreground">
                         <X size={20} />
                     </button>
                 </div>
 
                 <form onSubmit={handleSubmit} className="p-6 space-y-4">
-                    <div className="p-3 bg-muted/30 rounded-xl border border-slate-100">
+                    <div className="p-3 bg-muted/30 rounded-xl border border-border">
                         <div className="text-sm font-medium text-foreground">{item.productName}</div>
                         <div className="text-xs text-muted-foreground mt-0.5">{item.variantName} • {item.sku}</div>
-                        <div className="mt-2 text-sm">
+                        <div className="mt-2 text-sm text-foreground">
                             Current Stock: <span className="font-bold">{item.stock}</span>
                         </div>
                     </div>
 
                     {error && (
-                        <div className="p-3 bg-red-50 text-red-700 text-sm rounded-xl">
+                        <div className="p-3 bg-red-500/10 border border-red-500/20 text-red-500 text-sm rounded-xl">
                             {error}
                         </div>
                     )}
 
-                    <div className="flex gap-2 p-1 bg-slate-100 rounded-xl">
+                    <div className="flex gap-2 p-1 bg-muted rounded-xl">
                         <button
                             type="button"
                             onClick={() => setType("add")}
                             className={`flex-1 py-1.5 text-sm font-medium rounded-md transition-all ${type === "add"
-                                ? "bg-card text-emerald-700 shadow-sm"
+                                ? "bg-card text-emerald-500 shadow-sm"
                                 : "text-muted-foreground hover:text-foreground"
                                 }`}
                         >
@@ -340,7 +333,7 @@ function AdjustmentModal({ item, onClose }: { item: any, onClose: () => void }) 
                             type="button"
                             onClick={() => setType("remove")}
                             className={`flex-1 py-1.5 text-sm font-medium rounded-md transition-all ${type === "remove"
-                                ? "bg-card text-red-700 shadow-sm"
+                                ? "bg-card text-red-500 shadow-sm"
                                 : "text-muted-foreground hover:text-foreground"
                                 }`}
                         >
@@ -358,7 +351,7 @@ function AdjustmentModal({ item, onClose }: { item: any, onClose: () => void }) 
                             required
                             value={quantity}
                             onChange={(e) => setQuantity(e.target.value)}
-                            className="w-full px-4 py-2.5 border border-input rounded-xl focus:outline-none focus:ring-2 focus:ring-primary"
+                            className="w-full px-4 py-2.5 bg-background border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary text-foreground"
                         />
                     </div>
 
@@ -371,7 +364,7 @@ function AdjustmentModal({ item, onClose }: { item: any, onClose: () => void }) 
                             value={reason}
                             onChange={(e) => setReason(e.target.value)}
                             placeholder="e.g. Stock count correction"
-                            className="w-full px-4 py-2.5 border border-input rounded-xl focus:outline-none focus:ring-2 focus:ring-primary"
+                            className="w-full px-4 py-2.5 bg-background border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary text-foreground placeholder:text-muted-foreground"
                         />
                     </div>
 
@@ -379,7 +372,7 @@ function AdjustmentModal({ item, onClose }: { item: any, onClose: () => void }) 
                         <button
                             type="button"
                             onClick={onClose}
-                            className="px-4 py-2 text-sm font-medium text-foreground hover:bg-muted/30 rounded-xl"
+                            className="px-4 py-2 text-sm font-medium text-muted-foreground hover:bg-muted/50 rounded-xl"
                         >
                             Cancel
                         </button>

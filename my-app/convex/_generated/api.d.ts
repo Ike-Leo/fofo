@@ -30,6 +30,8 @@ import type * as productActivities from "../productActivities.js";
 import type * as productVariants from "../productVariants.js";
 import type * as products from "../products.js";
 import type * as public_cart from "../public/cart.js";
+import type * as public_categories from "../public/categories.js";
+import type * as public_orders from "../public/orders.js";
 import type * as public_organizations from "../public/organizations.js";
 import type * as public_products from "../public/products.js";
 import type * as seed from "../seed.js";
@@ -65,6 +67,8 @@ declare const fullApi: ApiFromModules<{
   productVariants: typeof productVariants;
   products: typeof products;
   "public/cart": typeof public_cart;
+  "public/categories": typeof public_categories;
+  "public/orders": typeof public_orders;
   "public/organizations": typeof public_organizations;
   "public/products": typeof public_products;
   seed: typeof seed;

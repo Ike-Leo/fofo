@@ -67,7 +67,7 @@ export default function OrdersPage() {
                 <div className="flex items-center gap-3">
                     <button
                         onClick={() => setIsCreateOpen(true)}
-                        className="inline-flex items-center gap-2 px-4 py-2 bg-slate-900 text-white rounded-xl hover:bg-slate-800 transition-colors shadow-sm font-medium"
+                        className="inline-flex items-center gap-2 px-4 py-2 bg-foreground text-card rounded-xl hover:bg-foreground/90 transition-colors shadow-sm font-medium"
                     >
                         <Plus size={18} />
                         Create Manual Order
@@ -86,12 +86,12 @@ export default function OrdersPage() {
                             placeholder="Search by order #, customer name or email..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full pl-10 pr-4 py-2.5 border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/10 focus:border-input"
+                            className="w-full pl-10 pr-4 py-2.5 bg-card border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-input text-foreground placeholder:text-muted-foreground"
                         />
                         {searchQuery && (
                             <button
                                 onClick={() => setSearchQuery("")}
-                                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-muted-foreground"
+                                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
                             >
                                 <X size={16} />
                             </button>
@@ -104,7 +104,7 @@ export default function OrdersPage() {
                         <select
                             value={statusFilter}
                             onChange={(e) => setStatusFilter(e.target.value)}
-                            className="px-4 py-2.5.5 border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/10 focus:border-input bg-card"
+                            className="px-4 py-2.5 border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-input bg-card text-foreground"
                         >
                             <option value="all">All Statuses</option>
                             <option value="pending">Pending</option>
@@ -139,11 +139,11 @@ export default function OrdersPage() {
                                 <th className="px-6 py-4 font-semibold text-xs text-muted-foreground uppercase tracking-wider text-right">Actions</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-slate-100">
+                        <tbody className="divide-y divide-border">
                             {!orders ? (
                                 Array.from({ length: 5 }).map((_, i) => (
                                     <tr key={i} className="animate-pulse">
-                                        <td colSpan={6} className="px-6 py-4"><div className="h-4 bg-slate-100 rounded w-full"></div></td>
+                                        <td colSpan={6} className="px-6 py-4"><div className="h-4 bg-muted rounded w-full"></div></td>
                                     </tr>
                                 ))
                             ) : filteredOrders && filteredOrders.length === 0 ? (
@@ -156,11 +156,11 @@ export default function OrdersPage() {
                                 </tr>
                             ) : (
                                 filteredOrders?.map((order) => (
-                                    <tr key={order._id} className="hover:bg-muted/30/50 transition-colors">
+                                    <tr key={order._id} className="hover:bg-muted/30 transition-colors">
                                         <td className="px-6 py-4 font-mono text-sm">
                                             <Link
                                                 href={`/admin/orders/${order._id}`}
-                                                className="text-blue-600 hover:text-blue-700 hover:underline font-medium"
+                                                className="text-primary hover:text-primary/80 hover:underline font-medium"
                                             >
                                                 {order.orderNumber}
                                             </Link>
@@ -171,7 +171,7 @@ export default function OrdersPage() {
                                         <td className="px-6 py-4">
                                             <Link
                                                 href={`/admin/customers?email=${encodeURIComponent(order.customerInfo.email)}`}
-                                                className="text-sm font-medium text-foreground hover:text-blue-600 hover:underline"
+                                                className="text-sm font-medium text-foreground hover:text-primary hover:underline"
                                             >
                                                 {order.customerInfo.name}
                                             </Link>
@@ -186,7 +186,7 @@ export default function OrdersPage() {
                                         <td className="px-6 py-4 text-right">
                                             <Link
                                                 href={`/admin/orders/${order._id}`}
-                                                className="text-blue-600 hover:text-blue-700 text-sm font-medium"
+                                                className="text-primary hover:text-primary/80 text-sm font-medium"
                                             >
                                                 View
                                             </Link>
@@ -211,12 +211,12 @@ export default function OrdersPage() {
 
 function OrderStatusBadge({ status }: { status: string }) {
     const styles: Record<string, string> = {
-        pending: "bg-amber-100 text-amber-700 border-amber-200",
-        paid: "bg-blue-100 text-blue-700 border-blue-200",
-        processing: "bg-indigo-100 text-indigo-700 border-indigo-200",
-        shipped: "bg-purple-100 text-purple-700 border-purple-200",
-        delivered: "bg-emerald-100 text-emerald-700 border-emerald-200",
-        cancelled: "bg-slate-100 text-muted-foreground border-border",
+        pending: "bg-amber-500/10 text-amber-500 border-amber-500/20",
+        paid: "bg-blue-500/10 text-blue-500 border-blue-500/20",
+        processing: "bg-purple-500/10 text-purple-500 border-purple-500/20",
+        shipped: "bg-indigo-500/10 text-indigo-500 border-indigo-500/20",
+        delivered: "bg-emerald-500/10 text-emerald-500 border-emerald-500/20",
+        cancelled: "bg-slate-500/10 text-slate-400 border-slate-500/20",
     };
 
     return (
@@ -323,22 +323,22 @@ function CreateOrderModal({ orgId, onClose }: { orgId: Id<"organizations">, onCl
     const total = lineItems.reduce((acc, item) => acc + (item.price * item.quantity), 0);
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm">
-            <div className="bg-card rounded-xl shadow-xl max-w-2xl w-full overflow-hidden flex flex-col max-h-[90vh]">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+            <div className="bg-card rounded-xl shadow-xl max-w-2xl w-full overflow-hidden flex flex-col max-h-[90vh] border border-border">
                 <div className="px-6 py-4 border-b border-border flex justify-between items-center bg-muted/30">
                     <h3 className="font-semibold text-lg text-foreground">Create Manual Order</h3>
-                    <button onClick={onClose} className="text-muted-foreground hover:text-muted-foreground">
+                    <button onClick={onClose} className="text-muted-foreground hover:text-foreground">
                         <X size={20} />
                     </button>
                 </div>
 
-                <div className="p-6 overflow-y-auto flex-1">
+                <div className="p-6 overflow-y-auto flex-1 font-sans">
                     {/* Item Selection */}
-                    <div className="mb-6 p-4 bg-muted/30 rounded-xl border border-slate-100">
+                    <div className="mb-6 p-4 bg-muted/30 rounded-xl border border-border">
                         <h4 className="text-sm font-medium text-foreground mb-3">Add Items</h4>
                         <div className="flex gap-2">
                             <select
-                                className="flex-1 px-4 py-2.5 border border-input rounded-xl text-sm"
+                                className="flex-1 px-4 py-2.5 bg-card border border-border rounded-xl text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
                                 value={selectedVariantId}
                                 onChange={(e) => {
                                     setSelectedVariantId(e.target.value);
@@ -354,7 +354,7 @@ function CreateOrderModal({ orgId, onClose }: { orgId: Id<"organizations">, onCl
                             </select>
                             <input
                                 type="number"
-                                className="w-20 px-4 py-2.5 border border-input rounded-xl text-sm"
+                                className="w-20 px-4 py-2.5 bg-card border border-border rounded-xl text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
                                 value={quantity}
                                 onChange={(e) => setQuantity(e.target.value)}
                                 min="1"
@@ -363,7 +363,7 @@ function CreateOrderModal({ orgId, onClose }: { orgId: Id<"organizations">, onCl
                                 type="button"
                                 onClick={addItem}
                                 disabled={!selectedVariantId}
-                                className="px-4 py-2 bg-slate-900 text-white rounded-xl text-sm font-medium disabled:opacity-50"
+                                className="px-4 py-2 bg-foreground text-background rounded-xl text-sm font-medium disabled:opacity-50 hover:opacity-90 transition-opacity"
                             >
                                 Add
                             </button>
@@ -382,7 +382,7 @@ function CreateOrderModal({ orgId, onClose }: { orgId: Id<"organizations">, onCl
                                     <th className="w-10"></th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-slate-100">
+                            <tbody className="divide-y divide-border">
                                 {lineItems.length === 0 ? (
                                     <tr>
                                         <td colSpan={5} className="px-4 py-8 text-center text-muted-foreground italic">No items added</td>
@@ -390,12 +390,12 @@ function CreateOrderModal({ orgId, onClose }: { orgId: Id<"organizations">, onCl
                                 ) : (
                                     lineItems.map((item, idx) => (
                                         <tr key={idx}>
-                                            <td className="px-4 py-2">{item.name}</td>
-                                            <td className="px-4 py-2 text-right">{item.quantity}</td>
-                                            <td className="px-4 py-2 text-right">{formatPrice(item.price)}</td>
-                                            <td className="px-4 py-2 text-right font-medium">{formatPrice(item.price * item.quantity)}</td>
+                                            <td className="px-4 py-2 text-foreground">{item.name}</td>
+                                            <td className="px-4 py-2 text-right text-foreground">{item.quantity}</td>
+                                            <td className="px-4 py-2 text-right text-foreground">{formatPrice(item.price)}</td>
+                                            <td className="px-4 py-2 text-right font-medium text-foreground">{formatPrice(item.price * item.quantity)}</td>
                                             <td className="px-4 py-2 text-right">
-                                                <button onClick={() => removeItem(idx)} className="text-red-500 hover:text-red-700">
+                                                <button onClick={() => removeItem(idx)} className="text-red-500 hover:text-red-400">
                                                     <X size={16} />
                                                 </button>
                                             </td>
@@ -403,7 +403,7 @@ function CreateOrderModal({ orgId, onClose }: { orgId: Id<"organizations">, onCl
                                     ))
                                 )}
                             </tbody>
-                            <tfoot className="bg-muted/30 font-semibold text-foreground">
+                            <tfoot className="bg-muted/30 font-semibold text-foreground border-t border-border">
                                 <tr>
                                     <td colSpan={3} className="px-4 py-3 text-right">Total:</td>
                                     <td className="px-4 py-3 text-right">{formatPrice(total)}</td>
@@ -421,7 +421,7 @@ function CreateOrderModal({ orgId, onClose }: { orgId: Id<"organizations">, onCl
                                 <button
                                     type="button"
                                     onClick={clearCustomer}
-                                    className="text-xs text-purple-600 hover:text-purple-800"
+                                    className="text-xs text-primary hover:text-primary/80"
                                 >
                                     Clear customer
                                 </button>
@@ -437,7 +437,7 @@ function CreateOrderModal({ orgId, onClose }: { orgId: Id<"organizations">, onCl
                                 <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
                                 <input
                                     type="text"
-                                    className="w-full pl-10 pr-4 py-2 border border-input rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                    className="w-full pl-10 pr-4 py-2 bg-card border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 text-foreground"
                                     placeholder="Search by name, email, or phone..."
                                     value={customerSearch}
                                     onChange={(e) => {
@@ -461,14 +461,14 @@ function CreateOrderModal({ orgId, onClose }: { orgId: Id<"organizations">, onCl
                                                 key={customer._id}
                                                 type="button"
                                                 onClick={() => selectCustomer(customer)}
-                                                className="w-full px-4 py-3 text-left hover:bg-purple-50 transition-colors border-b border-slate-100 last:border-b-0"
+                                                className="w-full px-4 py-3 text-left hover:bg-muted/30 transition-colors border-b border-border last:border-b-0"
                                             >
                                                 <div className="font-medium text-foreground">{customer.name}</div>
                                                 <div className="text-sm text-muted-foreground">{customer.email}</div>
                                                 {customer.phone && (
                                                     <div className="text-xs text-muted-foreground">{customer.phone}</div>
                                                 )}
-                                                <div className="text-xs text-purple-600 mt-1">
+                                                <div className="text-xs text-primary mt-1">
                                                     {customer.totalOrders} order{customer.totalOrders !== 1 ? 's' : ''} • {formatPrice(customer.totalSpend)}
                                                 </div>
                                             </button>
@@ -487,7 +487,7 @@ function CreateOrderModal({ orgId, onClose }: { orgId: Id<"organizations">, onCl
                                 <input
                                     type="text"
                                     required
-                                    className="w-full px-4 py-2.5 border border-input rounded-xl text-sm"
+                                    className="w-full px-4 py-2.5 bg-card border border-border rounded-xl text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
                                     value={customerName}
                                     onChange={(e) => {
                                         setCustomerName(e.target.value);
@@ -501,7 +501,7 @@ function CreateOrderModal({ orgId, onClose }: { orgId: Id<"organizations">, onCl
                                 <input
                                     type="email"
                                     required
-                                    className="w-full px-4 py-2.5 border border-input rounded-xl text-sm"
+                                    className="w-full px-4 py-2.5 bg-card border border-border rounded-xl text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
                                     value={customerEmail}
                                     onChange={(e) => {
                                         setCustomerEmail(e.target.value);
@@ -514,7 +514,7 @@ function CreateOrderModal({ orgId, onClose }: { orgId: Id<"organizations">, onCl
                                 <label className="block text-xs font-medium text-muted-foreground mb-1">Phone (optional)</label>
                                 <input
                                     type="tel"
-                                    className="w-full px-4 py-2.5 border border-input rounded-xl text-sm"
+                                    className="w-full px-4 py-2.5 bg-card border border-border rounded-xl text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
                                     value={customerPhone}
                                     onChange={(e) => {
                                         setCustomerPhone(e.target.value);
@@ -527,14 +527,14 @@ function CreateOrderModal({ orgId, onClose }: { orgId: Id<"organizations">, onCl
                     </div>
 
                     {error && (
-                        <div className="mt-4 p-3 bg-red-50 text-red-700 text-sm rounded-xl">
+                        <div className="mt-4 p-3 bg-red-500/10 border border-red-500/20 text-red-500 text-sm rounded-xl">
                             {error}
                         </div>
                     )}
                 </div>
 
                 <div className="p-4 border-t border-border bg-muted/30 flex justify-end gap-3">
-                    <button onClick={onClose} className="px-4 py-2 text-sm font-medium text-foreground hover:bg-accent/50 rounded-xl">
+                    <button onClick={onClose} className="px-4 py-2 text-sm font-medium text-muted-foreground hover:bg-muted/50 rounded-xl">
                         Cancel
                     </button>
                     <button

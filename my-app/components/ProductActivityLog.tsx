@@ -32,21 +32,21 @@ export default function ProductActivityLog({ productId }: ProductActivityLogProp
     const getActivityIcon = (type: string) => {
         switch (type) {
             case "created":
-                return <Plus className="text-emerald-600" size={18} />;
+                return <Plus className="text-emerald-500" size={18} />;
             case "updated":
-                return <Edit className="text-blue-600" size={18} />;
+                return <Edit className="text-blue-500" size={18} />;
             case "stock_added":
-                return <TrendingUp className="text-green-600" size={18} />;
+                return <TrendingUp className="text-emerald-500" size={18} />;
             case "stock_removed":
-                return <TrendingDown className="text-red-600" size={18} />;
+                return <TrendingDown className="text-red-500" size={18} />;
             case "sold":
-                return <ShoppingCart className="text-purple-600" size={18} />;
+                return <ShoppingCart className="text-purple-500" size={18} />;
             case "cancelled":
-                return <XCircle className="text-red-600" size={18} />;
+                return <XCircle className="text-red-500" size={18} />;
             case "archived":
-                return <Archive className="text-slate-600" size={18} />;
+                return <Archive className="text-muted-foreground" size={18} />;
             default:
-                return <Clock className="text-slate-400" size={18} />;
+                return <Clock className="text-muted-foreground" size={18} />;
         }
     };
 
@@ -60,38 +60,35 @@ export default function ProductActivityLog({ productId }: ProductActivityLogProp
     return (
         <div className="space-y-4">
             <div className="flex items-center justify-between">
-                <h3 className="text-lg font-semibold text-slate-900 flex items-center gap-2">
-                    <Clock size={20} className="text-slate-400" />
+                <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
+                    <Clock size={20} className="text-muted-foreground" />
                     Activity Log
                 </h3>
                 <div className="flex gap-2">
                     <button
                         onClick={() => setFilter("all")}
-                        className={`px-3 py-1 text-sm font-medium rounded-lg transition-colors ${
-                            filter === "all"
-                                ? "bg-slate-900 text-white"
-                                : "bg-slate-100 text-slate-700 hover:bg-slate-200"
-                        }`}
+                        className={`px-3 py-1 text-sm font-medium rounded-full transition-colors ${filter === "all"
+                                ? "bg-primary text-primary-foreground shadow-sm"
+                                : "bg-card text-muted-foreground hover:bg-muted/50 border border-border"
+                            }`}
                     >
                         All
                     </button>
                     <button
                         onClick={() => setFilter("stock")}
-                        className={`px-3 py-1 text-sm font-medium rounded-lg transition-colors ${
-                            filter === "stock"
-                                ? "bg-slate-900 text-white"
-                                : "bg-slate-100 text-slate-700 hover:bg-slate-200"
-                        }`}
+                        className={`px-3 py-1 text-sm font-medium rounded-full transition-colors ${filter === "stock"
+                                ? "bg-primary text-primary-foreground shadow-sm"
+                                : "bg-card text-muted-foreground hover:bg-muted/50 border border-border"
+                            }`}
                     >
                         Stock
                     </button>
                     <button
                         onClick={() => setFilter("changes")}
-                        className={`px-3 py-1 text-sm font-medium rounded-lg transition-colors ${
-                            filter === "changes"
-                                ? "bg-slate-900 text-white"
-                                : "bg-slate-100 text-slate-700 hover:bg-slate-200"
-                        }`}
+                        className={`px-3 py-1 text-sm font-medium rounded-full transition-colors ${filter === "changes"
+                                ? "bg-primary text-primary-foreground shadow-sm"
+                                : "bg-card text-muted-foreground hover:bg-muted/50 border border-border"
+                            }`}
                     >
                         Changes
                     </button>
@@ -99,38 +96,38 @@ export default function ProductActivityLog({ productId }: ProductActivityLogProp
             </div>
 
             {!activities ? (
-                <div className="text-center py-8 text-slate-400">Loading...</div>
+                <div className="text-center py-8 text-muted-foreground">Loading...</div>
             ) : filteredActivities.length === 0 ? (
-                <div className="text-center py-8 bg-slate-50 rounded-lg border border-slate-200">
-                    <Clock className="mx-auto text-slate-300 mb-2" size={32} />
-                    <p className="text-sm text-slate-500">No activity yet</p>
+                <div className="text-center py-8 bg-card rounded-xl border border-border">
+                    <Clock className="mx-auto text-muted-foreground mb-2" size={32} />
+                    <p className="text-sm text-muted-foreground">No activity yet</p>
                 </div>
             ) : (
                 <div className="space-y-3">
                     {filteredActivities.map((activity) => (
                         <div
                             key={activity._id}
-                            className="flex items-start gap-3 p-3 bg-white rounded-lg border border-slate-200 hover:border-slate-300 transition-colors"
+                            className="flex items-start gap-3 p-3 bg-card rounded-xl border border-border hover:border-primary/30 transition-colors"
                         >
-                            <div className="flex-shrink-0 w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center">
+                            <div className="flex-shrink-0 w-9 h-9 rounded-full bg-muted/30 flex items-center justify-center">
                                 {getActivityIcon(activity.type)}
                             </div>
                             <div className="flex-1 min-w-0">
-                                <p className="text-sm text-slate-900">{activity.description}</p>
-                                <div className="flex items-center gap-2 mt-1 text-xs text-slate-500">
+                                <p className="text-sm text-foreground">{activity.description}</p>
+                                <div className="flex items-center gap-2 mt-1 text-xs text-muted-foreground">
                                     <span>{activity.userName}</span>
                                     <span>•</span>
                                     <span>{formatDate(activity.createdAt)}</span>
                                     {activity.metadata?.variantName && (
                                         <>
                                             <span>•</span>
-                                            <span className="font-medium text-slate-700">{activity.metadata.variantName}</span>
+                                            <span className="font-medium text-foreground">{activity.metadata.variantName}</span>
                                         </>
                                     )}
                                     {activity.metadata?.quantity !== undefined && (
                                         <>
                                             <span>•</span>
-                                            <span className={activity.type === "stock_removed" || activity.type === "sold" ? "text-red-600" : "text-emerald-600"}>
+                                            <span className={activity.type === "stock_removed" || activity.type === "sold" ? "text-red-500" : "text-emerald-500"}>
                                                 {activity.type === "stock_removed" || activity.type === "sold" ? "-" : "+"}
                                                 {activity.metadata.quantity}
                                             </span>
@@ -139,7 +136,7 @@ export default function ProductActivityLog({ productId }: ProductActivityLogProp
                                     {activity.metadata?.orderNumber && (
                                         <>
                                             <span>•</span>
-                                            <span className="font-mono text-slate-600">#{activity.metadata.orderNumber}</span>
+                                            <span className="font-mono text-muted-foreground">#{activity.metadata.orderNumber}</span>
                                         </>
                                     )}
                                 </div>

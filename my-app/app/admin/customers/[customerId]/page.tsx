@@ -55,41 +55,59 @@ const formatDateTime = (timestamp: number) => {
     });
 };
 
-const statusConfig: Record<string, { icon: React.ReactNode; color: string; bg: string }> = {
+const formatPhone = (s?: string) => {
+    if (!s) return "";
+    const cleaned = s.replace(/\D/g, '');
+    if (cleaned.length === 10) {
+        return `(${cleaned.slice(0, 3)}) ${cleaned.slice(3, 6)}-${cleaned.slice(6)}`;
+    }
+    return s;
+};
+
+const capitalize = (s: string) => s ? s.charAt(0).toUpperCase() + s.slice(1) : "";
+
+const statusConfig: Record<string, { icon: React.ReactNode; color: string; bg: string; border: string }> = {
     pending: {
         icon: <Clock size={14} />,
-        color: "text-amber-700",
-        bg: "bg-amber-100",
+        color: "text-amber-500",
+        bg: "bg-amber-500/10",
+        border: "border-amber-500/20",
     },
     paid: {
         icon: <CheckCircle2 size={14} />,
-        color: "text-blue-700",
-        bg: "bg-blue-100",
+        color: "text-blue-500",
+        bg: "bg-blue-500/10",
+        border: "border-blue-500/20",
     },
     processing: {
         icon: <Package size={14} />,
-        color: "text-purple-700",
-        bg: "bg-purple-100",
+        color: "text-purple-500",
+        bg: "bg-purple-500/10",
+        border: "border-purple-500/20",
     },
     shipped: {
         icon: <Truck size={14} />,
-        color: "text-indigo-700",
-        bg: "bg-indigo-100",
+        color: "text-indigo-500",
+        bg: "bg-indigo-500/10",
+        border: "border-indigo-500/20",
     },
     delivered: {
         icon: <CheckCircle2 size={14} />,
-        color: "text-emerald-700",
-        bg: "bg-emerald-100",
+        color: "text-emerald-500",
+        bg: "bg-emerald-500/10",
+        border: "border-emerald-500/20",
     },
     cancelled: {
         icon: <XCircle size={14} />,
-        color: "text-red-700",
-        bg: "bg-red-100",
+        color: "text-red-500",
+        bg: "bg-red-500/10",
+        border: "border-red-500/20",
     },
     refunded: {
         icon: <XCircle size={14} />,
-        color: "text-slate-700",
-        bg: "bg-slate-100",
+        color: "text-slate-400",
+        bg: "bg-slate-500/10",
+        border: "border-slate-500/20",
     },
 };
 
@@ -174,7 +192,7 @@ export default function CustomerDetailPage() {
 
     if (customerData === undefined) {
         return (
-            <div className="p-12 text-center animate-pulse text-slate-400">
+            <div className="p-12 text-center animate-pulse text-muted-foreground">
                 Loading customer details...
             </div>
         );
@@ -183,10 +201,10 @@ export default function CustomerDetailPage() {
     if (customerData === null) {
         return (
             <div className="p-12 text-center">
-                <h2 className="text-xl font-semibold text-slate-700">Customer not found</h2>
+                <h2 className="text-xl font-semibold text-foreground">Customer not found</h2>
                 <Link
                     href="/admin/customers"
-                    className="text-purple-600 hover:underline mt-2 inline-block"
+                    className="text-purple-500 hover:underline mt-2 inline-block"
                 >
                     ← Back to Customers
                 </Link>
@@ -203,13 +221,13 @@ export default function CustomerDetailPage() {
                 <div className="flex items-center gap-4">
                     <Link
                         href="/admin/customers"
-                        className="p-2 hover:bg-slate-100 rounded-lg transition-colors"
+                        className="p-2 hover:bg-muted rounded-lg transition-colors"
                     >
-                        <ArrowLeft size={20} className="text-slate-500" />
+                        <ArrowLeft size={20} className="text-muted-foreground" />
                     </Link>
                     <div>
-                        <h1 className="text-2xl font-bold text-slate-900">{customer.name}</h1>
-                        <p className="text-slate-500">Customer since {formatDate(customer.firstSeenAt)}</p>
+                        <h1 className="text-2xl font-bold text-foreground">{customer.name}</h1>
+                        <p className="text-muted-foreground">Customer since {formatDate(customer.firstSeenAt)}</p>
                     </div>
                 </div>
 
@@ -217,7 +235,7 @@ export default function CustomerDetailPage() {
                 <div className="flex gap-3">
                     <button
                         onClick={() => setIsCreateOrderOpen(true)}
-                        className="inline-flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors shadow-sm font-medium"
+                        className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-full hover:bg-primary/90 transition-colors shadow-sm font-bold"
                     >
                         <ShoppingBag size={18} />
                         Create Order
@@ -225,10 +243,10 @@ export default function CustomerDetailPage() {
                     <button
                         onClick={handleStartChat}
                         disabled={isCreatingChat}
-                        className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors shadow-sm font-medium disabled:opacity-75 disabled:cursor-not-allowed"
+                        className="inline-flex items-center gap-2 px-4 py-2 bg-background border border-border text-foreground rounded-full hover:bg-muted transition-colors shadow-sm font-medium disabled:opacity-75"
                     >
                         {isCreatingChat ? (
-                            <div className="h-4.5 w-4.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                            <div className="h-4.5 w-4.5 border-2 border-foreground/30 border-t-foreground rounded-full animate-spin" />
                         ) : (
                             <MessageSquare size={18} />
                         )}
@@ -237,7 +255,7 @@ export default function CustomerDetailPage() {
                     {customer.phone && (
                         <a
                             href={`tel:${customer.phone}`}
-                            className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors shadow-sm font-medium"
+                            className="inline-flex items-center gap-2 px-4 py-2 bg-background border border-border text-foreground rounded-full hover:bg-muted transition-colors shadow-sm font-medium"
                         >
                             <Phone size={18} />
                             Call
@@ -249,16 +267,16 @@ export default function CustomerDetailPage() {
             {/* Customer Info + Stats */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 {/* Contact Info Card */}
-                <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+                <div className="bg-card rounded-xl shadow-sm border border-border p-6">
                     <div className="flex items-center justify-between mb-4">
-                        <h3 className="font-semibold text-slate-900 flex items-center gap-2">
-                            <User size={18} className="text-purple-600" />
+                        <h3 className="font-semibold text-foreground flex items-center gap-2">
+                            <User size={18} className="text-purple-500" />
                             Contact Information
                         </h3>
                         {!isEditing ? (
                             <button
                                 onClick={startEditing}
-                                className="p-2 text-slate-400 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-colors"
+                                className="p-2 text-muted-foreground hover:text-purple-500 hover:bg-purple-500/10 rounded-lg transition-colors"
                                 title="Edit customer"
                             >
                                 <Pencil size={16} />
@@ -268,7 +286,7 @@ export default function CustomerDetailPage() {
                                 <button
                                     onClick={saveChanges}
                                     disabled={isSaving}
-                                    className="p-2 text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors disabled:opacity-50"
+                                    className="p-2 text-emerald-500 hover:bg-emerald-500/10 rounded-lg transition-colors disabled:opacity-50"
                                     title="Save"
                                 >
                                     <Check size={16} />
@@ -276,7 +294,7 @@ export default function CustomerDetailPage() {
                                 <button
                                     onClick={cancelEditing}
                                     disabled={isSaving}
-                                    className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50"
+                                    className="p-2 text-red-500 hover:bg-red-500/10 rounded-lg transition-colors disabled:opacity-50"
                                     title="Cancel"
                                 >
                                     <X size={16} />
@@ -288,57 +306,57 @@ export default function CustomerDetailPage() {
                     {isEditing ? (
                         <div className="space-y-4">
                             <div>
-                                <label className="block text-xs font-medium text-slate-500 mb-1">Name</label>
+                                <label className="block text-xs font-medium text-muted-foreground mb-1">Name</label>
                                 <input
                                     type="text"
                                     value={editName}
                                     onChange={(e) => setEditName(e.target.value)}
-                                    className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                    className="w-full px-3 py-2 bg-muted border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary text-foreground placeholder:text-muted-foreground"
                                     placeholder="Customer name"
                                 />
                             </div>
                             <div>
-                                <label className="block text-xs font-medium text-slate-500 mb-1">Email (read-only)</label>
-                                <div className="flex items-center gap-3 px-3 py-2 bg-slate-50 rounded-lg text-slate-500 text-sm">
+                                <label className="block text-xs font-medium text-muted-foreground mb-1">Email (read-only)</label>
+                                <div className="flex items-center gap-3 px-3 py-2 bg-muted rounded-lg text-muted-foreground text-sm border border-border">
                                     <Mail size={14} />
                                     {customer.email}
                                 </div>
                             </div>
                             <div>
-                                <label className="block text-xs font-medium text-slate-500 mb-1">Phone</label>
+                                <label className="block text-xs font-medium text-muted-foreground mb-1">Phone</label>
                                 <input
                                     type="tel"
                                     value={editPhone}
                                     onChange={(e) => setEditPhone(e.target.value)}
-                                    className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                    className="w-full px-3 py-2 bg-muted border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary text-foreground placeholder:text-muted-foreground"
                                     placeholder="+1 (555) 123-4567"
                                 />
                             </div>
                         </div>
                     ) : (
                         <div className="space-y-3">
-                            <div className="flex items-center gap-3 text-slate-600">
-                                <User size={16} className="text-slate-400" />
+                            <div className="flex items-center gap-3 text-foreground">
+                                <User size={16} className="text-muted-foreground" />
                                 <span className="font-medium">{customer.name}</span>
                             </div>
-                            <div className="flex items-center gap-3 text-slate-600">
-                                <Mail size={16} className="text-slate-400" />
+                            <div className="flex items-center gap-3 text-foreground">
+                                <Mail size={16} className="text-muted-foreground" />
                                 <a
                                     href={`mailto:${customer.email}`}
-                                    className="text-purple-600 hover:underline"
+                                    className="text-purple-500 hover:underline"
                                 >
                                     {customer.email}
                                 </a>
                             </div>
                             {customer.phone && (
-                                <div className="flex items-center gap-3 text-slate-600">
-                                    <Phone size={16} className="text-slate-400" />
-                                    {customer.phone}
+                                <div className="flex items-center gap-3 text-foreground">
+                                    <Phone size={16} className="text-muted-foreground" />
+                                    {formatPhone(customer.phone)}
                                 </div>
                             )}
                             {customer.address && (
-                                <div className="flex items-start gap-3 text-slate-600">
-                                    <MapPin size={16} className="text-slate-400 mt-0.5" />
+                                <div className="flex items-start gap-3 text-foreground">
+                                    <MapPin size={16} className="text-muted-foreground mt-0.5" />
                                     <span className="whitespace-pre-wrap">{customer.address}</span>
                                 </div>
                             )}
@@ -347,13 +365,16 @@ export default function CustomerDetailPage() {
                 </div>
 
                 {/* Lifetime Value Card */}
-                <div className="bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-xl shadow-sm p-6 text-white">
-                    <h3 className="font-medium text-emerald-100 mb-2 flex items-center gap-2">
+                <div className="bg-card rounded-xl shadow-sm border border-emerald-500/20 p-6 relative overflow-hidden group hover:border-emerald-500/40 transition-colors">
+                    <div className="absolute right-0 top-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                        <TrendingUp size={64} className="text-emerald-500" />
+                    </div>
+                    <h3 className="font-medium text-emerald-500 mb-2 flex items-center gap-2">
                         <TrendingUp size={18} />
                         Lifetime Value
                     </h3>
-                    <p className="text-4xl font-bold">{formatPrice(customer.totalSpend)}</p>
-                    <p className="text-emerald-200 mt-2">
+                    <p className="text-4xl font-bold text-foreground">{formatPrice(customer.totalSpend)}</p>
+                    <p className="text-muted-foreground mt-2 text-sm">
                         {customer.totalOrders > 0
                             ? `Avg. ${formatPrice(customer.totalSpend / customer.totalOrders)} per order`
                             : "No orders yet"}
@@ -361,13 +382,16 @@ export default function CustomerDetailPage() {
                 </div>
 
                 {/* Orders Card */}
-                <div className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl shadow-sm p-6 text-white">
-                    <h3 className="font-medium text-purple-100 mb-2 flex items-center gap-2">
+                <div className="bg-card rounded-xl shadow-sm border border-purple-500/20 p-6 relative overflow-hidden group hover:border-purple-500/40 transition-colors">
+                    <div className="absolute right-0 top-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                        <ShoppingBag size={64} className="text-purple-500" />
+                    </div>
+                    <h3 className="font-medium text-purple-500 mb-2 flex items-center gap-2">
                         <ShoppingBag size={18} />
                         Total Orders
                     </h3>
-                    <p className="text-4xl font-bold">{customer.totalOrders}</p>
-                    <p className="text-purple-200 mt-2 flex items-center gap-2">
+                    <p className="text-4xl font-bold text-foreground">{customer.totalOrders}</p>
+                    <p className="text-muted-foreground mt-2 flex items-center gap-2 text-sm">
                         <Calendar size={14} />
                         Last order: {formatDate(customer.lastSeenAt)}
                     </p>
@@ -375,28 +399,28 @@ export default function CustomerDetailPage() {
             </div>
 
             {/* Order History */}
-            <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-                <div className="px-6 py-4 border-b border-slate-200">
-                    <h3 className="font-semibold text-slate-900 flex items-center gap-2">
-                        <Package size={18} className="text-slate-400" />
+            <div className="bg-card rounded-xl shadow-sm border border-border overflow-hidden">
+                <div className="px-6 py-4 border-b border-border">
+                    <h3 className="font-semibold text-foreground flex items-center gap-2">
+                        <Package size={18} className="text-muted-foreground" />
                         Order History
                     </h3>
                 </div>
 
                 {orders.length === 0 ? (
                     <div className="p-12 text-center">
-                        <ShoppingBag className="mx-auto text-slate-300 mb-4" size={48} />
-                        <p className="text-slate-500">No orders from this customer yet.</p>
+                        <ShoppingBag className="mx-auto text-slate-700 mb-4" size={48} />
+                        <p className="text-muted-foreground">No orders from this customer yet.</p>
                     </div>
                 ) : (
-                    <div className="divide-y divide-slate-100">
+                    <div className="divide-y divide-border">
                         {orders.map((order) => {
                             const status = statusConfig[order.status] || statusConfig.pending;
                             return (
                                 <Link
                                     key={order._id}
                                     href={`/admin/orders/${order._id}`}
-                                    className="flex items-center justify-between px-6 py-4 hover:bg-slate-50 transition-colors"
+                                    className="flex items-center justify-between px-6 py-4 hover:bg-muted/30 transition-colors"
                                 >
                                     <div className="flex items-center gap-4">
                                         <div
@@ -405,20 +429,20 @@ export default function CustomerDetailPage() {
                                             <span className={status.color}>{status.icon}</span>
                                         </div>
                                         <div>
-                                            <p className="font-medium text-slate-900">
+                                            <p className="font-medium text-foreground">
                                                 Order #{order.orderNumber}
                                             </p>
-                                            <p className="text-sm text-slate-500">
+                                            <p className="text-sm text-muted-foreground">
                                                 {formatDateTime(order.createdAt)}
                                             </p>
                                         </div>
                                     </div>
                                     <div className="text-right">
-                                        <p className="font-semibold text-slate-900">
+                                        <p className="font-semibold text-foreground">
                                             {formatPrice(order.totalAmount)}
                                         </p>
                                         <span
-                                            className={`inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full ${status.bg} ${status.color}`}
+                                            className={`inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full border ${status.bg} ${status.color} ${status.border}`}
                                         >
                                             {status.icon}
                                             {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
@@ -519,32 +543,32 @@ function CreateOrderModal({
     const total = lineItems.reduce((acc, item) => acc + (item.price * item.quantity), 0);
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm">
-            <div className="bg-white rounded-xl shadow-xl max-w-2xl w-full overflow-hidden flex flex-col max-h-[90vh]">
-                <div className="px-6 py-4 border-b border-slate-200 flex justify-between items-center bg-slate-50">
-                    <h3 className="font-semibold text-lg text-slate-900">Create Order for {customer.name}</h3>
-                    <button onClick={onClose} className="text-slate-400 hover:text-slate-600">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+            <div className="bg-card rounded-xl shadow-xl max-w-2xl w-full overflow-hidden flex flex-col max-h-[90vh] border border-border">
+                <div className="px-6 py-4 border-b border-border flex justify-between items-center bg-muted/30">
+                    <h3 className="font-semibold text-lg text-foreground">Create Order for {customer.name}</h3>
+                    <button onClick={onClose} className="text-muted-foreground hover:text-foreground transition-colors">
                         <XCircle size={20} />
                     </button>
                 </div>
 
-                <div className="p-6 overflow-y-auto flex-1">
+                <div className="p-6 overflow-y-auto flex-1 text-foreground">
                     {/* Customer Info Display */}
-                    <div className="mb-6 p-4 bg-purple-50 rounded-lg border border-purple-100">
-                        <h4 className="text-sm font-medium text-purple-900 mb-2">Customer</h4>
-                        <div className="text-sm text-purple-700">
+                    <div className="mb-6 p-4 bg-muted/30 rounded-lg border border-border">
+                        <h4 className="text-sm font-medium text-foreground mb-2">Customer</h4>
+                        <div className="text-sm text-muted-foreground">
                             <div>{customer.name}</div>
                             <div>{customer.email}</div>
-                            {customer.phone && <div>{customer.phone}</div>}
+                            {customer.phone && <div>{formatPhone(customer.phone)}</div>}
                         </div>
                     </div>
 
                     {/* Item Selection */}
-                    <div className="mb-6 p-4 bg-slate-50 rounded-lg border border-slate-100">
-                        <h4 className="text-sm font-medium text-slate-700 mb-3">Add Items</h4>
+                    <div className="mb-6 p-4 bg-muted/30 rounded-lg border border-border">
+                        <h4 className="text-sm font-medium text-foreground mb-3">Add Items</h4>
                         <div className="flex gap-2">
                             <select
-                                className="flex-1 px-3 py-2 border border-slate-300 rounded-lg text-sm"
+                                className="flex-1 px-3 py-2 bg-card border border-border rounded-lg text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                                 value={selectedVariantId}
                                 onChange={(e) => {
                                     setSelectedVariantId(e.target.value);
@@ -560,7 +584,7 @@ function CreateOrderModal({
                             </select>
                             <input
                                 type="number"
-                                className="w-20 px-3 py-2 border border-slate-300 rounded-lg text-sm"
+                                className="w-20 px-3 py-2 bg-card border border-border rounded-lg text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                                 value={quantity}
                                 onChange={(e) => setQuantity(e.target.value)}
                                 min="1"
@@ -569,7 +593,7 @@ function CreateOrderModal({
                                 type="button"
                                 onClick={addItem}
                                 disabled={!selectedVariantId}
-                                className="px-4 py-2 bg-slate-900 text-white rounded-lg text-sm font-medium disabled:opacity-50"
+                                className="px-4 py-2 bg-foreground text-card rounded-lg text-sm font-medium disabled:opacity-50 hover:bg-foreground/90 transition-colors"
                             >
                                 Add
                             </button>
@@ -577,9 +601,9 @@ function CreateOrderModal({
                     </div>
 
                     {/* Cart Table */}
-                    <div className="mb-6 border border-slate-200 rounded-lg overflow-hidden">
+                    <div className="mb-6 border border-border rounded-lg overflow-hidden">
                         <table className="w-full text-sm text-left">
-                            <thead className="bg-slate-50 text-slate-500 border-b border-slate-200">
+                            <thead className="bg-muted/50 text-muted-foreground border-b border-border">
                                 <tr>
                                     <th className="px-4 py-2">Item</th>
                                     <th className="px-4 py-2 text-right">Qty</th>
@@ -588,20 +612,20 @@ function CreateOrderModal({
                                     <th className="w-10"></th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-slate-100">
+                            <tbody className="divide-y divide-border">
                                 {lineItems.length === 0 ? (
                                     <tr>
-                                        <td colSpan={5} className="px-4 py-8 text-center text-slate-500 italic">No items added</td>
+                                        <td colSpan={5} className="px-4 py-8 text-center text-muted-foreground italic">No items added</td>
                                     </tr>
                                 ) : (
                                     lineItems.map((item, idx) => (
                                         <tr key={idx}>
-                                            <td className="px-4 py-2">{item.name}</td>
-                                            <td className="px-4 py-2 text-right">{item.quantity}</td>
-                                            <td className="px-4 py-2 text-right">{formatPrice(item.price)}</td>
-                                            <td className="px-4 py-2 text-right font-medium">{formatPrice(item.price * item.quantity)}</td>
+                                            <td className="px-4 py-2 text-foreground">{item.name}</td>
+                                            <td className="px-4 py-2 text-right text-foreground">{item.quantity}</td>
+                                            <td className="px-4 py-2 text-right text-foreground">{formatPrice(item.price)}</td>
+                                            <td className="px-4 py-2 text-right font-medium text-foreground">{formatPrice(item.price * item.quantity)}</td>
                                             <td className="px-4 py-2 text-right">
-                                                <button onClick={() => removeItem(idx)} className="text-red-500 hover:text-red-700">
+                                                <button onClick={() => removeItem(idx)} className="text-red-500 hover:text-red-400">
                                                     <XCircle size={16} />
                                                 </button>
                                             </td>
@@ -609,7 +633,7 @@ function CreateOrderModal({
                                     ))
                                 )}
                             </tbody>
-                            <tfoot className="bg-slate-50 font-semibold text-slate-900">
+                            <tfoot className="bg-muted/30 font-semibold text-foreground border-t border-border">
                                 <tr>
                                     <td colSpan={3} className="px-4 py-3 text-right">Total:</td>
                                     <td className="px-4 py-3 text-right">{formatPrice(total)}</td>
@@ -620,20 +644,20 @@ function CreateOrderModal({
                     </div>
 
                     {error && (
-                        <div className="mt-4 p-3 bg-red-50 text-red-700 text-sm rounded-lg">
+                        <div className="mt-4 p-3 bg-red-500/10 border border-red-500/20 text-red-500 text-sm rounded-lg">
                             {error}
                         </div>
                     )}
                 </div>
 
-                <div className="p-4 border-t border-slate-200 bg-slate-50 flex justify-end gap-3">
-                    <button onClick={onClose} className="px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100 rounded-lg">
+                <div className="p-4 border-t border-border bg-muted/30 flex justify-end gap-3">
+                    <button onClick={onClose} className="px-4 py-2 text-sm font-medium text-muted-foreground hover:bg-muted/50 rounded-lg transition-colors">
                         Cancel
                     </button>
                     <button
                         onClick={handleSubmit}
                         disabled={isSubmitting || lineItems.length === 0}
-                        className="px-6 py-2 text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg shadow-sm disabled:opacity-50"
+                        className="px-6 py-2 text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg shadow-sm disabled:opacity-50 transition-colors"
                     >
                         {isSubmitting ? "Placing Order..." : "Place Order"}
                     </button>

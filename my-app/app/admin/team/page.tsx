@@ -60,13 +60,13 @@ export default function TeamPage() {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 {/* Members List */}
                 <div className="lg:col-span-1">
-                    <div className="bg-white rounded-xl shadow-sm border border-border overflow-hidden">
-                        <div className="p-4 border-b border-border bg-accent/50">
+                    <div className="bg-card rounded-xl shadow-sm border border-border overflow-hidden">
+                        <div className="p-4 border-b border-border bg-muted/30">
                             <h2 className="font-semibold text-foreground">Team Members</h2>
                             <p className="text-sm text-muted-foreground">{members?.length || 0} members</p>
                         </div>
 
-                        <div className="divide-y divide-slate-100">
+                        <div className="divide-y divide-border">
                             {!members ? (
                                 <div className="p-8 text-center text-muted-foreground animate-pulse">
                                     Loading members...
@@ -80,18 +80,18 @@ export default function TeamPage() {
                                     <button
                                         key={member._id}
                                         onClick={() => setSelectedMember(member.userId)}
-                                        className={`w-full p-4 text-left hover:bg-accent/50 transition-colors flex items-center justify-between ${selectedMember === member.userId
-                                                ? "bg-primary/10 border-l-4 border-primary"
-                                                : ""
+                                        className={`w-full p-4 text-left hover:bg-muted/30 transition-colors flex items-center justify-between ${selectedMember === member.userId
+                                            ? "bg-primary/5 border-l-2 border-primary"
+                                            : ""
                                             }`}
                                     >
                                         <div className="flex items-center gap-3">
                                             <div
                                                 className={`w-10 h-10 rounded-full flex items-center justify-center ${member.role === "admin"
-                                                        ? "bg-amber-100 text-amber-600"
-                                                        : member.role === "manager"
-                                                            ? "bg-primary/10 text-primary"
-                                                            : "bg-muted text-muted-foreground"
+                                                    ? "bg-amber-500/10 text-amber-500"
+                                                    : member.role === "manager"
+                                                        ? "bg-primary/10 text-primary"
+                                                        : "bg-muted text-muted-foreground"
                                                     }`}
                                             >
                                                 {member.role === "admin" ? (
@@ -134,7 +134,7 @@ export default function TeamPage() {
                             onDelete={() => setShowDeleteConfirm(selectedMember)}
                         />
                     ) : (
-                        <div className="bg-white rounded-xl shadow-sm border border-border p-12 text-center">
+                        <div className="bg-card rounded-xl shadow-sm border border-border p-12 text-center h-full flex flex-col justify-center items-center">
                             <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
                                 <Shield className="text-primary" size={32} />
                             </div>
@@ -263,17 +263,17 @@ function PermissionEditor({
     };
 
     return (
-        <div className="bg-white rounded-xl shadow-sm border border-border overflow-hidden">
+        <div className="bg-card rounded-xl shadow-sm border border-border overflow-hidden h-full flex flex-col">
             {/* Header */}
-            <div className="p-6 border-b border-border bg-gradient-to-r from-indigo-50 to-purple-50">
+            <div className="p-6 border-b border-border bg-muted/30">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4">
                         <div
                             className={`w-14 h-14 rounded-full flex items-center justify-center ${member.role === "admin"
-                                    ? "bg-amber-100 text-amber-600"
-                                    : member.role === "manager"
-                                        ? "bg-primary/10 text-primary"
-                                        : "bg-muted text-muted-foreground"
+                                ? "bg-amber-500/10 text-amber-500"
+                                : member.role === "manager"
+                                    ? "bg-primary/10 text-primary"
+                                    : "bg-muted text-muted-foreground"
                                 }`}
                         >
                             {member.role === "admin" ? (
@@ -295,7 +295,7 @@ function PermissionEditor({
                         {!member.isAdmin && (
                             <button
                                 onClick={onDelete}
-                                className="p-2 text-red-600 hover:bg-red-50 rounded-xl transition-colors"
+                                className="p-2 text-red-500 hover:bg-red-500/10 rounded-xl transition-colors"
                                 title="Remove member"
                             >
                                 <Trash2 size={18} />
@@ -303,7 +303,7 @@ function PermissionEditor({
                         )}
                         <button
                             onClick={onClose}
-                            className="p-2 text-muted-foreground hover:text-muted-foreground hover:bg-muted rounded-xl transition-colors"
+                            className="p-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-xl transition-colors"
                         >
                             <X size={20} />
                         </button>
@@ -312,9 +312,9 @@ function PermissionEditor({
             </div>
 
             {member.isAdmin ? (
-                <div className="p-8 text-center">
-                    <div className="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <Crown className="text-amber-600" size={32} />
+                <div className="p-8 text-center flex-1 flex flex-col justify-center">
+                    <div className="w-16 h-16 bg-amber-500/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <Crown className="text-amber-500" size={32} />
                     </div>
                     <h3 className="text-lg font-semibold text-foreground mb-2">
                         Organization Admin
@@ -325,7 +325,7 @@ function PermissionEditor({
                     </p>
                 </div>
             ) : (
-                <div className="p-6 space-y-6">
+                <div className="p-6 space-y-6 flex-1 overflow-y-auto">
                     {/* Role Selection */}
                     <div>
                         <h3 className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
@@ -339,9 +339,9 @@ function PermissionEditor({
                                     onClick={() =>
                                         handleRoleChange(role as "admin" | "manager" | "staff")
                                     }
-                                    className={`flex-1 py-2 px-4 rounded-xl border-2 capitalize font-medium transition-colors ${selectedRole === role
-                                            ? "border-primary bg-primary/10 text-indigo-700"
-                                            : "border-border text-muted-foreground hover:border-input"
+                                    className={`flex-1 py-2 px-4 rounded-xl border capitalize font-medium transition-colors ${selectedRole === role
+                                        ? "border-primary bg-primary/10 text-primary"
+                                        : "border-border text-muted-foreground hover:border-primary/50"
                                         }`}
                                 >
                                     {role}
@@ -360,7 +360,7 @@ function PermissionEditor({
                                 <button
                                     key={key}
                                     onClick={() => handleApplyTemplate(key)}
-                                    className="p-3 text-left border border-border rounded-xl hover:border-indigo-300 hover:bg-primary/10 transition-colors"
+                                    className="p-3 text-left border border-border rounded-xl hover:border-primary/50 hover:bg-primary/5 transition-colors"
                                 >
                                     <p className="font-medium text-foreground text-sm">
                                         {template.name}
@@ -385,16 +385,16 @@ function PermissionEditor({
                                     key={module}
                                     className="border border-border rounded-xl overflow-hidden"
                                 >
-                                    <div className="px-4 py-2.5 bg-accent/50 border-b border-border">
+                                    <div className="px-4 py-2.5 bg-muted/30 border-b border-border">
                                         <h4 className="font-medium text-foreground capitalize">
                                             {module}
                                         </h4>
                                     </div>
-                                    <div className="divide-y divide-slate-100">
+                                    <div className="divide-y divide-border">
                                         {permissions.map(({ key, label }) => (
                                             <label
                                                 key={key}
-                                                className="flex items-center justify-between p-3 hover:bg-accent/50 cursor-pointer"
+                                                className="flex items-center justify-between p-3 hover:bg-muted/30 cursor-pointer"
                                             >
                                                 <span className="text-sm text-foreground">
                                                     {label}
@@ -402,8 +402,8 @@ function PermissionEditor({
                                                 <button
                                                     onClick={() => togglePermission(key)}
                                                     className={`w-5 h-5 rounded flex items-center justify-center transition-colors ${selectedPermissions.has(key)
-                                                            ? "bg-indigo-600 text-white"
-                                                            : "border-2 border-input"
+                                                        ? "bg-primary text-primary-foreground"
+                                                        : "border-2 border-border"
                                                         }`}
                                                 >
                                                     {selectedPermissions.has(key) && (
@@ -423,7 +423,7 @@ function PermissionEditor({
                         <button
                             onClick={handleSavePermissions}
                             disabled={isSaving}
-                            className="px-6 py-2.5 bg-indigo-600 text-white font-medium rounded-xl hover:bg-indigo-700 transition-colors disabled:opacity-50"
+                            className="px-6 py-2.5 bg-primary text-primary-foreground font-medium rounded-xl hover:bg-primary/90 transition-colors disabled:opacity-50"
                         >
                             {isSaving ? "Saving..." : "Save Permissions"}
                         </button>
@@ -464,11 +464,11 @@ function DeleteMemberModal({
     };
 
     return (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-            <div className="bg-white rounded-xl shadow-xl w-full max-w-md p-6">
+        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 backdrop-blur-sm">
+            <div className="bg-card rounded-xl shadow-xl w-full max-w-md p-6 border border-border">
                 <div className="flex items-center gap-4 mb-6">
-                    <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
-                        <AlertTriangle className="text-red-600" size={24} />
+                    <div className="w-12 h-12 bg-red-500/10 rounded-full flex items-center justify-center">
+                        <AlertTriangle className="text-red-500" size={24} />
                     </div>
                     <div>
                         <h3 className="text-lg font-semibold text-foreground">

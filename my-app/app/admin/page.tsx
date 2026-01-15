@@ -64,7 +64,7 @@ export default function AdminDashboard() {
         return (
             <div className="p-8 max-w-2xl mx-auto">
                 <div className="text-center mb-8">
-                    <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <div className="w-16 h-16 bg-purple-500/10 rounded-full flex items-center justify-center mx-auto mb-4">
                         <Building2 className="text-purple-600" size={32} />
                     </div>
                     <h1 className="text-2xl font-bold text-foreground mb-2">Welcome to UCCP</h1>
@@ -81,7 +81,7 @@ export default function AdminDashboard() {
     if (!currentOrg) {
         return (
             <div className="p-12 text-center">
-                <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <div className="w-16 h-16 bg-slate-500/10 rounded-full flex items-center justify-center mx-auto mb-4">
                     <Building2 className="text-muted-foreground" size={32} />
                 </div>
                 <h2 className="text-xl font-semibold text-foreground mb-2">Select an Organization</h2>
@@ -105,29 +105,29 @@ export default function AdminDashboard() {
                 <KPICard
                     title="Total Revenue"
                     value={formatPrice(stats.totalRevenue)}
-                    icon={<DollarSign className="text-emerald-600" />}
-                    bg="bg-emerald-50"
+                    icon={<DollarSign className="text-emerald-500" />}
+                    bg="bg-emerald-500/10"
                     onClick={() => router.push('/admin/orders')}
                 />
                 <KPICard
                     title="Total Orders"
                     value={stats.totalOrders}
-                    icon={<ShoppingBag className="text-blue-600" />}
-                    bg="bg-blue-50"
+                    icon={<ShoppingBag className="text-blue-500" />}
+                    bg="bg-blue-500/10"
                     onClick={() => router.push('/admin/orders')}
                 />
                 <KPICard
                     title="Customers"
                     value={stats.totalCustomers}
-                    icon={<Users className="text-purple-600" />}
-                    bg="bg-purple-50"
+                    icon={<Users className="text-purple-500" />}
+                    bg="bg-purple-500/10"
                     onClick={() => router.push('/admin/customers')}
                 />
                 <KPICard
                     title="Products"
                     value={stats.totalProducts}
-                    icon={<ShoppingBag className="text-orange-600" />}
-                    bg="bg-orange-50"
+                    icon={<ShoppingBag className="text-orange-500" />}
+                    bg="bg-orange-500/10"
                     onClick={() => router.push('/admin/products')}
                 />
             </div>
@@ -142,25 +142,27 @@ export default function AdminDashboard() {
                     {salesData && salesData.length > 0 ? (
                         <ResponsiveContainer width="100%" height="100%">
                             <BarChart data={salesData}>
-                                <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border)" />
                                 <XAxis
                                     dataKey="date"
                                     tickFormatter={(val) => new Date(val).toLocaleDateString("en-US", { month: 'short', day: 'numeric' })}
-                                    tick={{ fontSize: 12, fill: '#64748b' }}
+                                    tick={{ fontSize: 12, fill: '#71767B' }}
                                     axisLine={false}
                                     tickLine={false}
                                 />
                                 <YAxis
                                     tickFormatter={(val) => `$${val}`}
-                                    tick={{ fontSize: 12, fill: '#64748b' }}
+                                    tick={{ fontSize: 12, fill: '#71767B' }}
                                     axisLine={false}
                                     tickLine={false}
                                 />
                                 <Tooltip
+                                    cursor={{ fill: 'var(--muted)' }}
+                                    contentStyle={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)', color: 'var(--foreground)' }}
                                     formatter={(value: number | undefined) => [value ? `$${value.toFixed(2)}` : '$0.00', 'Revenue']}
                                     labelFormatter={(label) => new Date(label).toLocaleDateString("en-US", { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
                                 />
-                                <Bar dataKey="revenue" fill="#0f172a" radius={[4, 4, 0, 0]} />
+                                <Bar dataKey="revenue" fill="var(--color-primary)" radius={[4, 4, 0, 0]} />
                             </BarChart>
                         </ResponsiveContainer>
                     ) : (
@@ -202,7 +204,7 @@ function CustomerReviewsWidget({ recentOrders }: { recentOrders: any[] }) {
         <div className="bg-card rounded-xl shadow-sm border border-border p-6">
             <div className="flex items-center justify-between mb-6">
                 <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
-                    <MessageSquare size={20} className="text-purple-600" />
+                    <MessageSquare size={20} className="text-purple-500" />
                     Customer Reviews
                 </h3>
                 <span className="text-sm text-muted-foreground italic">
@@ -212,7 +214,7 @@ function CustomerReviewsWidget({ recentOrders }: { recentOrders: any[] }) {
 
             {recentReviews.length === 0 ? (
                 <div className="text-center py-12 text-muted-foreground">
-                    <MessageSquare className="mx-auto text-slate-300 mb-4" size={48} />
+                    <MessageSquare className="mx-auto text-slate-700 mb-4" size={48} />
                     <p className="text-muted-foreground">No recent customer activity.</p>
                     <p className="text-sm text-muted-foreground mt-1">Reviews will appear here as customers engage.</p>
                 </div>
@@ -221,7 +223,7 @@ function CustomerReviewsWidget({ recentOrders }: { recentOrders: any[] }) {
                     {recentReviews.map((order) => (
                         <div
                             key={order._id}
-                            className="p-4 bg-gradient-to-r from-purple-50 to-blue-50 rounded-xl border border-purple-100"
+                            className="p-4 bg-muted/50 rounded-xl border border-border hover:bg-muted transition-colors"
                         >
                             <div className="flex items-start justify-between mb-2">
                                 <div className="flex items-center gap-2">
@@ -231,7 +233,7 @@ function CustomerReviewsWidget({ recentOrders }: { recentOrders: any[] }) {
                                                 key={star}
                                                 size={14}
                                                 fill={star <= 4 ? "currentColor" : "none"}
-                                                className={star <= 4 ? "text-amber-500" : "text-amber-200"}
+                                                className={star <= 4 ? "text-amber-500" : "text-amber-500/30"}
                                             />
                                         ))}
                                     </div>
@@ -249,7 +251,7 @@ function CustomerReviewsWidget({ recentOrders }: { recentOrders: any[] }) {
                             <p className="text-xs text-muted-foreground mt-1 italic">
                                 "Great service! Fast delivery and quality products."
                             </p>
-                            <p className="text-xs text-purple-600 mt-2 hover:underline cursor-pointer">
+                            <p className="text-xs text-purple-500 mt-2 hover:underline cursor-pointer">
                                 View Order →
                             </p>
                         </div>

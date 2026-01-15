@@ -10,15 +10,17 @@ interface ProductGridProps {
 }
 
 export function ProductGrid({ orgSlug }: ProductGridProps) {
-    const products = useQuery(api.public.products.list, { orgSlug });
+    const result = useQuery(api.public.products.list, { orgSlug });
 
-    if (products === undefined) {
+    if (result === undefined) {
         return (
             <div className="flex justify-center items-center min-h-[50vh]">
                 <Loader2 className="w-8 h-8 animate-spin text-gray-300" />
             </div>
         );
     }
+
+    const products = result.products;
 
     if (products.length === 0) {
         return (

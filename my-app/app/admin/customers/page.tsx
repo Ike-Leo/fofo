@@ -13,6 +13,7 @@ import {
     Mail,
     ChevronRight,
     Crown,
+    Star,
 } from "lucide-react";
 
 const formatPrice = (cents: number) => {
@@ -57,7 +58,7 @@ export default function CustomersPage() {
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div>
                     <h1 className="text-3xl font-bold text-foreground flex items-center gap-3">
-                        <Users className="text-purple-600" size={32} />
+                        <Users className="text-purple-500" size={32} />
                         Customers
                     </h1>
                     <p className="text-muted-foreground mt-1">
@@ -76,30 +77,30 @@ export default function CustomersPage() {
                         placeholder="Search by name or email..."
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
-                        className="w-full pl-10 pr-4 py-2.5 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                        className="w-full pl-10 pr-4 py-2.5 bg-card border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-foreground placeholder:text-muted-foreground"
                     />
                 </div>
             </div>
 
             {/* Top Customers Widget */}
             {customers && customers.length > 0 && (
-                <div className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-xl shadow-sm border border-amber-200 p-6">
-                    <div className="flex items-center justify-between mb-4">
-                        <h3 className="text-lg font-semibold text-amber-900 flex items-center gap-2">
-                            <Crown className="text-amber-600" size={20} />
+                <div className="bg-card rounded-xl shadow-sm border border-amber-500/20 p-6 relative overflow-hidden">
+                    <div className="absolute top-0 left-0 w-1 h-full bg-amber-500/50"></div>
+                    <div className="flex items-center justify-between mb-6">
+                        <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
+                            <Crown className="text-amber-500" size={20} />
                             Top {topCount} Customers
                         </h3>
                         <div className="flex items-center gap-2">
-                            <span className="text-sm text-amber-700">Show:</span>
+                            <span className="text-sm text-muted-foreground">Show:</span>
                             {[5, 10, 20].map((count) => (
                                 <button
                                     key={count}
                                     onClick={() => setTopCount(count as 5 | 10 | 20)}
-                                    className={`px-3 py-1 rounded-xl text-sm font-medium transition-colors ${
-                                        topCount === count
-                                            ? "bg-amber-600 text-white"
-                                            : "bg-card text-amber-700 hover:bg-amber-100"
-                                    }`}
+                                    className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${topCount === count
+                                            ? "bg-amber-500/20 text-amber-500 border border-amber-500/30"
+                                            : "bg-muted text-muted-foreground hover:bg-muted/80"
+                                        }`}
                                 >
                                     {count}
                                 </button>
@@ -108,8 +109,8 @@ export default function CustomersPage() {
                     </div>
 
                     {topCustomers.length === 0 ? (
-                        <div className="text-center py-8 text-amber-700">
-                            <Crown className="mx-auto text-amber-300 mb-2" size={32} />
+                        <div className="text-center py-8 text-muted-foreground">
+                            <Crown className="mx-auto text-amber-500/20 mb-2" size={32} />
                             <p>No customers yet</p>
                         </div>
                     ) : (
@@ -118,37 +119,34 @@ export default function CustomersPage() {
                                 <Link
                                     key={customer._id}
                                     href={`/admin/customers/${customer._id}`}
-                                    className="bg-card rounded-xl p-4 border border-amber-200 hover:shadow-md hover:border-amber-300 transition-all cursor-pointer"
+                                    className="bg-muted/30 rounded-xl p-4 border border-border hover:border-amber-500/50 hover:bg-muted/50 transition-all cursor-pointer group"
                                 >
                                     <div className="flex items-center gap-3 mb-3">
                                         <div
-                                            className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                                                index === 0
-                                                    ? "bg-amber-100 text-amber-600"
+                                            className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm ${index === 0
+                                                    ? "bg-amber-500/20 text-amber-500"
                                                     : index === 1
-                                                        ? "bg-slate-200 text-muted-foreground"
+                                                        ? "bg-slate-500/20 text-slate-400"
                                                         : index === 2
-                                                            ? "bg-orange-100 text-orange-600"
-                                                            : "bg-purple-100 text-purple-600"
-                                            }`}
+                                                            ? "bg-orange-500/20 text-orange-500"
+                                                            : "bg-purple-500/20 text-purple-500"
+                                                }`}
                                         >
                                             {index < 3 ? (
                                                 <Crown size={18} />
                                             ) : (
-                                                <span className="font-medium text-sm">
-                                                    #{index + 1}
-                                                </span>
+                                                `#${index + 1}`
                                             )}
                                         </div>
                                         <div className="flex-1 min-w-0">
-                                            <p className="font-medium text-foreground truncate">{customer.name}</p>
+                                            <p className="font-medium text-foreground truncate group-hover:text-primary transition-colors">{customer.name}</p>
                                             <p className="text-xs text-muted-foreground truncate">{customer.email}</p>
                                         </div>
                                     </div>
                                     <div className="space-y-1">
                                         <div className="flex items-center justify-between text-sm">
                                             <span className="text-muted-foreground">Total Spend:</span>
-                                            <span className="font-semibold text-emerald-600">
+                                            <span className="font-semibold text-emerald-500">
                                                 {formatPrice(customer.totalSpend)}
                                             </span>
                                         </div>
@@ -173,19 +171,28 @@ export default function CustomersPage() {
             {/* Stats Summary */}
             {customers && customers.length > 0 && (
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                    <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl p-4 border border-purple-200">
-                        <p className="text-sm font-medium text-purple-600">Total Customers</p>
-                        <p className="text-2xl font-bold text-purple-900">{customers.length}</p>
+                    <div className="bg-card rounded-xl p-4 border border-purple-500/20 relative overflow-hidden group hover:border-purple-500/40 transition-colors">
+                        <div className="absolute right-0 top-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                            <Users size={64} className="text-purple-500" />
+                        </div>
+                        <p className="text-sm font-medium text-purple-500">Total Customers</p>
+                        <p className="text-3xl font-bold text-foreground mt-1">{customers.length}</p>
                     </div>
-                    <div className="bg-gradient-to-br from-emerald-50 to-emerald-100 rounded-xl p-4 border border-emerald-200">
-                        <p className="text-sm font-medium text-emerald-600">Total Revenue</p>
-                        <p className="text-2xl font-bold text-emerald-900">
+                    <div className="bg-card rounded-xl p-4 border border-emerald-500/20 relative overflow-hidden group hover:border-emerald-500/40 transition-colors">
+                        <div className="absolute right-0 top-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                            <TrendingUp size={64} className="text-emerald-500" />
+                        </div>
+                        <p className="text-sm font-medium text-emerald-500">Total Revenue</p>
+                        <p className="text-3xl font-bold text-foreground mt-1">
                             {formatPrice(customers.reduce((sum, c) => sum + c.totalSpend, 0))}
                         </p>
                     </div>
-                    <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-4 border border-blue-200">
-                        <p className="text-sm font-medium text-blue-600">Avg. Lifetime Value</p>
-                        <p className="text-2xl font-bold text-blue-900">
+                    <div className="bg-card rounded-xl p-4 border border-blue-500/20 relative overflow-hidden group hover:border-blue-500/40 transition-colors">
+                        <div className="absolute right-0 top-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                            <ShoppingBag size={64} className="text-blue-500" />
+                        </div>
+                        <p className="text-sm font-medium text-blue-500">Avg. Lifetime Value</p>
+                        <p className="text-3xl font-bold text-foreground mt-1">
                             {formatPrice(
                                 customers.reduce((sum, c) => sum + c.totalSpend, 0) / customers.length
                             )}
@@ -202,7 +209,7 @@ export default function CustomersPage() {
                     </div>
                 ) : customers.length === 0 ? (
                     <div className="p-12 text-center">
-                        <Users className="mx-auto text-slate-300 mb-4" size={48} />
+                        <Users className="mx-auto text-slate-700 mb-4" size={48} />
                         <h3 className="text-lg font-semibold text-foreground">No customers yet</h3>
                         <p className="text-muted-foreground mt-1">
                             Customers will appear here after they place orders.
@@ -227,7 +234,7 @@ export default function CustomersPage() {
                                 <th className="px-6 py-4"></th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-slate-100">
+                        <tbody className="divide-y divide-border">
                             {customers.map((customer, index) => (
                                 <tr
                                     key={customer._id}
@@ -239,17 +246,17 @@ export default function CustomersPage() {
                                             {index < 3 && (
                                                 <div
                                                     className={`w-8 h-8 rounded-full flex items-center justify-center ${index === 0
-                                                        ? "bg-amber-100 text-amber-600"
+                                                        ? "bg-amber-500/20 text-amber-500"
                                                         : index === 1
-                                                            ? "bg-slate-200 text-muted-foreground"
-                                                            : "bg-orange-100 text-orange-600"
+                                                            ? "bg-slate-500/20 text-slate-400"
+                                                            : "bg-orange-500/20 text-orange-500"
                                                         }`}
                                                 >
                                                     <Crown size={14} />
                                                 </div>
                                             )}
                                             {index >= 3 && (
-                                                <div className="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center text-purple-600 font-medium text-sm">
+                                                <div className="w-8 h-8 rounded-full bg-purple-500/10 flex items-center justify-center text-purple-500 font-medium text-sm">
                                                     {customer.name.charAt(0).toUpperCase()}
                                                 </div>
                                             )}
@@ -282,7 +289,7 @@ export default function CustomersPage() {
                                             />
                                             <span
                                                 className={`font-semibold ${customer.totalSpend > 10000
-                                                    ? "text-emerald-700"
+                                                    ? "text-emerald-500"
                                                     : "text-foreground"
                                                     }`}
                                             >
@@ -296,7 +303,7 @@ export default function CustomersPage() {
                                     <td className="px-6 py-4">
                                         <Link
                                             href={`/admin/customers/${customer._id}`}
-                                            className="text-purple-600 hover:text-purple-800 flex items-center gap-1 text-sm font-medium"
+                                            className="text-primary hover:text-primary/80 flex items-center gap-1 text-sm font-medium transition-colors"
                                         >
                                             View
                                             <ChevronRight size={16} />

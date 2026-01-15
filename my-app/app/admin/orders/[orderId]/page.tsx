@@ -42,7 +42,7 @@ export default function OrderDetailsPage() {
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
     const [isRepeatModalOpen, setIsRepeatModalOpen] = useState(false);
 
-    if (order === undefined) return <div className="p-12 text-center animate-pulse">Loading order...</div>;
+    if (order === undefined) return <div className="p-12 text-center animate-pulse text-muted-foreground">Loading order...</div>;
     if (order === null) return <div className="p-12 text-center text-red-500">Order not found or unauthorized.</div>;
 
     const displayStatus = optimisticStatus || order.status;
@@ -77,7 +77,7 @@ export default function OrderDetailsPage() {
 
     return (
         <div className="p-8 max-w-5xl mx-auto">
-            <Link href="/admin/orders" className="inline-flex items-center text-sm text-slate-500 hover:text-slate-900 mb-6 transition-colors">
+            <Link href="/admin/orders" className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-6 transition-colors">
                 <ArrowLeft size={16} className="mr-2" />
                 Back to Orders
             </Link>
@@ -85,10 +85,10 @@ export default function OrderDetailsPage() {
             <div className="flex flex-col md:flex-row justify-between items-start gap-6 mb-8">
                 <div>
                     <div className="flex items-center gap-3 mb-2">
-                        <h1 className="text-3xl font-bold text-slate-900">{order.orderNumber}</h1>
+                        <h1 className="text-3xl font-bold text-foreground">{order.orderNumber}</h1>
                         <StatusBadge status={displayStatus} size="lg" />
                     </div>
-                    <div className="flex items-center gap-4 text-sm text-slate-500">
+                    <div className="flex items-center gap-4 text-sm text-muted-foreground">
                         <span className="flex items-center gap-1">
                             <Calendar size={14} />
                             {new Date(order.createdAt).toLocaleString()}
@@ -167,12 +167,12 @@ export default function OrderDetailsPage() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                 {/* Main Content: Items */}
                 <div className="md:col-span-2 space-y-6">
-                    <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-                        <div className="px-6 py-4 border-b border-slate-200 bg-slate-50 font-medium text-slate-700">
+                    <div className="bg-card rounded-xl shadow-sm border border-border overflow-hidden">
+                        <div className="px-6 py-4 border-b border-border bg-muted/30 font-medium text-foreground">
                             Order Items
                         </div>
                         <table className="w-full text-left text-sm">
-                            <thead className="bg-white border-b border-slate-100 text-slate-500">
+                            <thead className="bg-card border-b border-border text-muted-foreground">
                                 <tr>
                                     <th className="px-6 py-3 font-normal">Product</th>
                                     <th className="px-6 py-3 font-normal text-right">Price</th>
@@ -180,30 +180,30 @@ export default function OrderDetailsPage() {
                                     <th className="px-6 py-3 font-normal text-right">Total</th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-slate-100">
+                            <tbody className="divide-y divide-border">
                                 {order.items.map((item: any) => (
                                     <tr key={item._id}>
                                         <td className="px-6 py-4">
                                             <Link
                                                 href={`/admin/products/${item.productId}`}
-                                                className="font-medium text-slate-900 hover:text-blue-600 hover:underline"
+                                                className="font-medium text-foreground hover:text-primary hover:underline"
                                             >
                                                 {item.productName}
                                             </Link>
-                                            <div className="text-slate-500 text-xs">{item.variantName}</div>
+                                            <div className="text-muted-foreground text-xs">{item.variantName}</div>
                                         </td>
-                                        <td className="px-6 py-4 text-right tabular-nums">{formatPrice(item.price)}</td>
-                                        <td className="px-6 py-4 text-right tabular-nums">{item.quantity}</td>
-                                        <td className="px-6 py-4 text-right font-medium tabular-nums">
+                                        <td className="px-6 py-4 text-right tabular-nums text-foreground">{formatPrice(item.price)}</td>
+                                        <td className="px-6 py-4 text-right tabular-nums text-foreground">{item.quantity}</td>
+                                        <td className="px-6 py-4 text-right font-medium tabular-nums text-foreground">
                                             {formatPrice(item.price * item.quantity)}
                                         </td>
                                     </tr>
                                 ))}
                             </tbody>
-                            <tfoot className="bg-slate-50 border-t border-slate-200">
+                            <tfoot className="bg-muted/30 border-t border-border">
                                 <tr>
-                                    <td colSpan={3} className="px-6 py-4 text-right font-medium text-slate-600">Total</td>
-                                    <td className="px-6 py-4 text-right font-bold text-slate-900 text-lg">
+                                    <td colSpan={3} className="px-6 py-4 text-right font-medium text-muted-foreground">Total</td>
+                                    <td className="px-6 py-4 text-right font-bold text-foreground text-lg">
                                         {formatPrice(order.totalAmount)}
                                     </td>
                                 </tr>
@@ -214,25 +214,25 @@ export default function OrderDetailsPage() {
 
                 {/* Sidebar: Customer Info */}
                 <div className="space-y-6">
-                    <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-                        <h3 className="font-medium text-slate-900 mb-4 flex items-center gap-2">
-                            <User size={18} className="text-slate-400" />
+                    <div className="bg-card rounded-xl shadow-sm border border-border p-6">
+                        <h3 className="font-medium text-foreground mb-4 flex items-center gap-2">
+                            <User size={18} className="text-muted-foreground" />
                             Customer
                         </h3>
                         <div className="space-y-3 text-sm">
                             <div>
-                                <div className="text-slate-500 text-xs uppercase tracking-wider mb-1">Contact</div>
-                                <div className="font-medium text-slate-900">{order.customerInfo.name}</div>
-                                <Link href={`mailto:${order.customerInfo.email}`} className="text-blue-600 hover:underline">
+                                <div className="text-muted-foreground text-xs uppercase tracking-wider mb-1">Contact</div>
+                                <div className="font-medium text-foreground">{order.customerInfo.name}</div>
+                                <Link href={`mailto:${order.customerInfo.email}`} className="text-primary hover:underline">
                                     {order.customerInfo.email}
                                 </Link>
-                                {order.customerInfo.phone && <div className="text-slate-600">{order.customerInfo.phone}</div>}
+                                {order.customerInfo.phone && <div className="text-muted-foreground">{order.customerInfo.phone}</div>}
                             </div>
                             {order.customerInfo.address && (
                                 <div>
-                                    <div className="text-slate-500 text-xs uppercase tracking-wider mb-1 mt-3">Shipping Address</div>
-                                    <div className="text-slate-700 whitespace-pre-wrap flex items-start gap-2">
-                                        <MapPin size={14} className="mt-0.5 shrink-0 text-slate-400" />
+                                    <div className="text-muted-foreground text-xs uppercase tracking-wider mb-1 mt-3">Shipping Address</div>
+                                    <div className="text-foreground whitespace-pre-wrap flex items-start gap-2">
+                                        <MapPin size={14} className="mt-0.5 shrink-0 text-muted-foreground" />
                                         {order.customerInfo.address}
                                     </div>
                                 </div>
@@ -241,23 +241,23 @@ export default function OrderDetailsPage() {
                     </div>
 
                     {/* Timeline placeholder - could be real logs later */}
-                    <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-                        <h3 className="font-medium text-slate-900 mb-4 flex items-center gap-2">
-                            <Clock size={18} className="text-slate-400" />
+                    <div className="bg-card rounded-xl shadow-sm border border-border p-6">
+                        <h3 className="font-medium text-foreground mb-4 flex items-center gap-2">
+                            <Clock size={18} className="text-muted-foreground" />
                             Timeline
                         </h3>
-                        <div className="relative pl-4 border-l-2 border-slate-100 space-y-6">
+                        <div className="relative pl-4 border-l-2 border-muted space-y-6">
                             <div className="relative">
-                                <div className="absolute -left-[21px] top-1 w-3 h-3 rounded-full bg-slate-200 border-2 border-white ring-1 ring-slate-100"></div>
-                                <div className="text-sm text-slate-900 font-medium">Order Created</div>
-                                <div className="text-xs text-slate-500">{new Date(order.createdAt).toLocaleString()}</div>
+                                <div className="absolute -left-[21px] top-1 w-3 h-3 rounded-full bg-muted-foreground border-2 border-card ring-1 ring-muted"></div>
+                                <div className="text-sm text-foreground font-medium">Order Created</div>
+                                <div className="text-xs text-muted-foreground">{new Date(order.createdAt).toLocaleString()}</div>
                             </div>
                             {/* Simple logic for timeline points based on status */}
                             {order.updatedAt > order.createdAt && (
                                 <div className="relative">
-                                    <div className="absolute -left-[21px] top-1 w-3 h-3 rounded-full bg-blue-200 border-2 border-white ring-1 ring-slate-100"></div>
-                                    <div className="text-sm text-slate-900 font-medium">Last Updated</div>
-                                    <div className="text-xs text-slate-500">{new Date(order.updatedAt).toLocaleString()}</div>
+                                    <div className="absolute -left-[21px] top-1 w-3 h-3 rounded-full bg-blue-500/50 border-2 border-card ring-1 ring-muted"></div>
+                                    <div className="text-sm text-foreground font-medium">Last Updated</div>
+                                    <div className="text-xs text-muted-foreground">{new Date(order.updatedAt).toLocaleString()}</div>
                                 </div>
                             )}
                         </div>
@@ -286,14 +286,14 @@ export default function OrderDetailsPage() {
 
 function StatusBadge({ status, size = "md" }: { status: string, size?: "md" | "lg" }) {
     const styles: Record<string, string> = {
-        pending: "bg-amber-100 text-amber-700",
-        paid: "bg-blue-100 text-blue-700",
-        processing: "bg-indigo-100 text-indigo-700",
-        shipped: "bg-purple-100 text-purple-700",
-        delivered: "bg-emerald-100 text-emerald-700",
-        cancelled: "bg-slate-100 text-slate-600",
+        pending: "bg-amber-500/10 text-amber-500 border-amber-500/20",
+        paid: "bg-blue-500/10 text-blue-500 border-blue-500/20",
+        processing: "bg-indigo-500/10 text-indigo-500 border-indigo-500/20",
+        shipped: "bg-purple-500/10 text-purple-500 border-purple-500/20",
+        delivered: "bg-emerald-500/10 text-emerald-500 border-emerald-500/20",
+        cancelled: "bg-slate-500/10 text-slate-400 border-slate-500/20",
     };
-    const sizeClasses = size === "lg" ? "px-3 py-1 text-sm" : "px-2.5 py-0.5 text-xs";
+    const sizeClasses = size === "lg" ? "px-3 py-1 text-sm border" : "px-2.5 py-0.5 text-xs border";
 
     return (
         <span className={`inline-flex items-center rounded-full font-medium capitalize ${sizeClasses} ${styles[status]}`}>
@@ -303,12 +303,14 @@ function StatusBadge({ status, size = "md" }: { status: string, size?: "md" | "l
 }
 
 function ActionButton({ onClick, label, icon, color, loading }: any) {
+    // Map abstract colors to concrete classes
     const colors: Record<string, string> = {
-        blue: "bg-blue-600 hover:bg-blue-700 text-white",
-        indigo: "bg-indigo-600 hover:bg-indigo-700 text-white",
-        purple: "bg-purple-600 hover:bg-purple-700 text-white",
-        emerald: "bg-emerald-600 hover:bg-emerald-700 text-white",
-        slate: "bg-white border border-slate-300 text-slate-700 hover:bg-slate-50",
+        // Map everything to the new Two-Tone system (Brand Blue + Neutral)
+        blue: "bg-primary hover:bg-primary/90 text-primary-foreground shadow-sm", // Primary Action
+        emerald: "bg-primary hover:bg-primary/90 text-primary-foreground shadow-sm", // Converted to Primary
+        indigo: "bg-primary hover:bg-primary/90 text-primary-foreground shadow-sm", // Converted to Primary
+        purple: "bg-background border border-border hover:bg-muted text-foreground shadow-sm", // Secondary Action
+        slate: "bg-background border border-border hover:bg-destructive/10 hover:text-destructive text-muted-foreground shadow-sm", // Destructive/Ghost
     };
 
     return (
@@ -399,22 +401,22 @@ function CreateOrderModal({ orgId, onClose, prefillCustomer }: {
     const total = lineItems.reduce((acc, item) => acc + (item.price * item.quantity), 0);
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm">
-            <div className="bg-white rounded-xl shadow-xl max-w-2xl w-full overflow-hidden flex flex-col max-h-[90vh]">
-                <div className="px-6 py-4 border-b border-slate-200 flex justify-between items-center bg-slate-50">
-                    <h3 className="font-semibold text-lg text-slate-900">Create Manual Order</h3>
-                    <button onClick={onClose} className="text-slate-400 hover:text-slate-600">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+            <div className="bg-card rounded-xl shadow-xl max-w-2xl w-full overflow-hidden flex flex-col max-h-[90vh] border border-border">
+                <div className="px-6 py-4 border-b border-border flex justify-between items-center bg-muted/30">
+                    <h3 className="font-semibold text-lg text-foreground">Create Manual Order</h3>
+                    <button onClick={onClose} className="text-muted-foreground hover:text-foreground">
                         <XCircle size={20} />
                     </button>
                 </div>
 
-                <div className="p-6 overflow-y-auto flex-1">
+                <div className="p-6 overflow-y-auto flex-1 text-foreground">
                     {/* Item Selection */}
-                    <div className="mb-6 p-4 bg-slate-50 rounded-lg border border-slate-100">
-                        <h4 className="text-sm font-medium text-slate-700 mb-3">Add Items</h4>
+                    <div className="mb-6 p-4 bg-muted/30 rounded-lg border border-border">
+                        <h4 className="text-sm font-medium text-foreground mb-3">Add Items</h4>
                         <div className="flex gap-2">
                             <select
-                                className="flex-1 px-3 py-2 border border-slate-300 rounded-lg text-sm"
+                                className="flex-1 px-3 py-2 bg-card border border-border rounded-lg text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                                 value={selectedVariantId}
                                 onChange={(e) => {
                                     setSelectedVariantId(e.target.value);
@@ -430,7 +432,7 @@ function CreateOrderModal({ orgId, onClose, prefillCustomer }: {
                             </select>
                             <input
                                 type="number"
-                                className="w-20 px-3 py-2 border border-slate-300 rounded-lg text-sm"
+                                className="w-20 px-3 py-2 bg-card border border-border rounded-lg text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                                 value={quantity}
                                 onChange={(e) => setQuantity(e.target.value)}
                                 min="1"
@@ -439,7 +441,7 @@ function CreateOrderModal({ orgId, onClose, prefillCustomer }: {
                                 type="button"
                                 onClick={addItem}
                                 disabled={!selectedVariantId}
-                                className="px-4 py-2 bg-slate-900 text-white rounded-lg text-sm font-medium disabled:opacity-50"
+                                className="px-4 py-2 bg-foreground text-card rounded-lg text-sm font-medium disabled:opacity-50 hover:bg-foreground/90 transition-colors"
                             >
                                 Add
                             </button>
@@ -447,9 +449,9 @@ function CreateOrderModal({ orgId, onClose, prefillCustomer }: {
                     </div>
 
                     {/* Cart Table */}
-                    <div className="mb-6 border border-slate-200 rounded-lg overflow-hidden">
+                    <div className="mb-6 border border-border rounded-lg overflow-hidden">
                         <table className="w-full text-sm text-left">
-                            <thead className="bg-slate-50 text-slate-500 border-b border-slate-200">
+                            <thead className="bg-muted/50 text-muted-foreground border-b border-border">
                                 <tr>
                                     <th className="px-4 py-2">Item</th>
                                     <th className="px-4 py-2 text-right">Qty</th>
@@ -458,20 +460,20 @@ function CreateOrderModal({ orgId, onClose, prefillCustomer }: {
                                     <th className="w-10"></th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-slate-100">
+                            <tbody className="divide-y divide-border">
                                 {lineItems.length === 0 ? (
                                     <tr>
-                                        <td colSpan={5} className="px-4 py-8 text-center text-slate-500 italic">No items added</td>
+                                        <td colSpan={5} className="px-4 py-8 text-center text-muted-foreground italic">No items added</td>
                                     </tr>
                                 ) : (
                                     lineItems.map((item, idx) => (
                                         <tr key={idx}>
-                                            <td className="px-4 py-2">{item.name}</td>
-                                            <td className="px-4 py-2 text-right">{item.quantity}</td>
-                                            <td className="px-4 py-2 text-right">{formatPrice(item.price)}</td>
-                                            <td className="px-4 py-2 text-right font-medium">{formatPrice(item.price * item.quantity)}</td>
+                                            <td className="px-4 py-2 text-foreground">{item.name}</td>
+                                            <td className="px-4 py-2 text-right text-foreground">{item.quantity}</td>
+                                            <td className="px-4 py-2 text-right text-foreground">{formatPrice(item.price)}</td>
+                                            <td className="px-4 py-2 text-right font-medium text-foreground">{formatPrice(item.price * item.quantity)}</td>
                                             <td className="px-4 py-2 text-right">
-                                                <button onClick={() => removeItem(idx)} className="text-red-500 hover:text-red-700">
+                                                <button onClick={() => removeItem(idx)} className="text-red-500 hover:text-red-400">
                                                     <XCircle size={16} />
                                                 </button>
                                             </td>
@@ -479,7 +481,7 @@ function CreateOrderModal({ orgId, onClose, prefillCustomer }: {
                                     ))
                                 )}
                             </tbody>
-                            <tfoot className="bg-slate-50 font-semibold text-slate-900">
+                            <tfoot className="bg-muted/30 font-semibold text-foreground border-t border-border">
                                 <tr>
                                     <td colSpan={3} className="px-4 py-3 text-right">Total:</td>
                                     <td className="px-4 py-3 text-right">{formatPrice(total)}</td>
@@ -491,33 +493,33 @@ function CreateOrderModal({ orgId, onClose, prefillCustomer }: {
 
                     {/* Customer Info */}
                     <div className="space-y-4">
-                        <h4 className="text-sm font-medium text-slate-700">Customer Details</h4>
+                        <h4 className="text-sm font-medium text-foreground">Customer Details</h4>
                         <div className="grid grid-cols-2 gap-4">
                             <div>
-                                <label className="block text-xs font-medium text-slate-500 mb-1">Name</label>
+                                <label className="block text-xs font-medium text-muted-foreground mb-1">Name</label>
                                 <input
                                     type="text"
                                     required
-                                    className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"
+                                    className="w-full px-3 py-2 bg-card border border-border rounded-lg text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                                     value={customerName}
                                     onChange={(e) => setCustomerName(e.target.value)}
                                 />
                             </div>
                             <div>
-                                <label className="block text-xs font-medium text-slate-500 mb-1">Email</label>
+                                <label className="block text-xs font-medium text-muted-foreground mb-1">Email</label>
                                 <input
                                     type="email"
                                     required
-                                    className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"
+                                    className="w-full px-3 py-2 bg-card border border-border rounded-lg text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                                     value={customerEmail}
                                     onChange={(e) => setCustomerEmail(e.target.value)}
                                 />
                             </div>
                             <div className="col-span-2">
-                                <label className="block text-xs font-medium text-slate-500 mb-1">Phone (optional)</label>
+                                <label className="block text-xs font-medium text-muted-foreground mb-1">Phone (optional)</label>
                                 <input
                                     type="tel"
-                                    className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"
+                                    className="w-full px-3 py-2 bg-card border border-border rounded-lg text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                                     value={customerPhone}
                                     onChange={(e) => setCustomerPhone(e.target.value)}
                                     placeholder="+1 (555) 123-4567"
@@ -527,20 +529,20 @@ function CreateOrderModal({ orgId, onClose, prefillCustomer }: {
                     </div>
 
                     {error && (
-                        <div className="mt-4 p-3 bg-red-50 text-red-700 text-sm rounded-lg">
+                        <div className="mt-4 p-3 bg-red-500/10 border border-red-500/20 text-red-500 text-sm rounded-lg">
                             {error}
                         </div>
                     )}
                 </div>
 
-                <div className="p-4 border-t border-slate-200 bg-slate-50 flex justify-end gap-3">
-                    <button onClick={onClose} className="px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100 rounded-lg">
+                <div className="p-4 border-t border-border bg-muted/30 flex justify-end gap-3">
+                    <button onClick={onClose} className="px-4 py-2 text-sm font-medium text-muted-foreground hover:bg-muted/50 rounded-lg transition-colors">
                         Cancel
                     </button>
                     <button
                         onClick={handleSubmit}
                         disabled={isSubmitting || lineItems.length === 0}
-                        className="px-6 py-2 text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg shadow-sm disabled:opacity-50"
+                        className="px-6 py-2 text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg shadow-sm disabled:opacity-50 transition-colors"
                     >
                         {isSubmitting ? "Placing Order..." : "Place Order"}
                     </button>
@@ -613,33 +615,33 @@ function RepeatOrderModal({ orgId, originalOrder, onClose }: { orgId: Id<"organi
     const total = lineItems.reduce((acc, item) => acc + (item.price * item.quantity), 0);
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm">
-            <div className="bg-white rounded-xl shadow-xl max-w-2xl w-full overflow-hidden flex flex-col max-h-[90vh]">
-                <div className="px-6 py-4 border-b border-slate-200 flex justify-between items-center bg-slate-50">
-                    <h3 className="font-semibold text-lg text-slate-900">Repeat Order</h3>
-                    <button onClick={onClose} className="text-slate-400 hover:text-slate-600">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+            <div className="bg-card rounded-xl shadow-xl max-w-2xl w-full overflow-hidden flex flex-col max-h-[90vh] border border-border">
+                <div className="px-6 py-4 border-b border-border flex justify-between items-center bg-muted/30">
+                    <h3 className="font-semibold text-lg text-foreground">Repeat Order</h3>
+                    <button onClick={onClose} className="text-muted-foreground hover:text-foreground">
                         <XCircle size={20} />
                     </button>
                 </div>
 
-                <div className="p-6 overflow-y-auto flex-1">
+                <div className="p-6 overflow-y-auto flex-1 text-foreground">
                     {/* Customer Info Display */}
-                    <div className="mb-6 p-4 bg-purple-50 rounded-lg border border-purple-100">
-                        <h4 className="text-sm font-medium text-purple-900 mb-2">Customer</h4>
-                        <div className="text-sm text-purple-700">
-                            <div>{originalOrder.customerInfo.name}</div>
+                    <div className="mb-6 p-4 bg-muted/30 rounded-lg border border-border">
+                        <h4 className="text-sm font-medium text-foreground mb-2">Customer</h4>
+                        <div className="text-sm text-muted-foreground">
+                            <div><span className="font-medium text-foreground">{originalOrder.customerInfo.name}</span></div>
                             <div>{originalOrder.customerInfo.email}</div>
                             {originalOrder.customerInfo.phone && <div>{originalOrder.customerInfo.phone}</div>}
                         </div>
                     </div>
 
                     {/* Cart Table */}
-                    <div className="mb-6 border border-slate-200 rounded-lg overflow-hidden">
-                        <div className="bg-slate-50 px-4 py-2 border-b border-slate-200">
-                            <p className="text-xs text-slate-600">Adjust quantities before confirming</p>
+                    <div className="mb-6 border border-border rounded-lg overflow-hidden">
+                        <div className="bg-muted/30 px-4 py-2 border-b border-border">
+                            <p className="text-xs text-muted-foreground">Adjust quantities before confirming</p>
                         </div>
                         <table className="w-full text-sm text-left">
-                            <thead className="bg-slate-50 text-slate-500 border-b border-slate-200">
+                            <thead className="bg-muted/50 text-muted-foreground border-b border-border">
                                 <tr>
                                     <th className="px-4 py-2">Item</th>
                                     <th className="px-4 py-2 text-right">Qty</th>
@@ -648,28 +650,28 @@ function RepeatOrderModal({ orgId, originalOrder, onClose }: { orgId: Id<"organi
                                     <th className="w-10"></th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-slate-100">
+                            <tbody className="divide-y divide-border">
                                 {lineItems.length === 0 ? (
                                     <tr>
-                                        <td colSpan={5} className="px-4 py-8 text-center text-slate-500 italic">No items added</td>
+                                        <td colSpan={5} className="px-4 py-8 text-center text-muted-foreground italic">No items added</td>
                                     </tr>
                                 ) : (
                                     lineItems.map((item, idx) => (
                                         <tr key={idx}>
-                                            <td className="px-4 py-2">{item.name}</td>
+                                            <td className="px-4 py-2 text-foreground">{item.name}</td>
                                             <td className="px-4 py-2 text-right">
                                                 <input
                                                     type="number"
                                                     min="1"
                                                     value={item.quantity}
                                                     onChange={(e) => updateQuantity(idx, parseInt(e.target.value) || 1)}
-                                                    className="w-20 px-2 py-1 border border-slate-300 rounded text-right text-sm"
+                                                    className="w-20 px-2 py-1 bg-card border border-border rounded text-right text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                                                 />
                                             </td>
-                                            <td className="px-4 py-2 text-right">{formatPrice(item.price)}</td>
-                                            <td className="px-4 py-2 text-right font-medium">{formatPrice(item.price * item.quantity)}</td>
+                                            <td className="px-4 py-2 text-right text-foreground">{formatPrice(item.price)}</td>
+                                            <td className="px-4 py-2 text-right font-medium text-foreground">{formatPrice(item.price * item.quantity)}</td>
                                             <td className="px-4 py-2 text-right">
-                                                <button onClick={() => removeItem(idx)} className="text-red-500 hover:text-red-700">
+                                                <button onClick={() => removeItem(idx)} className="text-red-500 hover:text-red-400">
                                                     <XCircle size={16} />
                                                 </button>
                                             </td>
@@ -677,7 +679,7 @@ function RepeatOrderModal({ orgId, originalOrder, onClose }: { orgId: Id<"organi
                                     ))
                                 )}
                             </tbody>
-                            <tfoot className="bg-slate-50 font-semibold text-slate-900">
+                            <tfoot className="bg-muted/30 font-semibold text-foreground border-t border-border">
                                 <tr>
                                     <td colSpan={3} className="px-4 py-3 text-right">Total:</td>
                                     <td className="px-4 py-3 text-right">{formatPrice(total)}</td>
@@ -688,20 +690,20 @@ function RepeatOrderModal({ orgId, originalOrder, onClose }: { orgId: Id<"organi
                     </div>
 
                     {error && (
-                        <div className="mt-4 p-3 bg-red-50 text-red-700 text-sm rounded-lg">
+                        <div className="mt-4 p-3 bg-red-500/10 border border-red-500/20 text-red-500 text-sm rounded-lg">
                             {error}
                         </div>
                     )}
                 </div>
 
-                <div className="p-4 border-t border-slate-200 bg-slate-50 flex justify-end gap-3">
-                    <button onClick={onClose} className="px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100 rounded-lg">
+                <div className="p-4 border-t border-border bg-muted/30 flex justify-end gap-3">
+                    <button onClick={onClose} className="px-4 py-2 text-sm font-medium text-muted-foreground hover:bg-muted/50 rounded-lg transition-colors">
                         Cancel
                     </button>
                     <button
                         onClick={handleSubmit}
                         disabled={isSubmitting || lineItems.length === 0}
-                        className="px-6 py-2 text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg shadow-sm disabled:opacity-50"
+                        className="px-6 py-2 text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg shadow-sm disabled:opacity-50 transition-colors"
                     >
                         {isSubmitting ? "Placing Order..." : "Place Order"}
                     </button>

@@ -107,9 +107,9 @@ export default function ProductVariants({ productId, variants }: ProductVariants
     };
 
     const getStockStatus = (stock: number) => {
-        if (stock === 0) return { label: "Out of Stock", color: "text-red-700 bg-red-50 border-red-200" };
-        if (stock < 10) return { label: "Low Stock", color: "text-amber-700 bg-amber-50 border-amber-200" };
-        return { label: "In Stock", color: "text-emerald-700 bg-emerald-50 border-emerald-200" };
+        if (stock === 0) return { label: "Out of Stock", color: "text-red-500 bg-red-500/10 border-red-500/20" };
+        if (stock < 10) return { label: "Low Stock", color: "text-amber-500 bg-amber-500/10 border-amber-500/20" };
+        return { label: "In Stock", color: "text-emerald-500 bg-emerald-500/10 border-emerald-500/20" };
     };
 
     return (
@@ -119,7 +119,7 @@ export default function ProductVariants({ productId, variants }: ProductVariants
                 <button
                     onClick={() => setIsAdding(true)}
                     disabled={isAdding}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-xl transition-colors"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-white bg-primary hover:bg-primary/90 rounded-full transition-colors font-bold shadow-sm"
                 >
                     <PlusIcon size={16} />
                     Add Variant
@@ -127,14 +127,14 @@ export default function ProductVariants({ productId, variants }: ProductVariants
             </div>
 
             {error && (
-                <div className="p-3 bg-red-50 text-red-700 text-sm rounded-xl flex items-center gap-2">
+                <div className="p-3 bg-red-500/10 border border-red-500/20 text-red-500 text-sm rounded-xl flex items-center gap-2">
                     <AlertCircle size={16} />
                     {error}
                 </div>
             )}
 
             {isAdding && (
-                <div className="p-4 bg-slate-50 border border-border rounded-xl animate-fadeIn">
+                <div className="p-4 bg-muted/30 border border-border rounded-xl animate-fadeIn">
                     <form onSubmit={handleAdd} className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
                         <div>
                             <label className="block text-xs font-medium text-muted-foreground mb-1">Name</label>
@@ -144,7 +144,7 @@ export default function ProductVariants({ productId, variants }: ProductVariants
                                 placeholder="e.g. Large / Red"
                                 value={newVariant.name}
                                 onChange={e => setNewVariant({ ...newVariant, name: e.target.value })}
-                                className="w-full px-4 py-2.5 bg-card border border-input rounded-md text-sm"
+                                className="w-full px-4 py-2 bg-background border border-border rounded-xl text-sm focus:ring-2 focus:ring-primary/50 text-foreground"
                             />
                         </div>
                         <div>
@@ -155,7 +155,7 @@ export default function ProductVariants({ productId, variants }: ProductVariants
                                 placeholder="PROD-L-RED"
                                 value={newVariant.sku}
                                 onChange={e => setNewVariant({ ...newVariant, sku: e.target.value })}
-                                className="w-full px-4 py-2.5 bg-card border border-input rounded-md text-sm font-mono"
+                                className="w-full px-4 py-2 bg-background border border-border rounded-xl text-sm font-mono focus:ring-2 focus:ring-primary/50 text-foreground"
                             />
                         </div>
                         <div>
@@ -165,20 +165,20 @@ export default function ProductVariants({ productId, variants }: ProductVariants
                                 min="0"
                                 value={newVariant.stock}
                                 onChange={e => setNewVariant({ ...newVariant, stock: e.target.value })}
-                                className="w-full px-4 py-2.5 bg-card border border-input rounded-md text-sm"
+                                className="w-full px-4 py-2 bg-background border border-border rounded-xl text-sm focus:ring-2 focus:ring-primary/50 text-foreground"
                             />
                         </div>
                         <div className="flex gap-2">
                             <button
                                 type="submit"
-                                className="flex-1 px-4 py-2.5 bg-slate-900 text-white text-sm font-medium rounded-md hover:bg-slate-800"
+                                className="flex-1 px-4 py-2 bg-primary text-primary-foreground text-sm font-bold rounded-xl hover:bg-primary/90"
                             >
                                 Save
                             </button>
                             <button
                                 type="button"
                                 onClick={() => setIsAdding(false)}
-                                className="px-4 py-2.5 bg-card border border-input text-foreground text-sm font-medium rounded-md hover:bg-slate-50"
+                                className="px-4 py-2 bg-transparent text-muted-foreground hover:bg-muted text-sm font-medium rounded-xl border border-transparent hover:border-border"
                             >
                                 Cancel
                             </button>
@@ -190,8 +190,8 @@ export default function ProductVariants({ productId, variants }: ProductVariants
             {/* Responsive Grid Layout for Variant Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {variants.length === 0 ? (
-                    <div className="col-span-full p-8 text-center bg-slate-50 border border-border rounded-xl">
-                        <Package className="mx-auto text-slate-300 mb-3" size={40} />
+                    <div className="col-span-full p-8 text-center bg-muted/10 border border-border rounded-xl">
+                        <Package className="mx-auto text-muted-foreground mb-3" size={40} />
                         <p className="text-muted-foreground italic">No variants yet. Add one above.</p>
                     </div>
                 ) : (
@@ -200,14 +200,14 @@ export default function ProductVariants({ productId, variants }: ProductVariants
                         return (
                             <div
                                 key={variant._id}
-                                className="group bg-card rounded-xl border border-border overflow-hidden hover:shadow-md hover:border-input transition-all"
+                                className="group bg-card rounded-xl border border-border overflow-hidden hover:shadow-md hover:border-primary/30 transition-all"
                             >
                                 {/* Card Header with Default Badge */}
-                                <div className="relative bg-gradient-to-r from-slate-50 to-slate-100 px-4 py-3 border-b border-border">
+                                <div className="relative bg-muted/30 px-4 py-3 border-b border-border">
                                     <div className="flex items-start justify-between">
                                         <div className="flex items-center gap-2">
                                             {variant.isDefault && (
-                                                <span className="inline-flex items-center gap-1 px-2 py-1 bg-amber-100 text-amber-700 text-xs font-medium rounded-full border border-amber-200">
+                                                <span className="inline-flex items-center gap-1 px-2 py-1 bg-amber-500/10 text-amber-500 text-xs font-medium rounded-full border border-amber-500/20">
                                                     <Star size={10} fill="currentColor" />
                                                     Default
                                                 </span>
@@ -219,7 +219,7 @@ export default function ProductVariants({ productId, variants }: ProductVariants
                                             disabled={variant.isDefault}
                                             className={`p-1 rounded-full transition-colors ${variant.isDefault
                                                 ? "text-yellow-500 cursor-default"
-                                                : "text-slate-300 hover:text-yellow-400 hover:bg-yellow-50"
+                                                : "text-muted-foreground hover:text-yellow-400 hover:bg-yellow-500/10"
                                                 }`}
                                             title={variant.isDefault ? "Default Variant" : "Set as Default"}
                                         >
@@ -232,10 +232,10 @@ export default function ProductVariants({ productId, variants }: ProductVariants
                                 {/* Card Body */}
                                 <div className="p-4 space-y-3">
                                     {/* Image Placeholder */}
-                                    <div className="aspect-video bg-slate-50 border-2 border-dashed border-border rounded-xl flex items-center justify-center">
+                                    <div className="aspect-video bg-muted/10 border-2 border-dashed border-border rounded-xl flex items-center justify-center">
                                         <div className="text-center">
-                                            <ImageIcon className="mx-auto text-slate-300 mb-2" size={32} />
-                                            <p className="text-xs text-slate-400">No image</p>
+                                            <ImageIcon className="mx-auto text-muted-foreground/50 mb-2" size={32} />
+                                            <p className="text-xs text-muted-foreground">No image</p>
                                         </div>
                                     </div>
 
@@ -250,16 +250,16 @@ export default function ProductVariants({ productId, variants }: ProductVariants
                                     )}
 
                                     {/* Stock Status - Prominently Visible */}
-                                    <div className="flex items-center justify-between p-3 bg-slate-50 rounded-xl border border-slate-100">
+                                    <div className="flex items-center justify-between p-3 bg-muted/10 rounded-xl border border-border">
                                         <div className="flex items-center gap-2">
-                                            <Package size={16} className="text-slate-400" />
+                                            <Package size={16} className="text-muted-foreground" />
                                             <span className="text-sm font-medium text-foreground">Stock</span>
                                         </div>
-                                        <div className="text-right">
+                                        <div className="flex items-center gap-3">
                                             <span className={`text-2xl font-bold ${stockStatus.color.split(' ')[0]}`}>
                                                 {variant.stockQuantity}
                                             </span>
-                                            <span className={`ml-2 inline-block px-2 py-0.5 text-xs font-medium rounded-full border ${stockStatus.color}`}>
+                                            <span className={`px-2.5 py-1 text-xs font-bold rounded-full border whitespace-nowrap ${stockStatus.color}`}>
                                                 {stockStatus.label}
                                             </span>
                                         </div>
@@ -267,10 +267,10 @@ export default function ProductVariants({ productId, variants }: ProductVariants
                                 </div>
 
                                 {/* Card Footer with Actions */}
-                                <div className="px-4 py-3 bg-slate-50 border-t border-border flex justify-between">
+                                <div className="px-4 py-3 bg-muted/30 border-t border-border flex justify-between">
                                     <button
                                         onClick={() => startEditing(variant)}
-                                        className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-xl transition-colors"
+                                        className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-blue-500 hover:text-blue-400 hover:bg-blue-500/10 rounded-xl transition-colors"
                                         title="Edit Variant"
                                     >
                                         <Pencil size={16} />
@@ -278,7 +278,7 @@ export default function ProductVariants({ productId, variants }: ProductVariants
                                     </button>
                                     <button
                                         onClick={() => handleDelete(variant._id)}
-                                        className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-red-600 hover:text-red-700 hover:bg-red-50 rounded-xl transition-colors"
+                                        className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-red-500 hover:text-red-400 hover:bg-red-500/10 rounded-xl transition-colors"
                                         title="Delete Variant"
                                     >
                                         <Trash2 size={16} />
@@ -293,11 +293,11 @@ export default function ProductVariants({ productId, variants }: ProductVariants
 
             {/* Edit Modal */}
             {editingId && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm">
-                    <div className="bg-card rounded-xl shadow-xl max-w-md w-full overflow-hidden">
-                        <div className="px-6 py-4 border-b border-border flex justify-between items-center bg-slate-50">
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fadeIn">
+                    <div className="bg-card rounded-xl shadow-xl max-w-md w-full overflow-hidden border border-border">
+                        <div className="px-6 py-4 border-b border-border flex justify-between items-center bg-muted/30">
                             <h3 className="font-semibold text-lg text-foreground">Edit Variant</h3>
-                            <button onClick={cancelEditing} className="text-slate-400 hover:text-muted-foreground">
+                            <button onClick={cancelEditing} className="text-muted-foreground hover:text-foreground">
                                 <X size={20} />
                             </button>
                         </div>
@@ -309,7 +309,7 @@ export default function ProductVariants({ productId, variants }: ProductVariants
                                     type="text"
                                     value={editData.name}
                                     onChange={(e) => setEditData({ ...editData, name: e.target.value })}
-                                    className="w-full px-4 py-2.5 border border-input rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                                    className="w-full px-4 py-2.5 bg-background border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary text-foreground"
                                     placeholder="Variant name"
                                 />
                             </div>
@@ -320,7 +320,7 @@ export default function ProductVariants({ productId, variants }: ProductVariants
                                     type="text"
                                     value={editData.sku}
                                     onChange={(e) => setEditData({ ...editData, sku: e.target.value })}
-                                    className="w-full px-4 py-2.5 border border-input rounded-xl text-sm font-mono focus:outline-none focus:ring-2 focus:ring-primary"
+                                    className="w-full px-4 py-2.5 bg-background border border-border rounded-xl text-sm font-mono focus:outline-none focus:ring-2 focus:ring-primary text-foreground"
                                     placeholder="PROD-SKU"
                                 />
                             </div>
@@ -328,35 +328,36 @@ export default function ProductVariants({ productId, variants }: ProductVariants
                             <div>
                                 <label className="block text-sm font-medium text-foreground mb-1">Price ($)</label>
                                 <div className="relative">
-                                    <span className="absolute left-3 top-2 text-muted-foreground">$</span>
+                                    <span className="absolute left-3 top-2.5 text-muted-foreground">$</span>
                                     <input
                                         type="number"
                                         min="0"
                                         step="0.01"
                                         value={editData.price}
                                         onChange={(e) => setEditData({ ...editData, price: e.target.value })}
-                                        className="w-full pl-7 pr-3 py-2 border border-input rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                                        className="w-full pl-7 pr-3 py-2.5 bg-background border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary text-foreground"
                                         placeholder="0.00"
                                     />
                                 </div>
                             </div>
 
-                            <div className="bg-slate-50 rounded-xl p-3 text-sm text-muted-foreground">
-                                <p>💡 To adjust stock, use the Inventory page.</p>
+                            <div className="bg-muted/30 rounded-xl p-3 text-sm text-foreground flex items-center gap-2 border border-border">
+                                <span className="text-lg">💡</span>
+                                <p>To adjust stock, use the <span className="font-semibold text-primary">Inventory page</span>.</p>
                             </div>
                         </div>
 
-                        <div className="px-6 py-4 border-t border-border bg-slate-50 flex justify-end gap-3">
+                        <div className="px-6 py-4 border-t border-border bg-muted/30 flex justify-end gap-3">
                             <button
                                 onClick={cancelEditing}
-                                className="px-4 py-2 text-sm font-medium text-foreground hover:bg-accent/50 rounded-xl"
+                                className="px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded-xl"
                             >
                                 Cancel
                             </button>
                             <button
                                 onClick={handleSaveEdit}
                                 disabled={isSaving}
-                                className="px-4 py-2 text-sm font-medium text-white bg-slate-900 hover:bg-slate-800 rounded-xl disabled:opacity-50 flex items-center gap-2"
+                                className="px-4 py-2 text-sm font-bold text-primary-foreground bg-primary hover:bg-primary/90 rounded-xl disabled:opacity-50 flex items-center gap-2"
                             >
                                 {isSaving ? (
                                     <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />

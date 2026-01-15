@@ -48,7 +48,7 @@ export default function ProductsPage() {
                 <div className="flex gap-3">
                     <button
                         onClick={() => setShowBulkImport(true)}
-                        className="inline-flex items-center gap-2 px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-primary-foreground font-medium rounded-xl transition-colors shadow-sm button-hover"
+                        className="inline-flex items-center gap-2 px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-medium rounded-xl transition-colors shadow-sm button-hover"
                     >
                         <Upload size={16} />
                         Bulk Import
@@ -83,7 +83,7 @@ export default function ProductsPage() {
                             </tr>
                         ) : (
                             products.map((product) => (
-                                <tr key={product._id} className="hover:bg-accent/50 transition-colors group">
+                                <tr key={product._id} className="hover:bg-muted/30 transition-colors group">
                                     <td className="px-6 py-4">
                                         <Link href={`/admin/products/${product._id}`} className="block">
                                             <span className="font-medium text-foreground group-hover:text-primary transition-colors">
@@ -103,7 +103,7 @@ export default function ProductsPage() {
                                         {formatCurrency(product.price)}
                                     </td>
                                     <td className="px-6 py-4 text-center">
-                                        <span className="inline-flex items-center justify-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-muted text-muted-foreground">
+                                        <span className="inline-flex items-center justify-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-muted text-muted-foreground border border-border">
                                             {product.variantCount}
                                         </span>
                                     </td>
@@ -127,9 +127,9 @@ export default function ProductsPage() {
 
 function StatusBadge({ status }: { status: "draft" | "active" | "archived" }) {
     const styles = {
-        draft: "bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 border-amber-200 dark:border-amber-800",
-        active: "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800",
-        archived: "bg-muted text-muted-foreground border-border",
+        draft: "bg-amber-500/10 text-amber-500 border-amber-500/20",
+        active: "bg-emerald-500/10 text-emerald-500 border-emerald-500/20",
+        archived: "bg-slate-500/10 text-slate-400 border-slate-500/20",
     };
 
     const labels = {
@@ -141,7 +141,7 @@ function StatusBadge({ status }: { status: "draft" | "active" | "archived" }) {
     return (
         <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${styles[status]}`}>
             <span className={`w-1.5 h-1.5 rounded-full mr-1.5 ${status === 'active' ? 'bg-emerald-500' :
-                status === 'draft' ? 'bg-amber-500' : 'bg-muted-foreground'
+                status === 'draft' ? 'bg-amber-500' : 'bg-slate-500'
                 }`}></span>
             {labels[status]}
         </span>

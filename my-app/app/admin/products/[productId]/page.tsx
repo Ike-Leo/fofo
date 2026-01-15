@@ -23,8 +23,8 @@ export default function ProductDetailPage({
     if (product === undefined) {
         return (
             <div className="p-8 max-w-7xl mx-auto space-y-8 animate-pulse">
-                <div className="h-40 bg-slate-100 rounded-xl"></div>
-                <div className="h-96 bg-slate-100 rounded-xl"></div>
+                <div className="h-40 bg-muted rounded-xl"></div>
+                <div className="h-96 bg-muted rounded-xl"></div>
             </div>
         );
     }
@@ -32,8 +32,8 @@ export default function ProductDetailPage({
     if (product === null) {
         return (
             <div className="p-12 text-center">
-                <h2 className="text-xl font-bold text-slate-900">Product Not Found</h2>
-                <p className="text-slate-500">The product you are looking for does not exist.</p>
+                <h2 className="text-xl font-bold text-foreground">Product Not Found</h2>
+                <p className="text-muted-foreground">The product you are looking for does not exist.</p>
             </div>
         );
     }
@@ -45,12 +45,12 @@ export default function ProductDetailPage({
     return (
         <div className="p-8 max-w-7xl mx-auto space-y-10">
             {/* Header Actions */}
-            <div className="flex justify-between items-center bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+            <div className="flex justify-between items-center bg-card p-4 rounded-xl border border-border shadow-sm">
                 <div className="flex items-center gap-3">
                     <div className={`w-3 h-3 rounded-full ${product.status === 'active' ? 'bg-emerald-500' :
-                            product.status === 'draft' ? 'bg-amber-500' : 'bg-slate-500'
+                        product.status === 'draft' ? 'bg-amber-500' : 'bg-slate-500'
                         }`} />
-                    <span className="font-semibold text-slate-700 capitalize">
+                    <span className="font-semibold text-foreground capitalize">
                         Status: {product.status}
                     </span>
                 </div>
@@ -58,7 +58,7 @@ export default function ProductDetailPage({
                     {product.status !== 'active' && (
                         <button
                             onClick={() => handleStatusChange('active')}
-                            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-emerald-700 bg-emerald-50 hover:bg-emerald-100 rounded-lg transition-colors border border-emerald-200"
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-emerald-500 bg-emerald-500/10 hover:bg-emerald-500/20 rounded-lg transition-colors border border-emerald-500/20"
                         >
                             <PlayCircle size={16} />
                             Publish
@@ -67,7 +67,7 @@ export default function ProductDetailPage({
                     {product.status !== 'draft' && (
                         <button
                             onClick={() => handleStatusChange('draft')}
-                            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-amber-700 bg-amber-50 hover:bg-amber-100 rounded-lg transition-colors border border-amber-200"
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-amber-500 bg-amber-500/10 hover:bg-amber-500/20 rounded-lg transition-colors border border-amber-500/20"
                         >
                             <EyeOff size={16} />
                             Unpublish
@@ -76,7 +76,7 @@ export default function ProductDetailPage({
                     {product.status !== 'archived' && (
                         <button
                             onClick={() => handleStatusChange('archived')}
-                            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-slate-600 bg-slate-50 hover:bg-slate-100 rounded-lg transition-colors border border-slate-200"
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-slate-400 bg-slate-500/10 hover:bg-slate-500/20 rounded-lg transition-colors border border-slate-500/20"
                         >
                             <Archive size={16} />
                             Archive
@@ -92,10 +92,10 @@ export default function ProductDetailPage({
 
                 <div className="space-y-6">
                     <div className="sticky top-8 space-y-6">
-                        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+                        <div className="bg-card rounded-xl shadow-sm border border-border p-6">
                             <ProductVariants productId={normalizedProductId} variants={product.variants} />
                         </div>
-                        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+                        <div className="bg-card rounded-xl shadow-sm border border-border p-6">
                             <ProductActivityLog productId={normalizedProductId} />
                         </div>
                     </div>

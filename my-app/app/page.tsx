@@ -1,238 +1,138 @@
+/* eslint-disable */
 "use client";
 
-import { useConvexAuth, useMutation, useQuery } from "convex/react";
-import { api } from "../convex/_generated/api";
+import { useConvexAuth } from "convex/react";
 import Link from "next/link";
 import { useAuthActions } from "@convex-dev/auth/react";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
 import { OrganizationSwitcher } from "@/components/OrganizationSwitcher";
+import { LayoutDashboard, LogOut, ArrowRight, ShieldCheck, Globe, Zap } from "lucide-react";
+import { ThemeToggle } from "@/components/ThemeProvider";
 
 export default function Home() {
+  const { isAuthenticated } = useConvexAuth();
+
   return (
-    <>
-      <header className="sticky top-0 z-10 bg-background/80 backdrop-blur-md p-4 border-b border-slate-200 dark:border-slate-700 flex flex-row justify-between items-center shadow-sm">
-        <div className="flex items-center gap-3">
+    <div className="min-h-screen bg-background text-foreground flex flex-col">
+      <header className="sticky top-0 z-10 bg-background/80 backdrop-blur-md border-b border-border shadow-sm">
+        <div className="max-w-7xl mx-auto px-6 h-16 flex justify-between items-center">
           <div className="flex items-center gap-3">
-            <Image src="/convex.svg" alt="Convex Logo" width={32} height={32} />
-            <div className="w-px h-8 bg-slate-300 dark:bg-slate-600"></div>
-            <Image
-              src="/nextjs-icon-light-background.svg"
-              alt="Next.js Logo"
-              width={32}
-              height={32}
-              className="dark:hidden"
-            />
-            <Image
-              src="/nextjs-icon-dark-background.svg"
-              alt="Next.js Logo"
-              width={32}
-              height={32}
-              className="hidden dark:block"
-            />
+            <div className="w-8 h-8 bg-primary rounded-xl flex items-center justify-center text-primary-foreground shadow-sm font-bold">
+              U
+            </div>
+            <h1 className="font-bold text-xl tracking-tight">UCCP</h1>
           </div>
-          <h1 className="font-semibold text-slate-800 dark:text-slate-200">
-            Convex + Next.js + Convex Auth
-          </h1>
-        </div>
-        <div className="flex items-center gap-4">
-          <OrganizationSwitcher />
-          <SignOutButton />
+
+          <div className="flex items-center gap-4">
+            <ThemeToggle />
+            {isAuthenticated ? (
+              <Link
+                href="/admin"
+                className="px-4 py-2 bg-primary text-primary-foreground text-sm font-medium rounded-xl hover:bg-primary/90 transition-all flex items-center gap-2"
+              >
+                <LayoutDashboard size={16} />
+                Go to Console
+              </Link>
+            ) : (
+              <Link
+                href="/signin"
+                className="px-4 py-2 bg-primary text-primary-foreground text-sm font-medium rounded-xl hover:bg-primary/90 transition-all"
+              >
+                Sign In
+              </Link>
+            )}
+          </div>
         </div>
       </header>
-      <main className="p-8 flex flex-col gap-8">
-        <Content />
+
+      <main className="flex-1">
+        {/* Hero Section */}
+        <section className="py-24 px-6 text-center">
+          <div className="max-w-4xl mx-auto space-y-8">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 text-primary text-sm font-medium border border-primary/20">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+              </span>
+              v2.0 Now Available
+            </div>
+            <h2 className="text-5xl md:text-7xl font-extrabold tracking-tight text-foreground">
+              Universal Commerce <br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-purple-600">
+                Control Platform
+              </span>
+            </h2>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+              The complete operating system for modern commerce. Manage products, orders, customers, and teams from a single, beautiful command center.
+            </p>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
+              <Link
+                href={isAuthenticated ? "/admin" : "/signin"}
+                className="px-8 py-4 bg-foreground text-background font-bold rounded-full hover:bg-foreground/90 transition-all flex items-center gap-2 shadow-lg hover:scale-105"
+              >
+                {isAuthenticated ? "Enter Dashboard" : "Get Started"}
+                <ArrowRight size={18} />
+              </Link>
+              <a
+                href="https://docs.convex.dev"
+                target="_blank"
+                rel="noreferrer"
+                className="px-8 py-4 bg-muted text-foreground font-semibold rounded-full hover:bg-muted/80 transition-all border border-border"
+              >
+                Read Documentation
+              </a>
+            </div>
+          </div>
+        </section>
+
+        {/* Features Grid */}
+        <section className="py-24 px-6 bg-muted/10 border-t border-border">
+          <div className="max-w-7xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <FeatureCard
+                icon={<Globe className="text-blue-500" size={32} />}
+                title="Global Scale"
+                description="Built on distributed infrastructure to handle commerce at any scale, anywhere in the world."
+              />
+              <FeatureCard
+                icon={<ShieldCheck className="text-emerald-500" size={32} />}
+                title="Enterprise Security"
+                description="Bank-grade security with granular role-based access control and comprehensive audit logs."
+              />
+              <FeatureCard
+                icon={<Zap className="text-amber-500" size={32} />}
+                title="Real-time Sync"
+                description="Changes reflect instantly across all devices. No more refresh buttons or stale data."
+              />
+            </div>
+          </div>
+        </section>
       </main>
-    </>
-  );
-}
 
-function SignOutButton() {
-  const { isAuthenticated } = useConvexAuth();
-  const { signOut } = useAuthActions();
-  const router = useRouter();
-  return (
-    <>
-      {isAuthenticated && (
-        <button
-          className="bg-slate-600 hover:bg-slate-700 dark:bg-slate-700 dark:hover:bg-slate-600 text-white rounded-lg px-4 py-2 text-sm font-medium transition-all duration-200 shadow-sm hover:shadow-md cursor-pointer"
-          onClick={() =>
-            void signOut().then(() => {
-              router.push("/signin");
-            })
-          }
-        >
-          Sign out
-        </button>
-      )}
-    </>
-  );
-}
-
-function Content() {
-  const { viewer, numbers } =
-    useQuery(api.myFunctions.listNumbers, {
-      count: 10,
-    }) ?? {};
-  const addNumber = useMutation(api.myFunctions.addNumber);
-
-  if (viewer === undefined || numbers === undefined) {
-    return (
-      <div className="mx-auto">
-        <div className="flex items-center gap-2">
-          <div className="w-2 h-2 bg-slate-400 rounded-full animate-bounce"></div>
-          <div
-            className="w-2 h-2 bg-slate-500 rounded-full animate-bounce"
-            style={{ animationDelay: "0.1s" }}
-          ></div>
-          <div
-            className="w-2 h-2 bg-slate-600 rounded-full animate-bounce"
-            style={{ animationDelay: "0.2s" }}
-          ></div>
-          <p className="ml-2 text-slate-600 dark:text-slate-400">Loading...</p>
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="flex flex-col gap-4 max-w-lg mx-auto">
-      <div>
-        <h2 className="font-bold text-xl text-slate-800 dark:text-slate-200">
-          Welcome {viewer ?? "Anonymous"}!
-        </h2>
-        <p className="text-slate-600 dark:text-slate-400 mt-2">
-          You are signed into a demo application using Convex Auth.
-        </p>
-        <p className="text-slate-600 dark:text-slate-400 mt-1">
-          This app can generate random numbers and store them in your Convex
-          database.
-        </p>
-      </div>
-
-      <div className="h-px bg-slate-200 dark:bg-slate-700"></div>
-
-      <div className="flex flex-col gap-4">
-        <h2 className="font-semibold text-xl text-slate-800 dark:text-slate-200">
-          Number generator
-        </h2>
-        <p className="text-slate-600 dark:text-slate-400 text-sm">
-          Click the button below to generate a new number. The data is persisted
-          in the Convex cloud database - open this page in another window and
-          see the data sync automatically!
-        </p>
-        <button
-          className="bg-slate-700 hover:bg-slate-800 dark:bg-slate-600 dark:hover:bg-slate-500 text-white text-sm font-medium px-6 py-3 rounded-lg cursor-pointer transition-all duration-200 shadow-md hover:shadow-lg hover:scale-[1.02] active:scale-[0.98]"
-          onClick={() => {
-            void addNumber({ value: Math.floor(Math.random() * 10) });
-          }}
-        >
-          + Generate random number
-        </button>
-        <div className="bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-xl p-4 shadow-sm">
-          <p className="font-semibold text-slate-800 dark:text-slate-200 mb-2">
-            Newest Numbers
-          </p>
-          <p className="text-slate-700 dark:text-slate-300 font-mono text-lg">
-            {numbers?.length === 0
-              ? "Click the button to generate a number!"
-              : (numbers?.join(", ") ?? "...")}
-          </p>
-        </div>
-      </div>
-
-      <div className="h-px bg-slate-200 dark:bg-slate-700"></div>
-
-      <div className="flex flex-col gap-4">
-        <h2 className="font-semibold text-xl text-slate-800 dark:text-slate-200">
-          Making changes
-        </h2>
-        <p className="text-slate-600 dark:text-slate-400 text-sm">
-          Edit{" "}
-          <code className="text-sm font-semibold font-mono bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 px-2 py-1 rounded-md border border-slate-300 dark:border-slate-600">
-            convex/myFunctions.ts
-          </code>{" "}
-          to change the backend.
-        </p>
-        <p className="text-slate-600 dark:text-slate-400 text-sm">
-          Edit{" "}
-          <code className="text-sm font-semibold font-mono bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 px-2 py-1 rounded-md border border-slate-300 dark:border-slate-600">
-            app/page.tsx
-          </code>{" "}
-          to change the frontend.
-        </p>
-        <p className="text-slate-600 dark:text-slate-400 text-sm">
-          See the{" "}
-          <Link
-            href="/server"
-            className="text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100 font-medium underline decoration-2 underline-offset-2 transition-colors"
-          >
-            /server route
-          </Link>{" "}
-          for an example of loading data in a server component
-        </p>
-      </div>
-
-      <div className="h-px bg-slate-200 dark:bg-slate-700"></div>
-
-      <div className="flex flex-col gap-4">
-        <h2 className="text-xl font-bold text-slate-800 dark:text-slate-200">
-          Useful resources
-        </h2>
-        <div className="flex gap-4">
-          <div className="flex flex-col gap-4 w-1/2">
-            <ResourceCard
-              title="Convex docs"
-              description="Read comprehensive documentation for all Convex features."
-              href="https://docs.convex.dev/home"
-            />
-            <ResourceCard
-              title="Stack articles"
-              description="Learn about best practices, use cases, and more from a growing
-            collection of articles, videos, and walkthroughs."
-              href="https://stack.convex.dev"
-            />
-          </div>
-          <div className="flex flex-col gap-4 w-1/2">
-            <ResourceCard
-              title="Templates"
-              description="Browse our collection of templates to get started quickly."
-              href="https://www.convex.dev/templates"
-            />
-            <ResourceCard
-              title="Discord"
-              description="Join our developer community to ask questions, trade tips & tricks,
-            and show off your projects."
-              href="https://www.convex.dev/community"
-            />
+      <footer className="py-8 border-t border-border text-center text-sm text-muted-foreground">
+        <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4">
+          <p>&copy; {new Date().getFullYear()} Universal Commerce Control Platform. All rights reserved.</p>
+          <div className="flex gap-6">
+            <a href="#" className="hover:text-foreground transition-colors">Privacy</a>
+            <a href="#" className="hover:text-foreground transition-colors">Terms</a>
+            <a href="#" className="hover:text-foreground transition-colors">Status</a>
           </div>
         </div>
-      </div>
+      </footer>
     </div>
   );
 }
 
-function ResourceCard({
-  title,
-  description,
-  href,
-}: {
-  title: string;
-  description: string;
-  href: string;
-}) {
+function FeatureCard({ icon, title, description }: { icon: React.ReactNode, title: string, description: string }) {
   return (
-    <a
-      href={href}
-      className="flex flex-col gap-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 p-5 rounded-xl h-36 overflow-auto border border-slate-300 dark:border-slate-600 hover:border-slate-400 dark:hover:border-slate-500 shadow-sm hover:shadow-md transition-all duration-200 hover:scale-[1.02] group cursor-pointer"
-      target="_blank"
-    >
-      <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 group-hover:text-slate-900 dark:group-hover:text-slate-100 transition-colors">
-        {title} →
-      </h3>
-      <p className="text-xs text-slate-600 dark:text-slate-400">
+    <div className="p-8 rounded-2xl bg-card border border-border hover:shadow-lg transition-all hover:-translate-y-1">
+      <div className="w-14 h-14 bg-muted rounded-2xl flex items-center justify-center mb-6">
+        {icon}
+      </div>
+      <h3 className="text-xl font-bold text-foreground mb-3">{title}</h3>
+      <p className="text-muted-foreground leading-relaxed">
         {description}
       </p>
-    </a>
+    </div>
   );
 }
