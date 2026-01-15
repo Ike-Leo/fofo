@@ -117,8 +117,8 @@
             ],
             "priority": "P1",
             "effort": "medium",
-            "status": "pending",
-            "passes": false
+            "status": "completed",
+            "passes": true
         },
         {
             "id": "US-807",
@@ -134,8 +134,8 @@
             ],
             "priority": "P2",
             "effort": "medium",
-            "status": "pending",
-            "passes": false
+            "status": "completed",
+            "passes": true
         },
         {
             "id": "US-808",
@@ -151,8 +151,8 @@
             ],
             "priority": "P1",
             "effort": "medium",
-            "status": "pending",
-            "passes": false
+            "status": "completed",
+            "passes": true
         },
         {
             "id": "US-809",
@@ -168,8 +168,8 @@
             ],
             "priority": "P1",
             "effort": "medium",
-            "status": "pending",
-            "passes": false
+            "status": "completed",
+            "passes": true
         },
         {
             "id": "US-810",
@@ -185,8 +185,8 @@
             ],
             "priority": "P2",
             "effort": "medium",
-            "status": "pending",
-            "passes": false
+            "status": "completed",
+            "passes": true
         },
         {
             "id": "US-811",
@@ -202,8 +202,8 @@
             ],
             "priority": "P2",
             "effort": "medium",
-            "status": "pending",
-            "passes": false
+            "status": "completed",
+            "passes": true
         },
         {
             "id": "US-812",
@@ -219,8 +219,8 @@
             ],
             "priority": "P1",
             "effort": "low",
-            "status": "pending",
-            "passes": false
+            "status": "completed",
+            "passes": true
         }
     ],
     "technicalRequirements": {
