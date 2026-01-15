@@ -1,228 +1,108 @@
-# Ralph Progress Log - Phase 8: UX Enhancement
-Started: 2026-01-15T04:30:00Z
-Completed: 2026-01-15T05:00:00Z
+# Ralph Progress Log - Storefront API v2
+# Date: 2026-01-15
 
----
+## Current Phase: Storefront API Enhancement ✅ COMPLETE
+Branch: ralph/storefront-api-v2
 
-## Design Context
+## Deployment Status
+✅ Deployed to Convex Production: https://acoustic-seahorse-440.convex.cloud
+✅ All indexes created successfully
+✅ Build passed
+✅ TypeScript passes
 
-**Aesthetic Direction**: Twitter-inspired theme with distinctive typography
-- Primary color: #1D9BF0 (Twitter blue in OKLCH: 0.6723 0.1606 244.9955)
-- Fonts: Open Sans (UI), Georgia (editorial), Menlo (code)
-- Radius: 1.3rem for rounded aesthetic
-- Design philosophy: Bold, refined, avoid generic AI aesthetics
+## Completed User Stories (12/12)
 
-**Key Design Principles** (from frontend-design skill):
-- Avoid generic fonts (Inter, Roboto, Arial, system fonts)
-- Avoid purple gradient cliches
-- Use distinctive typography with character
-- Bold primary color with sharp accents
-- High-impact animations for key moments (page load, hover states)
-- Generous negative space OR controlled density
-- CSS-only animations preferred
+### US-901: Product Search Query ✅
+- Added `search` query to convex/public/products.ts
+- Case-insensitive search on name and description
+- Accepts orgSlug, query, limit (default 20)
 
-**Theme Colors**:
-- Light mode: Clean whites, subtle grays, blue primary
-- Dark mode: Pure black background (#000000), reduced saturation
-- OKLCH color space for consistent color manipulation
+### US-902: HTTP Search Endpoint ✅
+- GET /api/store/:orgSlug/products/search?q=<query>&limit=<n>
+- Returns JSON array of matching products
 
----
+### US-903: Public Categories Query ✅
+- Created convex/public/categories.ts
+- `list` query returns all categories with _id, name, slug, parentId, position
 
-## Codebase Patterns
+### US-904: Products by Category Query ✅
+- Added `listByCategory` query to convex/public/products.ts
+- Filters products by categorySlug
 
-- All pages under `/app/admin/` use AdminHeader component
-- Components in `/components/` directory
-- Tailwind CSS with CSS custom properties for theming
-- Theme toggle via ThemeProvider context
-- Toast notifications via useToast() hook
-- Lucide-react for icons
+### US-905: Related Products Query ✅
+- Added `getRelated` query to convex/public/products.ts
+- Returns products in same category, falls back to random active products
+- Default limit of 4
 
----
+### US-906: HTTP Category Endpoints ✅
+- GET /api/store/:orgSlug/categories
+- GET /api/store/:orgSlug/categories/:categorySlug
+- GET /api/store/:orgSlug/categories/:categorySlug/products
+- GET /api/store/:orgSlug/products/:productSlug/related
 
-## Completed Tasks Summary
+### US-907: Public Order Status Query ✅  
+- Created convex/public/orders.ts
+- `getStatus` query with email verification for security
+- Returns orderNumber, status, paymentStatus, totalAmount, items
 
-### ✅ US-801: Apply Twitter Theme to globals.css
-**Implementation**:
-- Updated :root with Twitter light theme (OKLCH values)
-- Updated .dark with Twitter dark theme (pure black)
-- Changed font-sans to "Open Sans" (avoiding Inter)
-- Changed font-serif to Georgia
-- Changed font-mono to Menlo
-- Increased radius from 0.375rem to 1.3rem
-- Updated shadow values to match Twitter's subtle depth
+### US-908: HTTP Order Status Endpoint ✅
+- GET /api/store/:orgSlug/orders/:orderNumber?email=<email>
+- Returns 404 if not found or email mismatch
 
-**Files Changed**:
-- `app/globals.css`
+### US-909: Pagination for Product List ✅
+- Updated products.list to accept limit (default 20), cursor
+- Returns { products[], nextCursor, hasMore }
 
----
+### US-910: Filtering for Product List ✅
+- Added minPrice, maxPrice, inStockOnly filters
+- Applied after query, before pagination
 
-### ✅ US-802: Enhance Typography System
-**Implementation**:
-- Added Open Sans Google Font with weights 400, 600, 700
-- Updated font stack to prioritize distinctive fonts
-- Added line-height (1.6) and letter-spacing (-0.01em) improvements
-- Added heading hierarchy (h1-h4) with proper sizing
-- Added Menlo monospace fallback for code
-- Ensured proper font weights available
+### US-911: HTTP Pagination & Filters ✅
+- GET /api/store/:orgSlug/products?limit=&cursor=&minPrice=&maxPrice=&inStockOnly=
 
-**Files Changed**:
-- `app/layout.tsx`
-- `app/globals.css`
+### US-912: API Documentation ✅
+- Updated doc/storefront_api.md with all new endpoints
+- Full examples and usage patterns
 
----
+## Key Files Modified
+- convex/http.ts - HTTP route handlers
+- convex/public/products.ts - Search, pagination, filtering, related products
+- convex/public/categories.ts - NEW - Category listing
+- convex/public/orders.ts - NEW - Order status lookup
+- components/store/ProductGrid.tsx - Updated for paginated response
+- doc/storefront_api.md - Full API documentation
 
-### ✅ US-803: Add Motion Animations
-**Implementation**:
-- Added staggered fade-in animation for list items
-- Added button hover scale effect (1.02x)
-- Added card hover lift effect (-2px translateY)
-- Added pulse loading animation
-- Added shimmer loading effect
-- Implemented smooth theme transition (0.3s ease)
-- Added theme-transition-disabled class to prevent flash
+## Patterns Used
+1. Public queries use orgSlug to look up org first, then query by orgId
+2. Only return active products (status === "active")  
+3. HTTP routes use pathPrefix matching with manual path parsing
+4. CORS headers are applied via corsHeaders object
+5. Error responses use errorResponse() helper
+6. Success responses use jsonResponse() helper
+7. Email verification for order status lookup
+8. Cursor-based pagination with hasMore flag
 
-**Files Changed**:
-- `app/globals.css`
+## API Endpoints Summary
 
----
+### Products
+- GET /products - List with pagination & filtering
+- GET /products/search?q=<query> - Search
+- GET /products/:slug - Product details
+- GET /products/:slug/related - Related products
 
-### ✅ US-805: Update AdminHeader Component
-**Implementation**:
-- Updated to use semantic color variables (bg-background, text-foreground)
-- Changed logo to use Twitter primary color with rounded-xl
-- Increased navigation item padding from px-3 to px-4
-- Changed border radius from rounded-md to rounded-xl
-- Added button-hover class for scale effect
-- Improved active state with shadow-sm
-- Updated hover states to use accent colors
-- Reduced gap between right-side elements from 4 to 3
+### Categories  
+- GET /categories - List all
+- GET /categories/:slug - Category details
+- GET /categories/:slug/products - Products in category
 
-**Files Changed**:
-- `components/AdminHeader.tsx`
+### Orders
+- GET /orders/:orderNumber?email=<email> - Order status
 
----
+### Cart
+- GET /cart?sessionId=<sessionId> - Get cart
+- POST /cart/items - Add item
+- PATCH /cart/items/:variantId - Update quantity
+- DELETE /cart/items/:variantId?cartId=<cartId> - Remove item
 
-### ✅ US-806: Update ProductForm Component
-**Implementation**:
-- Replaced all hard-coded slate colors with theme variables
-- Updated form inputs with proper border colors and focus states
-- Changed border radius from rounded-lg to rounded-xl
-- Increased padding from px-3 py-2 to px-4 py-2.5
-- Applied Twitter primary color to submit button
-- Added button-hover class for scale effect
-- Updated error display to use destructive color
-
-**Files Changed**:
-- `components/ProductForm.tsx`
-
----
-
-### ✅ US-807: Update ProductVariants Component
-**Implementation**:
-- Applied theme colors to variant table
-- Updated button styling with theme variables
-- Improved spacing and borders
-- Added rounded-xl border radius
-
-**Files Changed**:
-- `components/ProductVariants.tsx`
-
----
-
-### ✅ US-808: Update Orders Page
-**Implementation**:
-- Applied theme colors to status badges
-- Updated search and filter styling
-- Improved order card presentation
-- Added proper hover states
-
-**Files Changed**:
-- `app/admin/orders/page.tsx`
-
----
-
-### ✅ US-809: Update Inventory Page
-**Implementation**:
-- Enhanced low stock/out of stock badges
-- Improved filter button styling with active states
-- Applied consistent spacing and borders
-- Better visual hierarchy for product listings
-
-**Files Changed**:
-- `app/admin/inventory/page.tsx`
-
----
-
-### ✅ US-810: Update Customers Page
-**Implementation**:
-- Updated customer card styling
-- Improved action button hierarchy
-- Applied theme colors throughout
-
-**Files Changed**:
-- `app/admin/customers/page.tsx`
-
----
-
-### ✅ US-811: Update Dashboard Page
-**Implementation**:
-- Applied theme colors to stat cards
-- Updated dashboard styling
-- Improved widget presentation
-
-**Files Changed**:
-- `app/admin/page.tsx`
-
----
-
-### ✅ US-812: Verify Cross-Theme Consistency
-**Verification**:
-- Smooth theme transition implemented (0.3s ease)
-- All pages use semantic CSS variables
-- Consistent border radius (rounded-xl = 1.3rem)
-- Proper contrast in both light and dark modes
-- Theme colors applied consistently across all components
-
----
-
-## Final Status
-
-**Phase 8: UX Enhancement - COMPLETE ✅**
-
-All 11 user stories completed successfully:
-- US-801: Apply Twitter Theme to globals.css ✅
-- US-802: Enhance Typography System ✅
-- US-803: Add Motion Animations ✅
-- US-805: Update AdminHeader Component ✅
-- US-806: Update ProductForm Component ✅
-- US-807: Update ProductVariants Component ✅
-- US-808: Update Orders Page ✅
-- US-809: Update Inventory Page ✅
-- US-810: Update Customers Page ✅
-- US-811: Update Dashboard Page ✅
-- US-812: Verify Cross-Theme Consistency ✅
-
-**Design Achievement**:
-- Distinctive Twitter-inspired theme applied
-- Avoided generic AI aesthetics (no Inter font, no purple gradients)
-- Bold primary color with refined accents
-- High-impact animations and micro-interactions
-- Consistent spacing and visual hierarchy
-- Smooth theme transitions
-
-**Files Modified**: 11 files
-**Commits**: 5 commits
-**Lines Changed**: ~400 lines modified
-
----
-
-## Key Learnings
-
-1. **OKLCH Color Space**: Using OKLCH for theme colors provides consistent color manipulation and better perceptual uniformity
-2. **Semantic CSS Variables**: Critical for theme consistency - use bg-background, text-foreground, border-input instead of hard-coded colors
-3. **Distinctive Typography**: Open Sans provides better character than generic Inter/Roboto
-4. **Rounded Corners**: 1.3rem (rounded-xl) creates a more modern, friendly aesthetic
-5. **Motion Design**: CSS-only animations perform better and don't require JS
-6. **Theme Transitions**: 0.3s ease provides smooth transitions without feeling sluggish
-
----
+### Checkout
+- POST /checkout - Process checkout

@@ -1,274 +1,179 @@
 {
-    "projectName": "UCCP - Frontend UX Enhancement",
-    "version": "0.8.0",
-    "phase": 8,
-    "phaseName": "UX Enhancement",
-    "status": "approved",
-    "createdAt": "2026-01-15T04:30:00Z",
-    "updatedAt": "2026-01-15T04:30:00Z",
-    "overview": {
-        "description": "Phase 8 applies the frontend design skill principles to optimize the admin interface with a distinctive Twitter-inspired theme. Focus on typography, motion, spatial composition, and visual details while avoiding generic AI aesthetics.",
-        "goals": [
-            "Apply Twitter color theme with OKLCH color system",
-            "Replace generic fonts (Inter) with distinctive typography (Open Sans, Georgia)",
-            "Add refined animations and micro-interactions",
-            "Enhance spatial composition and visual hierarchy",
-            "Apply consistent theming across all admin components",
-            "Ensure smooth light/dark theme transitions"
-        ]
-    },
+    "project": "UCCP",
+    "branchName": "ralph/storefront-api-v2",
+    "description": "Storefront API v2 - Search, Categories, Order Status, Pagination & Filtering",
     "userStories": [
         {
-            "id": "US-801",
-            "title": "Apply Twitter Theme to globals.css",
-            "description": "Replace the current color scheme with the Twitter-inspired theme using OKLCH color values. The theme features a primary blue (#1D9BF0), clean whites, and refined dark mode.",
+            "id": "US-901",
+            "title": "Add Product Search Query",
+            "description": "As a storefront developer, I need a search endpoint to find products by name/description.",
             "acceptanceCriteria": [
-                "Update :root with Twitter light theme colors (OKLCH format)",
-                "Update .dark with Twitter dark theme colors (pure black background)",
-                "Set font-sans to 'Open Sans' instead of Inter",
-                "Set font-serif to Georgia and font-mono to Menlo",
-                "Increase border radius to 1.3rem for rounded aesthetic",
-                "Update shadow values for subtle depth",
-                "All CSS variables properly mapped in @theme inline"
+                "Add 'search' query to convex/public/products.ts",
+                "Search accepts: orgSlug, query (string), limit (optional, default 20)",
+                "Search matches product name and description (case-insensitive)",
+                "Returns same structure as products.list",
+                "npm run typecheck passes"
             ],
-            "priority": "P1",
-            "effort": "low",
-            "status": "completed",
-            "passes": true
+            "priority": 1,
+            "passes": true,
+            "notes": "Implemented in convex/public/products.ts"
         },
         {
-            "id": "US-802",
-            "title": "Enhance Typography System",
-            "description": "Establish a distinctive typography hierarchy that avoids generic fonts. Use Open Sans for UI text, Georgia for editorial content, and Menlo for code/technical details.",
+            "id": "US-902",
+            "title": "Add HTTP Search Endpoint",
+            "description": "As a storefront developer, I need an HTTP route for product search.",
             "acceptanceCriteria": [
-                "Add font-face declarations or Google Fonts import for Open Sans",
-                "Update font stack to prioritize distinctive fonts over system defaults",
-                "Add tracking and line-height improvements for readability",
-                "Ensure proper font weights (400, 600, 700) are available",
-                "Test typography in both light and dark themes"
+                "Add GET /api/store/:orgSlug/products/search?q=<query>&limit=<n> route",
+                "Route calls api.public.products.search",
+                "Returns JSON array of matching products",
+                "npm run typecheck passes"
             ],
-            "priority": "P1",
-            "effort": "medium",
-            "status": "completed",
-            "passes": true
+            "priority": 2,
+            "passes": true,
+            "notes": "Implemented in convex/http.ts"
         },
         {
-            "id": "US-803",
-            "title": "Add Motion Animations",
-            "description": "Implement CSS animations for page transitions, hover states, and micro-interactions. Focus on high-impact moments like page load and button interactions.",
+            "id": "US-903",
+            "title": "Add Public Categories Query",
+            "description": "As a storefront developer, I need to list categories for navigation.",
             "acceptanceCriteria": [
-                "Add staggered fade-in animations for list items (0.05s delay increments)",
-                "Add scale/hover effects to buttons and cards",
-                "Implement smooth theme transition (0.3s ease)",
-                "Add slide-in animation for toasts and modals",
-                "Add pulse effect for loading states",
-                "All animations use CSS-only (no JS required)"
+                "Create convex/public/categories.ts",
+                "Add 'list' query: returns all categories for orgSlug",
+                "Returns: _id, name, slug, parentId, position",
+                "npm run typecheck passes"
             ],
-            "priority": "P2",
-            "effort": "medium",
-            "status": "completed",
-            "passes": true
+            "priority": 3,
+            "passes": true,
+            "notes": "Created convex/public/categories.ts"
         },
         {
-            "id": "US-804",
-            "title": "Enhance Spatial Composition",
-            "description": "Improve spacing, padding, and visual hierarchy throughout the admin interface. Use generous negative space and consistent spacing scales.",
+            "id": "US-904",
+            "title": "Add Products by Category Query",
+            "description": "As a storefront developer, I need to filter products by category.",
             "acceptanceCriteria": [
-                "Add consistent padding scale (4px, 8px, 16px, 24px, 32px)",
-                "Improve card spacing and shadow depth",
-                "Add subtle borders with proper border colors from theme",
-                "Enhance button spacing and sizing",
-                "Improve table row spacing and hover states",
-                "Add visual separators between content sections"
+                "Add 'listByCategory' query to convex/public/products.ts",
+                "Accepts: orgSlug, categorySlug",
+                "Returns products where categoryId matches the category with that slug",
+                "npm run typecheck passes"
             ],
-            "priority": "P2",
-            "effort": "medium",
-            "status": "completed",
-            "passes": true
+            "priority": 4,
+            "passes": true,
+            "notes": "Implemented in convex/public/products.ts"
         },
         {
-            "id": "US-805",
-            "title": "Update AdminHeader Component",
-            "description": "Apply the new Twitter theme to the AdminHeader component with improved typography, spacing, and hover states.",
+            "id": "US-905",
+            "title": "Add Related Products Query",
+            "description": "As a storefront developer, I need to show similar products on product pages.",
             "acceptanceCriteria": [
-                "Apply Twitter primary color to logo/brand elements",
-                "Add hover effects to navigation items",
-                "Improve spacing between header elements",
-                "Ensure theme toggle uses proper colors",
-                "Add subtle shadow to header",
-                "Test in both light and dark modes"
+                "Add 'getRelated' query to convex/public/products.ts",
+                "Accepts: orgSlug, productSlug, limit (default 4)",
+                "Returns products in same category, excluding current product",
+                "Falls back to random active products if no category match",
+                "npm run typecheck passes"
             ],
-            "priority": "P1",
-            "effort": "medium",
-            "status": "completed",
-            "passes": true
+            "priority": 5,
+            "passes": true,
+            "notes": "Implemented in convex/public/products.ts"
         },
         {
-            "id": "US-806",
-            "title": "Update ProductForm Component",
-            "description": "Refine the ProductForm component with the new theme, focusing on form field styling, button hierarchy, and visual feedback.",
+            "id": "US-906",
+            "title": "Add HTTP Category Endpoints",
+            "description": "As a storefront developer, I need HTTP routes for categories.",
             "acceptanceCriteria": [
-                "Style form inputs with proper border colors and focus states",
-                "Apply Twitter primary color to submit buttons",
-                "Add hover and active states to all buttons",
-                "Improve form field spacing and labels",
-                "Add visual feedback for validation states",
-                "Ensure image upload area has proper styling"
+                "Add GET /api/store/:orgSlug/categories route",
+                "Add GET /api/store/:orgSlug/categories/:categorySlug/products route",
+                "Add GET /api/store/:orgSlug/products/:productSlug/related route",
+                "npm run typecheck passes"
             ],
-            "priority": "P1",
-            "effort": "medium",
-            "status": "completed",
-            "passes": true
+            "priority": 6,
+            "passes": true,
+            "notes": "Implemented in convex/http.ts"
         },
         {
-            "id": "US-807",
-            "title": "Update ProductVariants Component",
-            "description": "Apply the Twitter theme to ProductVariants with improved table styling, row hover states, and action buttons.",
+            "id": "US-907",
+            "title": "Add Public Order Status Query",
+            "description": "As a customer, I need to check my order status with order number and email.",
             "acceptanceCriteria": [
-                "Style variant table with proper borders and spacing",
-                "Add hover states to table rows",
-                "Style edit/delete buttons with appropriate colors",
-                "Improve inline editing appearance",
-                "Add subtle shadows to variant cards on mobile",
-                "Ensure proper contrast in both themes"
+                "Create convex/public/orders.ts",
+                "Add 'getStatus' query: accepts orgSlug, orderNumber, email",
+                "Validates email matches order customerInfo.email",
+                "Returns: orderNumber, status, paymentStatus, totalAmount, createdAt, items",
+                "Returns null if not found or email mismatch",
+                "npm run typecheck passes"
             ],
-            "priority": "P2",
-            "effort": "medium",
-            "status": "completed",
-            "passes": true
+            "priority": 7,
+            "passes": true,
+            "notes": "Created convex/public/orders.ts with email verification"
         },
         {
-            "id": "US-808",
-            "title": "Update Orders Page",
-            "description": "Enhance the orders page with the new theme, focusing on status badges, search styling, and order card presentation.",
+            "id": "US-908",
+            "title": "Add HTTP Order Status Endpoint",
+            "description": "As a storefront developer, I need an HTTP route for order status lookup.",
             "acceptanceCriteria": [
-                "Apply theme colors to status badges (paid, pending, shipped, etc.)",
-                "Style search input with proper focus ring",
-                "Improve order card spacing and shadows",
-                "Add hover effects to order rows",
-                "Ensure action buttons use proper colors",
-                "Test with empty states and loading states"
+                "Add GET /api/store/:orgSlug/orders/:orderNumber?email=<email> route",
+                "Route calls api.public.orders.getStatus",
+                "Returns order details or 404 if not found/unauthorized",
+                "npm run typecheck passes"
             ],
-            "priority": "P1",
-            "effort": "medium",
-            "status": "completed",
-            "passes": true
+            "priority": 8,
+            "passes": true,
+            "notes": "Implemented in convex/http.ts"
         },
         {
-            "id": "US-809",
-            "title": "Update Inventory Page",
-            "description": "Apply the Twitter theme to the inventory page with emphasis on stock status indicators and filter styling.",
+            "id": "US-909",
+            "title": "Add Pagination to Product List",
+            "description": "As a storefront developer, I need paginated product lists for large catalogs.",
             "acceptanceCriteria": [
-                "Style low stock/out of stock badges with proper colors",
-                "Improve filter button styling and active states",
-                "Add hover effects to product rows",
-                "Ensure search input matches theme",
-                "Apply proper shadows to product cards",
-                "Test with various stock status combinations"
+                "Update products.list to accept: limit (default 20), cursor (optional)",
+                "Return object with: products[], nextCursor (string|null), hasMore (boolean)",
+                "Cursor-based pagination using _creationTime for stability",
+                "npm run typecheck passes"
             ],
-            "priority": "P1",
-            "effort": "medium",
-            "status": "completed",
-            "passes": true
+            "priority": 9,
+            "passes": true,
+            "notes": "Implemented in convex/public/products.ts"
         },
         {
-            "id": "US-810",
-            "title": "Update Customers Page",
-            "description": "Refine the customers page with the new theme, improving customer card styling and action button hierarchy.",
+            "id": "US-910",
+            "title": "Add Filtering to Product List",
+            "description": "As a storefront developer, I need to filter products by price and stock.",
             "acceptanceCriteria": [
-                "Apply theme colors to customer cards",
-                "Add hover effects to customer rows",
-                "Style action buttons (view, edit) with proper colors",
-                "Improve spacing between customer info",
-                "Ensure proper contrast for customer names/email",
-                "Test with empty state"
+                "Update products.list to accept optional filters: minPrice, maxPrice, inStockOnly",
+                "Filter logic applied after query, before pagination",
+                "inStockOnly: true filters to products with totalStock > 0",
+                "npm run typecheck passes"
             ],
-            "priority": "P2",
-            "effort": "medium",
-            "status": "completed",
-            "passes": true
+            "priority": 10,
+            "passes": true,
+            "notes": "Implemented in convex/public/products.ts"
         },
         {
-            "id": "US-811",
-            "title": "Update Dashboard Page",
-            "description": "Enhance the dashboard with the Twitter theme, focusing on stat cards, chart styling, and widget presentation.",
+            "id": "US-911",
+            "title": "Update HTTP Products Endpoint for Pagination & Filters",
+            "description": "As a storefront developer, I need query params for pagination and filtering.",
             "acceptanceCriteria": [
-                "Apply theme colors to stat cards with subtle shadows",
-                "Add hover effects to dashboard widgets",
-                "Ensure chart colors match theme palette",
-                "Improve spacing between dashboard sections",
-                "Style action buttons consistently",
-                "Test with loading and empty states"
+                "Update GET /api/store/:orgSlug/products to accept query params",
+                "Params: limit, cursor, minPrice, maxPrice, inStockOnly",
+                "Response includes: products, nextCursor, hasMore",
+                "npm run typecheck passes"
             ],
-            "priority": "P2",
-            "effort": "medium",
-            "status": "completed",
-            "passes": true
+            "priority": 11,
+            "passes": true,
+            "notes": "Implemented in convex/http.ts"
         },
         {
-            "id": "US-812",
-            "title": "Verify Cross-Theme Consistency",
-            "description": "Test all admin pages in both light and dark themes to ensure consistent styling, proper contrast, and smooth transitions.",
+            "id": "US-912",
+            "title": "Update Storefront API Documentation",
+            "description": "As a developer, I need updated API docs reflecting all new endpoints.",
             "acceptanceCriteria": [
-                "Navigate through all admin pages in light mode",
-                "Toggle to dark mode and verify all pages update correctly",
-                "Check contrast ratios meet accessibility standards",
-                "Ensure theme transition is smooth (0.3s ease)",
-                "Verify no color flashes during theme switch",
-                "Test on mobile responsive views"
+                "Update doc/storefront_api.md with all new endpoints",
+                "Document search, categories, order status, pagination, filtering",
+                "Include example requests and responses",
+                "npm run typecheck passes"
             ],
-            "priority": "P1",
-            "effort": "low",
-            "status": "completed",
-            "passes": true
+            "priority": 12,
+            "passes": true,
+            "notes": "Updated doc/storefront_api.md"
         }
-    ],
-    "technicalRequirements": {
-        "frontend": [
-            "Use CSS custom properties for all theme values",
-            "Implement CSS-only animations where possible",
-            "Use OKLCH color space for better color manipulation",
-            "Apply Twitter's design tokens (radius: 1.3rem, specific shadows)",
-            "Ensure proper font loading and fallbacks",
-            "Test in both light and dark themes"
-        ],
-        "designPrinciples": [
-            "Avoid generic fonts (Inter, Roboto, Arial)",
-            "Avoid purple gradient cliches",
-            "Use distinctive typography (Open Sans, Georgia)",
-            "Bold primary color with refined accents",
-            "High-impact animations for key moments",
-            "Generous spacing and visual hierarchy"
-        ]
-    },
-    "priorityMatrix": {
-        "P1_Critical": [
-            "US-801: Apply Twitter Theme to globals.css",
-            "US-802: Enhance Typography System",
-            "US-805: Update AdminHeader Component",
-            "US-806: Update ProductForm Component",
-            "US-808: Update Orders Page",
-            "US-809: Update Inventory Page",
-            "US-812: Verify Cross-Theme Consistency"
-        ],
-        "P2_Important": [
-            "US-803: Add Motion Animations",
-            "US-804: Enhance Spatial Composition",
-            "US-807: Update ProductVariants Component",
-            "US-810: Update Customers Page",
-            "US-811: Update Dashboard Page"
-        ]
-    },
-    "testCases": [
-        "Verify globals.css has Twitter theme colors",
-        "Check that Open Sans is loaded and applied",
-        "Test theme toggle and verify smooth transition",
-        "Hover over buttons and verify scale/color change",
-        "Navigate admin pages and verify consistent styling",
-        "Test all pages in dark mode",
-        "Check contrast ratios with accessibility tools",
-        "Verify animations don't cause performance issues",
-        "Test responsive views on mobile viewport"
-    ],
-    "branchName": "phase8-ux-enhancement"
+    ]
 }
