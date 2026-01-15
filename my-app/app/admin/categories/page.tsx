@@ -48,29 +48,29 @@ export default function CategoriesPage() {
         return (
             <div key={`${keyPrefix}${category._id}`}>
                 <div
-                    className="flex items-center gap-3 py-3 px-4 hover:bg-slate-50 transition-colors border-b border-slate-100"
+                    className="flex items-center gap-3 py-3 px-4 hover:bg-accent/50 transition-colors border-b border-border"
                     style={{ paddingLeft: `${16 + level * 24}px` }}
                 >
                     {/* Expand/Collapse Icon */}
                     {hasChildren ? (
-                        <ChevronRight size={16} className="text-slate-400" />
+                        <ChevronRight size={16} className="text-muted-foreground" />
                     ) : (
                         <div style={{ width: 16 }} />
                     )}
 
                     {/* Category Icon */}
-                    <div className="w-8 h-8 rounded-lg bg-purple-100 flex items-center justify-center">
-                        <FolderOpen size={18} className="text-purple-600" />
+                    <div className="w-8 h-8 rounded-xl bg-primary/10 flex items-center justify-center">
+                        <FolderOpen size={18} className="text-primary" />
                     </div>
 
                     {/* Category Info */}
                     <div className="flex-1">
-                        <p className="font-medium text-slate-900">{category.name}</p>
-                        <p className="text-xs text-slate-500 font-mono">{category.slug}</p>
+                        <p className="font-medium text-foreground">{category.name}</p>
+                        <p className="text-xs text-muted-foreground font-mono">{category.slug}</p>
                     </div>
 
                     {/* Position Badge */}
-                    <div className="text-sm text-slate-500">
+                    <div className="text-sm text-muted-foreground">
                         Position: <span className="font-medium">{category.position}</span>
                     </div>
 
@@ -86,7 +86,7 @@ export default function CategoriesPage() {
                                     position: category.position,
                                 })
                             }
-                            className="p-1.5 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                            className="p-1.5 text-muted-foreground hover:text-primary hover:bg-primary/10 rounded-xl transition-colors"
                             title="Edit"
                         >
                             <Edit size={16} />
@@ -100,7 +100,7 @@ export default function CategoriesPage() {
                                     alert(err.message);
                                 }
                             }}
-                            className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                            className="p-1.5 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-xl transition-colors"
                             title="Delete"
                         >
                             <Trash2 size={16} />
@@ -116,7 +116,7 @@ export default function CategoriesPage() {
 
     if (!currentOrg) {
         return (
-            <div className="p-12 text-center text-slate-500">
+            <div className="p-12 text-center text-muted-foreground">
                 Select an organization to view categories.
             </div>
         );
@@ -127,17 +127,17 @@ export default function CategoriesPage() {
             {/* Header */}
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-3xl font-bold text-slate-900 flex items-center gap-3">
-                        <FolderOpen className="text-purple-600" size={32} />
+                    <h1 className="text-3xl font-bold text-foreground flex items-center gap-3">
+                        <FolderOpen className="text-primary" size={32} />
                         Categories
                     </h1>
-                    <p className="text-slate-500 mt-1">
+                    <p className="text-muted-foreground mt-1">
                         Organize your products into categories
                     </p>
                 </div>
                 <button
                     onClick={() => setIsCreateModalOpen(true)}
-                    className="inline-flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors shadow-sm font-medium"
+                    className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-xl hover:bg-primary/90 transition-colors shadow-sm font-medium"
                 >
                     <Plus size={18} />
                     New Category
@@ -145,23 +145,23 @@ export default function CategoriesPage() {
             </div>
 
             {/* Categories List */}
-            <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+            <div className="bg-white rounded-xl shadow-sm border border-border overflow-hidden">
                 {!categories ? (
-                    <div className="p-12 text-center animate-pulse text-slate-400">
+                    <div className="p-12 text-center animate-pulse text-muted-foreground">
                         Loading categories...
                     </div>
                 ) : categories.length === 0 ? (
                     <div className="p-12 text-center">
-                        <FolderOpen className="mx-auto text-slate-300 mb-4" size={48} />
-                        <h3 className="text-lg font-semibold text-slate-700">No categories yet</h3>
-                        <p className="text-slate-500 mt-1">
+                        <FolderOpen className="mx-auto text-muted-foreground mb-4" size={48} />
+                        <h3 className="text-lg font-semibold text-foreground">No categories yet</h3>
+                        <p className="text-muted-foreground mt-1">
                             Create your first category to organize your products.
                         </p>
                     </div>
                 ) : (
                     <div>
                         {/* Header Row */}
-                        <div className="flex items-center gap-3 py-3 px-4 bg-slate-50 border-b border-slate-200 text-sm font-semibold text-slate-600">
+                        <div className="flex items-center gap-3 py-3 px-4 bg-accent/50 border-b border-border text-sm font-semibold text-muted-foreground">
                             <div style={{ width: 16, marginLeft: 24 }} />
                             <div style={{ width: 32 }} />
                             <div className="flex-1">Category</div>
@@ -291,15 +291,15 @@ function CategoryModal({
     const availableParents = getAvailableParents();
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-foreground/50 backdrop-blur-sm">
             <div className="bg-white rounded-xl shadow-xl max-w-md w-full">
-                <div className="px-6 py-4 border-b border-slate-200 flex justify-between items-center">
-                    <h3 className="font-semibold text-lg text-slate-900">
+                <div className="px-6 py-4 border-b border-border flex justify-between items-center">
+                    <h3 className="font-semibold text-lg text-foreground">
                         {initialData ? "Edit Category" : "New Category"}
                     </h3>
                     <button
                         onClick={onClose}
-                        className="text-slate-400 hover:text-slate-600"
+                        className="text-muted-foreground hover:text-muted-foreground"
                     >
                         ×
                     </button>
@@ -307,13 +307,13 @@ function CategoryModal({
 
                 <form onSubmit={handleSubmit} className="p-6 space-y-4">
                     {error && (
-                        <div className="p-3 bg-red-50 text-red-700 text-sm rounded-lg">
+                        <div className="p-3 bg-destructive/10 text-destructive text-sm rounded-xl">
                             {error}
                         </div>
                     )}
 
                     <div>
-                        <label className="block text-sm font-medium text-slate-700 mb-1">
+                        <label className="block text-sm font-medium text-foreground mb-1">
                             Name
                         </label>
                         <input
@@ -321,13 +321,13 @@ function CategoryModal({
                             required
                             value={name}
                             onChange={(e) => handleNameChange(e.target.value)}
-                            className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
+                            className="w-full px-4 py-2.5 border border-input rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary"
                             placeholder="e.g. Electronics"
                         />
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-slate-700 mb-1">
+                        <label className="block text-sm font-medium text-foreground mb-1">
                             Slug
                         </label>
                         <input
@@ -338,19 +338,19 @@ function CategoryModal({
                                 setSlug(e.target.value);
                                 setIsSlugTouched(true);
                             }}
-                            className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm font-mono focus:outline-none focus:ring-2 focus:ring-purple-500"
+                            className="w-full px-4 py-2.5 border border-input rounded-xl text-sm font-mono focus:outline-none focus:ring-2 focus:ring-primary"
                             placeholder="electronics"
                         />
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-slate-700 mb-1">
+                        <label className="block text-sm font-medium text-foreground mb-1">
                             Parent Category
                         </label>
                         <select
                             value={parentId}
                             onChange={(e) => setParentId(e.target.value)}
-                            className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
+                            className="w-full px-4 py-2.5 border border-input rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary"
                         >
                             <option value="">None (Top Level)</option>
                             {availableParents.map((cat) => (
@@ -362,7 +362,7 @@ function CategoryModal({
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-slate-700 mb-1">
+                        <label className="block text-sm font-medium text-foreground mb-1">
                             Position
                         </label>
                         <input
@@ -370,27 +370,27 @@ function CategoryModal({
                             min="0"
                             value={position}
                             onChange={(e) => setPosition(e.target.value)}
-                            className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
+                            className="w-full px-4 py-2.5 border border-input rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary"
                             placeholder="0"
                         />
-                        <p className="text-xs text-slate-500 mt-1">
+                        <p className="text-xs text-muted-foreground mt-1">
                             Lower numbers appear first
                         </p>
                     </div>
                 </form>
 
-                <div className="px-6 py-4 border-t border-slate-200 bg-slate-50 flex justify-end gap-3 rounded-b-xl">
+                <div className="px-6 py-4 border-t border-border bg-accent/50 flex justify-end gap-3 rounded-b-xl">
                     <button
                         type="button"
                         onClick={onClose}
-                        className="px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100 rounded-lg"
+                        className="px-4 py-2 text-sm font-medium text-foreground hover:bg-muted rounded-xl"
                     >
                         Cancel
                     </button>
                     <button
                         onClick={handleSubmit}
                         disabled={isSubmitting}
-                        className="px-6 py-2 text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 rounded-lg shadow-sm disabled:opacity-50"
+                        className="px-6 py-2 text-sm font-medium text-white bg-primary hover:bg-primary/90 rounded-xl shadow-sm disabled:opacity-50"
                     >
                         {isSubmitting ? "Saving..." : initialData ? "Save Changes" : "Create Category"}
                     </button>
