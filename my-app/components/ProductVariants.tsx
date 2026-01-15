@@ -115,11 +115,11 @@ export default function ProductVariants({ productId, variants }: ProductVariants
     return (
         <div className="space-y-6">
             <div className="flex items-center justify-between">
-                <h2 className="text-lg font-semibold text-slate-900">Variants</h2>
+                <h2 className="text-lg font-semibold text-foreground">Variants</h2>
                 <button
                     onClick={() => setIsAdding(true)}
                     disabled={isAdding}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-xl transition-colors"
                 >
                     <PlusIcon size={16} />
                     Add Variant
@@ -127,58 +127,58 @@ export default function ProductVariants({ productId, variants }: ProductVariants
             </div>
 
             {error && (
-                <div className="p-3 bg-red-50 text-red-700 text-sm rounded-lg flex items-center gap-2">
+                <div className="p-3 bg-red-50 text-red-700 text-sm rounded-xl flex items-center gap-2">
                     <AlertCircle size={16} />
                     {error}
                 </div>
             )}
 
             {isAdding && (
-                <div className="p-4 bg-slate-50 border border-slate-200 rounded-lg animate-fadeIn">
+                <div className="p-4 bg-slate-50 border border-border rounded-xl animate-fadeIn">
                     <form onSubmit={handleAdd} className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
                         <div>
-                            <label className="block text-xs font-medium text-slate-500 mb-1">Name</label>
+                            <label className="block text-xs font-medium text-muted-foreground mb-1">Name</label>
                             <input
                                 type="text"
                                 required
                                 placeholder="e.g. Large / Red"
                                 value={newVariant.name}
                                 onChange={e => setNewVariant({ ...newVariant, name: e.target.value })}
-                                className="w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm"
+                                className="w-full px-4 py-2.5 bg-card border border-input rounded-md text-sm"
                             />
                         </div>
                         <div>
-                            <label className="block text-xs font-medium text-slate-500 mb-1">SKU</label>
+                            <label className="block text-xs font-medium text-muted-foreground mb-1">SKU</label>
                             <input
                                 type="text"
                                 required
                                 placeholder="PROD-L-RED"
                                 value={newVariant.sku}
                                 onChange={e => setNewVariant({ ...newVariant, sku: e.target.value })}
-                                className="w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm font-mono"
+                                className="w-full px-4 py-2.5 bg-card border border-input rounded-md text-sm font-mono"
                             />
                         </div>
                         <div>
-                            <label className="block text-xs font-medium text-slate-500 mb-1">Stock</label>
+                            <label className="block text-xs font-medium text-muted-foreground mb-1">Stock</label>
                             <input
                                 type="number"
                                 min="0"
                                 value={newVariant.stock}
                                 onChange={e => setNewVariant({ ...newVariant, stock: e.target.value })}
-                                className="w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm"
+                                className="w-full px-4 py-2.5 bg-card border border-input rounded-md text-sm"
                             />
                         </div>
                         <div className="flex gap-2">
                             <button
                                 type="submit"
-                                className="flex-1 px-3 py-2 bg-slate-900 text-white text-sm font-medium rounded-md hover:bg-slate-800"
+                                className="flex-1 px-4 py-2.5 bg-slate-900 text-white text-sm font-medium rounded-md hover:bg-slate-800"
                             >
                                 Save
                             </button>
                             <button
                                 type="button"
                                 onClick={() => setIsAdding(false)}
-                                className="px-3 py-2 bg-white border border-slate-300 text-slate-700 text-sm font-medium rounded-md hover:bg-slate-50"
+                                className="px-4 py-2.5 bg-card border border-input text-foreground text-sm font-medium rounded-md hover:bg-slate-50"
                             >
                                 Cancel
                             </button>
@@ -190,9 +190,9 @@ export default function ProductVariants({ productId, variants }: ProductVariants
             {/* Responsive Grid Layout for Variant Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {variants.length === 0 ? (
-                    <div className="col-span-full p-8 text-center bg-slate-50 border border-slate-200 rounded-lg">
+                    <div className="col-span-full p-8 text-center bg-slate-50 border border-border rounded-xl">
                         <Package className="mx-auto text-slate-300 mb-3" size={40} />
-                        <p className="text-slate-500 italic">No variants yet. Add one above.</p>
+                        <p className="text-muted-foreground italic">No variants yet. Add one above.</p>
                     </div>
                 ) : (
                     variants.map((variant) => {
@@ -200,10 +200,10 @@ export default function ProductVariants({ productId, variants }: ProductVariants
                         return (
                             <div
                                 key={variant._id}
-                                className="group bg-white rounded-xl border border-slate-200 overflow-hidden hover:shadow-md hover:border-slate-300 transition-all"
+                                className="group bg-card rounded-xl border border-border overflow-hidden hover:shadow-md hover:border-input transition-all"
                             >
                                 {/* Card Header with Default Badge */}
-                                <div className="relative bg-gradient-to-r from-slate-50 to-slate-100 px-4 py-3 border-b border-slate-200">
+                                <div className="relative bg-gradient-to-r from-slate-50 to-slate-100 px-4 py-3 border-b border-border">
                                     <div className="flex items-start justify-between">
                                         <div className="flex items-center gap-2">
                                             {variant.isDefault && (
@@ -212,7 +212,7 @@ export default function ProductVariants({ productId, variants }: ProductVariants
                                                     Default
                                                 </span>
                                             )}
-                                            <h3 className="font-semibold text-slate-900">{variant.name}</h3>
+                                            <h3 className="font-semibold text-foreground">{variant.name}</h3>
                                         </div>
                                         <button
                                             onClick={() => handleSetDefault(variant._id)}
@@ -226,13 +226,13 @@ export default function ProductVariants({ productId, variants }: ProductVariants
                                             <Star size={16} fill={variant.isDefault ? "currentColor" : "none"} />
                                         </button>
                                     </div>
-                                    <p className="text-xs font-mono text-slate-500 mt-1">{variant.sku}</p>
+                                    <p className="text-xs font-mono text-muted-foreground mt-1">{variant.sku}</p>
                                 </div>
 
                                 {/* Card Body */}
                                 <div className="p-4 space-y-3">
                                     {/* Image Placeholder */}
-                                    <div className="aspect-video bg-slate-50 border-2 border-dashed border-slate-200 rounded-lg flex items-center justify-center">
+                                    <div className="aspect-video bg-slate-50 border-2 border-dashed border-border rounded-xl flex items-center justify-center">
                                         <div className="text-center">
                                             <ImageIcon className="mx-auto text-slate-300 mb-2" size={32} />
                                             <p className="text-xs text-slate-400">No image</p>
@@ -242,18 +242,18 @@ export default function ProductVariants({ productId, variants }: ProductVariants
                                     {/* Price */}
                                     {variant.price && (
                                         <div className="flex items-baseline justify-between">
-                                            <span className="text-sm text-slate-500">Price</span>
-                                            <span className="text-lg font-bold text-slate-900">
+                                            <span className="text-sm text-muted-foreground">Price</span>
+                                            <span className="text-lg font-bold text-foreground">
                                                 ${(variant.price / 100).toFixed(2)}
                                             </span>
                                         </div>
                                     )}
 
                                     {/* Stock Status - Prominently Visible */}
-                                    <div className="flex items-center justify-between p-3 bg-slate-50 rounded-lg border border-slate-100">
+                                    <div className="flex items-center justify-between p-3 bg-slate-50 rounded-xl border border-slate-100">
                                         <div className="flex items-center gap-2">
                                             <Package size={16} className="text-slate-400" />
-                                            <span className="text-sm font-medium text-slate-700">Stock</span>
+                                            <span className="text-sm font-medium text-foreground">Stock</span>
                                         </div>
                                         <div className="text-right">
                                             <span className={`text-2xl font-bold ${stockStatus.color.split(' ')[0]}`}>
@@ -267,10 +267,10 @@ export default function ProductVariants({ productId, variants }: ProductVariants
                                 </div>
 
                                 {/* Card Footer with Actions */}
-                                <div className="px-4 py-3 bg-slate-50 border-t border-slate-200 flex justify-between">
+                                <div className="px-4 py-3 bg-slate-50 border-t border-border flex justify-between">
                                     <button
                                         onClick={() => startEditing(variant)}
-                                        className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-lg transition-colors"
+                                        className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-xl transition-colors"
                                         title="Edit Variant"
                                     >
                                         <Pencil size={16} />
@@ -278,7 +278,7 @@ export default function ProductVariants({ productId, variants }: ProductVariants
                                     </button>
                                     <button
                                         onClick={() => handleDelete(variant._id)}
-                                        className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors"
+                                        className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-red-600 hover:text-red-700 hover:bg-red-50 rounded-xl transition-colors"
                                         title="Delete Variant"
                                     >
                                         <Trash2 size={16} />
@@ -294,69 +294,69 @@ export default function ProductVariants({ productId, variants }: ProductVariants
             {/* Edit Modal */}
             {editingId && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm">
-                    <div className="bg-white rounded-xl shadow-xl max-w-md w-full overflow-hidden">
-                        <div className="px-6 py-4 border-b border-slate-200 flex justify-between items-center bg-slate-50">
-                            <h3 className="font-semibold text-lg text-slate-900">Edit Variant</h3>
-                            <button onClick={cancelEditing} className="text-slate-400 hover:text-slate-600">
+                    <div className="bg-card rounded-xl shadow-xl max-w-md w-full overflow-hidden">
+                        <div className="px-6 py-4 border-b border-border flex justify-between items-center bg-slate-50">
+                            <h3 className="font-semibold text-lg text-foreground">Edit Variant</h3>
+                            <button onClick={cancelEditing} className="text-slate-400 hover:text-muted-foreground">
                                 <X size={20} />
                             </button>
                         </div>
 
                         <div className="p-6 space-y-4">
                             <div>
-                                <label className="block text-sm font-medium text-slate-700 mb-1">Name</label>
+                                <label className="block text-sm font-medium text-foreground mb-1">Name</label>
                                 <input
                                     type="text"
                                     value={editData.name}
                                     onChange={(e) => setEditData({ ...editData, name: e.target.value })}
-                                    className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-slate-900"
+                                    className="w-full px-4 py-2.5 border border-input rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary"
                                     placeholder="Variant name"
                                 />
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-slate-700 mb-1">SKU</label>
+                                <label className="block text-sm font-medium text-foreground mb-1">SKU</label>
                                 <input
                                     type="text"
                                     value={editData.sku}
                                     onChange={(e) => setEditData({ ...editData, sku: e.target.value })}
-                                    className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm font-mono focus:outline-none focus:ring-2 focus:ring-slate-900"
+                                    className="w-full px-4 py-2.5 border border-input rounded-xl text-sm font-mono focus:outline-none focus:ring-2 focus:ring-primary"
                                     placeholder="PROD-SKU"
                                 />
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-slate-700 mb-1">Price ($)</label>
+                                <label className="block text-sm font-medium text-foreground mb-1">Price ($)</label>
                                 <div className="relative">
-                                    <span className="absolute left-3 top-2 text-slate-500">$</span>
+                                    <span className="absolute left-3 top-2 text-muted-foreground">$</span>
                                     <input
                                         type="number"
                                         min="0"
                                         step="0.01"
                                         value={editData.price}
                                         onChange={(e) => setEditData({ ...editData, price: e.target.value })}
-                                        className="w-full pl-7 pr-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-slate-900"
+                                        className="w-full pl-7 pr-3 py-2 border border-input rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary"
                                         placeholder="0.00"
                                     />
                                 </div>
                             </div>
 
-                            <div className="bg-slate-50 rounded-lg p-3 text-sm text-slate-500">
+                            <div className="bg-slate-50 rounded-xl p-3 text-sm text-muted-foreground">
                                 <p>💡 To adjust stock, use the Inventory page.</p>
                             </div>
                         </div>
 
-                        <div className="px-6 py-4 border-t border-slate-200 bg-slate-50 flex justify-end gap-3">
+                        <div className="px-6 py-4 border-t border-border bg-slate-50 flex justify-end gap-3">
                             <button
                                 onClick={cancelEditing}
-                                className="px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100 rounded-lg"
+                                className="px-4 py-2 text-sm font-medium text-foreground hover:bg-accent/50 rounded-xl"
                             >
                                 Cancel
                             </button>
                             <button
                                 onClick={handleSaveEdit}
                                 disabled={isSaving}
-                                className="px-4 py-2 text-sm font-medium text-white bg-slate-900 hover:bg-slate-800 rounded-lg disabled:opacity-50 flex items-center gap-2"
+                                className="px-4 py-2 text-sm font-medium text-white bg-slate-900 hover:bg-slate-800 rounded-xl disabled:opacity-50 flex items-center gap-2"
                             >
                                 {isSaving ? (
                                     <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />

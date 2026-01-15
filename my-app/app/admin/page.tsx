@@ -53,7 +53,7 @@ export default function AdminDashboard() {
     // Show loading state
     if (isLoading) {
         return (
-            <div className="p-12 text-center animate-pulse text-slate-400">
+            <div className="p-12 text-center animate-pulse text-muted-foreground">
                 Loading...
             </div>
         );
@@ -67,8 +67,8 @@ export default function AdminDashboard() {
                     <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
                         <Building2 className="text-purple-600" size={32} />
                     </div>
-                    <h1 className="text-2xl font-bold text-slate-900 mb-2">Welcome to UCCP</h1>
-                    <p className="text-slate-500">
+                    <h1 className="text-2xl font-bold text-foreground mb-2">Welcome to UCCP</h1>
+                    <p className="text-muted-foreground">
                         Create your first organization to get started with the platform.
                     </p>
                 </div>
@@ -82,10 +82,10 @@ export default function AdminDashboard() {
         return (
             <div className="p-12 text-center">
                 <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Building2 className="text-slate-400" size={32} />
+                    <Building2 className="text-muted-foreground" size={32} />
                 </div>
-                <h2 className="text-xl font-semibold text-slate-700 mb-2">Select an Organization</h2>
-                <p className="text-slate-500">
+                <h2 className="text-xl font-semibold text-foreground mb-2">Select an Organization</h2>
+                <p className="text-muted-foreground">
                     Use the organization switcher in the header to select an organization.
                 </p>
             </div>
@@ -98,7 +98,7 @@ export default function AdminDashboard() {
 
     return (
         <div className="p-8 max-w-7xl mx-auto space-y-8">
-            <h1 className="text-3xl font-bold text-slate-900">Dashboard</h1>
+            <h1 className="text-3xl font-bold text-foreground">Dashboard</h1>
 
             {/* KPI Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -133,9 +133,9 @@ export default function AdminDashboard() {
             </div>
 
             {/* Sales Chart */}
-            <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-                <h3 className="text-lg font-semibold text-slate-900 mb-6 flex items-center gap-2">
-                    <TrendingUp size={20} className="text-slate-400" />
+            <div className="bg-card rounded-xl shadow-sm border border-border p-6">
+                <h3 className="text-lg font-semibold text-foreground mb-6 flex items-center gap-2">
+                    <TrendingUp size={20} className="text-muted-foreground" />
                     Sales Overview (Last 30 Days)
                 </h3>
                 <div className="h-80 w-full">
@@ -164,7 +164,7 @@ export default function AdminDashboard() {
                             </BarChart>
                         </ResponsiveContainer>
                     ) : (
-                        <div className="h-full flex items-center justify-center text-slate-400 italic">
+                        <div className="h-full flex items-center justify-center text-muted-foreground italic">
                             No sales data yet.
                         </div>
                     )}
@@ -177,17 +177,17 @@ export default function AdminDashboard() {
     );
 }
 
-function KPICard({ title, value, icon, bg, textColor = "text-slate-900", onClick }: any) {
+function KPICard({ title, value, icon, bg, textColor = "text-foreground", onClick }: any) {
     return (
         <div
             onClick={onClick}
-            className="bg-white rounded-xl shadow-sm border border-slate-200 p-6 flex items-start justify-between cursor-pointer transition-all hover:shadow-md hover:border-slate-300 active:scale-[0.98]"
+            className="bg-card rounded-xl shadow-sm border border-border p-6 flex items-start justify-between cursor-pointer transition-all hover:shadow-md hover:border-input active:scale-[0.98]"
         >
             <div>
-                <p className="text-sm font-medium text-slate-500 mb-1">{title}</p>
+                <p className="text-sm font-medium text-muted-foreground mb-1">{title}</p>
                 <h2 className={`text-2xl font-bold ${textColor}`}>{value}</h2>
             </div>
-            <div className={`p-3 rounded-lg ${bg}`}>
+            <div className={`p-3 rounded-xl ${bg}`}>
                 {icon}
             </div>
         </div>
@@ -199,29 +199,29 @@ function CustomerReviewsWidget({ recentOrders }: { recentOrders: any[] }) {
     const recentReviews = recentOrders.slice(0, 5);
 
     return (
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+        <div className="bg-card rounded-xl shadow-sm border border-border p-6">
             <div className="flex items-center justify-between mb-6">
-                <h3 className="text-lg font-semibold text-slate-900 flex items-center gap-2">
+                <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
                     <MessageSquare size={20} className="text-purple-600" />
                     Customer Reviews
                 </h3>
-                <span className="text-sm text-slate-500 italic">
+                <span className="text-sm text-muted-foreground italic">
                     Showing recent orders (placeholder)
                 </span>
             </div>
 
             {recentReviews.length === 0 ? (
-                <div className="text-center py-12 text-slate-500">
+                <div className="text-center py-12 text-muted-foreground">
                     <MessageSquare className="mx-auto text-slate-300 mb-4" size={48} />
-                    <p className="text-slate-500">No recent customer activity.</p>
-                    <p className="text-sm text-slate-400 mt-1">Reviews will appear here as customers engage.</p>
+                    <p className="text-muted-foreground">No recent customer activity.</p>
+                    <p className="text-sm text-muted-foreground mt-1">Reviews will appear here as customers engage.</p>
                 </div>
             ) : (
                 <div className="space-y-4">
                     {recentReviews.map((order) => (
                         <div
                             key={order._id}
-                            className="p-4 bg-gradient-to-r from-purple-50 to-blue-50 rounded-lg border border-purple-100"
+                            className="p-4 bg-gradient-to-r from-purple-50 to-blue-50 rounded-xl border border-purple-100"
                         >
                             <div className="flex items-start justify-between mb-2">
                                 <div className="flex items-center gap-2">
@@ -235,18 +235,18 @@ function CustomerReviewsWidget({ recentOrders }: { recentOrders: any[] }) {
                                             />
                                         ))}
                                     </div>
-                                    <span className="text-sm font-medium text-slate-900">
+                                    <span className="text-sm font-medium text-foreground">
                                         {order.customerInfo.name}
                                     </span>
                                 </div>
-                                <span className="text-xs text-slate-500">
+                                <span className="text-xs text-muted-foreground">
                                     {new Date(order.createdAt).toLocaleDateString()}
                                 </span>
                             </div>
-                            <p className="text-sm text-slate-700">
+                            <p className="text-sm text-foreground">
                                 Ordered {order.items?.length ?? 0} {(order.items?.length ?? 0) === 1 ? 'item' : 'items'} • {formatPrice(order.totalAmount ?? 0)}
                             </p>
-                            <p className="text-xs text-slate-500 mt-1 italic">
+                            <p className="text-xs text-muted-foreground mt-1 italic">
                                 "Great service! Fast delivery and quality products."
                             </p>
                             <p className="text-xs text-purple-600 mt-2 hover:underline cursor-pointer">

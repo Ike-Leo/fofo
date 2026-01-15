@@ -5,7 +5,13 @@
       "Bash(npm run lint)",
       "Bash(git add:*)",
       "Bash(git commit:*)",
-      "Bash(git config:*)"
+      "Bash(git config:*)",
+      "Bash(for:*)",
+      "Bash(do if [ -f \"$file\" ])",
+      "Bash(then sed:*)",
+      "Bash(echo:*)",
+      "Bash(fi:*)",
+      "Bash(done:*)"
     ]
   }
 }

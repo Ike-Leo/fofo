@@ -45,7 +45,7 @@ export default function CustomersPage() {
 
     if (!currentOrg) {
         return (
-            <div className="p-12 text-center text-slate-500">
+            <div className="p-12 text-center text-muted-foreground">
                 Select an organization to view customers.
             </div>
         );
@@ -56,11 +56,11 @@ export default function CustomersPage() {
             {/* Header */}
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div>
-                    <h1 className="text-3xl font-bold text-slate-900 flex items-center gap-3">
+                    <h1 className="text-3xl font-bold text-foreground flex items-center gap-3">
                         <Users className="text-purple-600" size={32} />
                         Customers
                     </h1>
-                    <p className="text-slate-500 mt-1">
+                    <p className="text-muted-foreground mt-1">
                         View and manage your customer relationships
                     </p>
                 </div>
@@ -68,7 +68,7 @@ export default function CustomersPage() {
                 {/* Search */}
                 <div className="relative w-full sm:w-80">
                     <Search
-                        className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+                        className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
                         size={18}
                     />
                     <input
@@ -76,7 +76,7 @@ export default function CustomersPage() {
                         placeholder="Search by name or email..."
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
-                        className="w-full pl-10 pr-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                        className="w-full pl-10 pr-4 py-2.5 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                     />
                 </div>
             </div>
@@ -95,10 +95,10 @@ export default function CustomersPage() {
                                 <button
                                     key={count}
                                     onClick={() => setTopCount(count as 5 | 10 | 20)}
-                                    className={`px-3 py-1 rounded-lg text-sm font-medium transition-colors ${
+                                    className={`px-3 py-1 rounded-xl text-sm font-medium transition-colors ${
                                         topCount === count
                                             ? "bg-amber-600 text-white"
-                                            : "bg-white text-amber-700 hover:bg-amber-100"
+                                            : "bg-card text-amber-700 hover:bg-amber-100"
                                     }`}
                                 >
                                     {count}
@@ -118,7 +118,7 @@ export default function CustomersPage() {
                                 <Link
                                     key={customer._id}
                                     href={`/admin/customers/${customer._id}`}
-                                    className="bg-white rounded-lg p-4 border border-amber-200 hover:shadow-md hover:border-amber-300 transition-all cursor-pointer"
+                                    className="bg-card rounded-xl p-4 border border-amber-200 hover:shadow-md hover:border-amber-300 transition-all cursor-pointer"
                                 >
                                     <div className="flex items-center gap-3 mb-3">
                                         <div
@@ -126,7 +126,7 @@ export default function CustomersPage() {
                                                 index === 0
                                                     ? "bg-amber-100 text-amber-600"
                                                     : index === 1
-                                                        ? "bg-slate-200 text-slate-600"
+                                                        ? "bg-slate-200 text-muted-foreground"
                                                         : index === 2
                                                             ? "bg-orange-100 text-orange-600"
                                                             : "bg-purple-100 text-purple-600"
@@ -141,24 +141,24 @@ export default function CustomersPage() {
                                             )}
                                         </div>
                                         <div className="flex-1 min-w-0">
-                                            <p className="font-medium text-slate-900 truncate">{customer.name}</p>
-                                            <p className="text-xs text-slate-500 truncate">{customer.email}</p>
+                                            <p className="font-medium text-foreground truncate">{customer.name}</p>
+                                            <p className="text-xs text-muted-foreground truncate">{customer.email}</p>
                                         </div>
                                     </div>
                                     <div className="space-y-1">
                                         <div className="flex items-center justify-between text-sm">
-                                            <span className="text-slate-500">Total Spend:</span>
+                                            <span className="text-muted-foreground">Total Spend:</span>
                                             <span className="font-semibold text-emerald-600">
                                                 {formatPrice(customer.totalSpend)}
                                             </span>
                                         </div>
                                         <div className="flex items-center justify-between text-sm">
-                                            <span className="text-slate-500">Orders:</span>
-                                            <span className="font-medium text-slate-700">{customer.totalOrders}</span>
+                                            <span className="text-muted-foreground">Orders:</span>
+                                            <span className="font-medium text-foreground">{customer.totalOrders}</span>
                                         </div>
                                         <div className="flex items-center justify-between text-sm">
-                                            <span className="text-slate-500">Avg. Order:</span>
-                                            <span className="font-medium text-slate-700">
+                                            <span className="text-muted-foreground">Avg. Order:</span>
+                                            <span className="font-medium text-foreground">
                                                 {formatPrice(customer.totalSpend / customer.totalOrders)}
                                             </span>
                                         </div>
@@ -195,33 +195,33 @@ export default function CustomersPage() {
             )}
 
             {/* Customer Table */}
-            <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+            <div className="bg-card rounded-xl shadow-sm border border-border overflow-hidden">
                 {!customers ? (
-                    <div className="p-12 text-center animate-pulse text-slate-400">
+                    <div className="p-12 text-center animate-pulse text-muted-foreground">
                         Loading customers...
                     </div>
                 ) : customers.length === 0 ? (
                     <div className="p-12 text-center">
                         <Users className="mx-auto text-slate-300 mb-4" size={48} />
-                        <h3 className="text-lg font-semibold text-slate-700">No customers yet</h3>
-                        <p className="text-slate-500 mt-1">
+                        <h3 className="text-lg font-semibold text-foreground">No customers yet</h3>
+                        <p className="text-muted-foreground mt-1">
                             Customers will appear here after they place orders.
                         </p>
                     </div>
                 ) : (
                     <table className="w-full">
-                        <thead className="bg-slate-50 border-b border-slate-200">
+                        <thead className="bg-muted/30 border-b border-border">
                             <tr>
-                                <th className="text-left px-6 py-4 text-sm font-semibold text-slate-600">
+                                <th className="text-left px-6 py-4 text-sm font-semibold text-muted-foreground">
                                     Customer
                                 </th>
-                                <th className="text-left px-6 py-4 text-sm font-semibold text-slate-600 hidden md:table-cell">
+                                <th className="text-left px-6 py-4 text-sm font-semibold text-muted-foreground hidden md:table-cell">
                                     Orders
                                 </th>
-                                <th className="text-left px-6 py-4 text-sm font-semibold text-slate-600">
+                                <th className="text-left px-6 py-4 text-sm font-semibold text-muted-foreground">
                                     Lifetime Value
                                 </th>
-                                <th className="text-left px-6 py-4 text-sm font-semibold text-slate-600 hidden lg:table-cell">
+                                <th className="text-left px-6 py-4 text-sm font-semibold text-muted-foreground hidden lg:table-cell">
                                     Last Seen
                                 </th>
                                 <th className="px-6 py-4"></th>
@@ -231,7 +231,7 @@ export default function CustomersPage() {
                             {customers.map((customer, index) => (
                                 <tr
                                     key={customer._id}
-                                    className="hover:bg-slate-50 transition-colors"
+                                    className="hover:bg-muted/30 transition-colors"
                                 >
                                     <td className="px-6 py-4">
                                         <div className="flex items-center gap-3">
@@ -241,7 +241,7 @@ export default function CustomersPage() {
                                                     className={`w-8 h-8 rounded-full flex items-center justify-center ${index === 0
                                                         ? "bg-amber-100 text-amber-600"
                                                         : index === 1
-                                                            ? "bg-slate-200 text-slate-600"
+                                                            ? "bg-slate-200 text-muted-foreground"
                                                             : "bg-orange-100 text-orange-600"
                                                         }`}
                                                 >
@@ -254,10 +254,10 @@ export default function CustomersPage() {
                                                 </div>
                                             )}
                                             <div>
-                                                <p className="font-medium text-slate-900">
+                                                <p className="font-medium text-foreground">
                                                     {customer.name}
                                                 </p>
-                                                <p className="text-sm text-slate-500 flex items-center gap-1">
+                                                <p className="text-sm text-muted-foreground flex items-center gap-1">
                                                     <Mail size={12} />
                                                     {customer.email}
                                                 </p>
@@ -265,8 +265,8 @@ export default function CustomersPage() {
                                         </div>
                                     </td>
                                     <td className="px-6 py-4 hidden md:table-cell">
-                                        <div className="flex items-center gap-2 text-slate-700">
-                                            <ShoppingBag size={16} className="text-slate-400" />
+                                        <div className="flex items-center gap-2 text-foreground">
+                                            <ShoppingBag size={16} className="text-muted-foreground" />
                                             {customer.totalOrders}
                                         </div>
                                     </td>
@@ -277,20 +277,20 @@ export default function CustomersPage() {
                                                 className={
                                                     customer.totalSpend > 10000
                                                         ? "text-emerald-500"
-                                                        : "text-slate-400"
+                                                        : "text-muted-foreground"
                                                 }
                                             />
                                             <span
                                                 className={`font-semibold ${customer.totalSpend > 10000
                                                     ? "text-emerald-700"
-                                                    : "text-slate-900"
+                                                    : "text-foreground"
                                                     }`}
                                             >
                                                 {formatPrice(customer.totalSpend)}
                                             </span>
                                         </div>
                                     </td>
-                                    <td className="px-6 py-4 text-slate-500 text-sm hidden lg:table-cell">
+                                    <td className="px-6 py-4 text-muted-foreground text-sm hidden lg:table-cell">
                                         {formatDate(customer.lastSeenAt)}
                                     </td>
                                     <td className="px-6 py-4">
