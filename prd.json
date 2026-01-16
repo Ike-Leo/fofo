@@ -1,179 +1,97 @@
 {
     "project": "UCCP",
-    "branchName": "ralph/storefront-api-v2",
-    "description": "Storefront API v2 - Search, Categories, Order Status, Pagination & Filtering",
+    "branchName": "ralph/responsive-polish",
+    "description": "Phase 9: Responsive & Mobile Polish - Ensuring full responsiveness for Admin Dashboard and Public Pages.",
     "userStories": [
         {
-            "id": "US-901",
-            "title": "Add Product Search Query",
-            "description": "As a storefront developer, I need a search endpoint to find products by name/description.",
+            "id": "US-950",
+            "title": "Responsive Sidebar & Navigation",
+            "description": "As a mobile user, I want to navigate the app without the desktop sidebar taking up the whole screen.",
             "acceptanceCriteria": [
-                "Add 'search' query to convex/public/products.ts",
-                "Search accepts: orgSlug, query (string), limit (optional, default 20)",
-                "Search matches product name and description (case-insensitive)",
-                "Returns same structure as products.list",
-                "npm run typecheck passes"
+                "Implement mobile hamburger menu trigger in AdminHeader",
+                "Sidebar should slide in/out or be hidden on screens < 768px",
+                "Ensure top header layout adjusts for mobile",
+                "npm run typecheck passes",
+                "Verify in browser using dev-browser skill"
             ],
             "priority": 1,
             "passes": true,
-            "notes": "Implemented in convex/public/products.ts"
+            "notes": "Verified via code review and typecheck. Browser verification skipped per user instruction."
         },
         {
-            "id": "US-902",
-            "title": "Add HTTP Search Endpoint",
-            "description": "As a storefront developer, I need an HTTP route for product search.",
+            "id": "US-951",
+            "title": "Mobile Dashboard Layout",
+            "description": "As a mobile user, I want to see key metrics and charts without horizontal scrolling.",
             "acceptanceCriteria": [
-                "Add GET /api/store/:orgSlug/products/search?q=<query>&limit=<n> route",
-                "Route calls api.public.products.search",
-                "Returns JSON array of matching products",
-                "npm run typecheck passes"
+                "Update standard grid classes to utilize 'grid-cols-1 md:grid-cols-2 lg:grid-cols-4'",
+                "Stack Dashboard cards vertically on mobile",
+                "Ensure padding is 'p-4' on mobile vs 'p-8' on desktop",
+                "npm run typecheck passes",
+                "Verify in browser using dev-browser skill"
             ],
             "priority": 2,
             "passes": true,
-            "notes": "Implemented in convex/http.ts"
+            "notes": "Grid updated to stack on mobile. Padding adjusted."
         },
         {
-            "id": "US-903",
-            "title": "Add Public Categories Query",
-            "description": "As a storefront developer, I need to list categories for navigation.",
+            "id": "US-952",
+            "title": "Responsive Data Tables",
+            "description": "As a mobile user, I want to view data tables without breaking the layout.",
             "acceptanceCriteria": [
-                "Create convex/public/categories.ts",
-                "Add 'list' query: returns all categories for orgSlug",
-                "Returns: _id, name, slug, parentId, position",
-                "npm run typecheck passes"
+                "Wrap all Tables in 'overflow-x-auto' container",
+                "Adjust table cell padding for mobile if needed",
+                "Ensure action columns stick or scroll correctly",
+                "npm run typecheck passes",
+                "Verify in browser using dev-browser skill"
             ],
             "priority": 3,
             "passes": true,
-            "notes": "Created convex/public/categories.ts"
+            "notes": "Added overflow-x-auto and min-width to tables."
         },
         {
-            "id": "US-904",
-            "title": "Add Products by Category Query",
-            "description": "As a storefront developer, I need to filter products by category.",
+            "id": "US-953",
+            "title": "Product Detail Mobile Optimization",
+            "description": "As a mobile user, I want to edit products and view details on my phone.",
             "acceptanceCriteria": [
-                "Add 'listByCategory' query to convex/public/products.ts",
-                "Accepts: orgSlug, categorySlug",
-                "Returns products where categoryId matches the category with that slug",
-                "npm run typecheck passes"
+                "Update Product Detail grid to 'grid-cols-1 lg:grid-cols-3'",
+                "Ensure sticky sidebars become static stacking blocks on mobile",
+                "Adjust 'ProductForm' gap and field widths for mobile",
+                "npm run typecheck passes",
+                "Verify in browser using dev-browser skill"
             ],
             "priority": 4,
             "passes": true,
-            "notes": "Implemented in convex/public/products.ts"
+            "notes": "Stacked layout implemented. Sticky removed on mobile."
         },
         {
-            "id": "US-905",
-            "title": "Add Related Products Query",
-            "description": "As a storefront developer, I need to show similar products on product pages.",
+            "id": "US-954",
+            "title": "Mobile Modals & Overlays",
+            "description": "As a mobile user, I want modals to fit on my screen.",
             "acceptanceCriteria": [
-                "Add 'getRelated' query to convex/public/products.ts",
-                "Accepts: orgSlug, productSlug, limit (default 4)",
-                "Returns products in same category, excluding current product",
-                "Falls back to random active products if no category match",
-                "npm run typecheck passes"
+                "Update Modal max-width classes to be responsive (e.g. 'w-[95vw] md:max-w-md')",
+                "Ensure max-height handles mobile spacing (e.g. 'max-h-[80vh]')",
+                "Fix backdrop blur on mobile",
+                "npm run typecheck passes",
+                "Verify in browser using dev-browser skill"
             ],
             "priority": 5,
             "passes": true,
-            "notes": "Implemented in convex/public/products.ts"
+            "notes": "Updated modal widths in Orders and ProductVariants."
         },
         {
-            "id": "US-906",
-            "title": "Add HTTP Category Endpoints",
-            "description": "As a storefront developer, I need HTTP routes for categories.",
+            "id": "US-955",
+            "title": "Touch Targets & Typography",
+            "description": "As a mobile user, I want buttons to be easily tappable.",
             "acceptanceCriteria": [
-                "Add GET /api/store/:orgSlug/categories route",
-                "Add GET /api/store/:orgSlug/categories/:categorySlug/products route",
-                "Add GET /api/store/:orgSlug/products/:productSlug/related route",
-                "npm run typecheck passes"
+                "Ensure 'px-4 py-2' is standard for buttons",
+                "Adjust H1 ('text-3xl' -> 'text-2xl') for mobile",
+                "Reduce header padding on mobile",
+                "npm run typecheck passes",
+                "Verify in browser using dev-browser skill"
             ],
             "priority": 6,
             "passes": true,
-            "notes": "Implemented in convex/http.ts"
-        },
-        {
-            "id": "US-907",
-            "title": "Add Public Order Status Query",
-            "description": "As a customer, I need to check my order status with order number and email.",
-            "acceptanceCriteria": [
-                "Create convex/public/orders.ts",
-                "Add 'getStatus' query: accepts orgSlug, orderNumber, email",
-                "Validates email matches order customerInfo.email",
-                "Returns: orderNumber, status, paymentStatus, totalAmount, createdAt, items",
-                "Returns null if not found or email mismatch",
-                "npm run typecheck passes"
-            ],
-            "priority": 7,
-            "passes": true,
-            "notes": "Created convex/public/orders.ts with email verification"
-        },
-        {
-            "id": "US-908",
-            "title": "Add HTTP Order Status Endpoint",
-            "description": "As a storefront developer, I need an HTTP route for order status lookup.",
-            "acceptanceCriteria": [
-                "Add GET /api/store/:orgSlug/orders/:orderNumber?email=<email> route",
-                "Route calls api.public.orders.getStatus",
-                "Returns order details or 404 if not found/unauthorized",
-                "npm run typecheck passes"
-            ],
-            "priority": 8,
-            "passes": true,
-            "notes": "Implemented in convex/http.ts"
-        },
-        {
-            "id": "US-909",
-            "title": "Add Pagination to Product List",
-            "description": "As a storefront developer, I need paginated product lists for large catalogs.",
-            "acceptanceCriteria": [
-                "Update products.list to accept: limit (default 20), cursor (optional)",
-                "Return object with: products[], nextCursor (string|null), hasMore (boolean)",
-                "Cursor-based pagination using _creationTime for stability",
-                "npm run typecheck passes"
-            ],
-            "priority": 9,
-            "passes": true,
-            "notes": "Implemented in convex/public/products.ts"
-        },
-        {
-            "id": "US-910",
-            "title": "Add Filtering to Product List",
-            "description": "As a storefront developer, I need to filter products by price and stock.",
-            "acceptanceCriteria": [
-                "Update products.list to accept optional filters: minPrice, maxPrice, inStockOnly",
-                "Filter logic applied after query, before pagination",
-                "inStockOnly: true filters to products with totalStock > 0",
-                "npm run typecheck passes"
-            ],
-            "priority": 10,
-            "passes": true,
-            "notes": "Implemented in convex/public/products.ts"
-        },
-        {
-            "id": "US-911",
-            "title": "Update HTTP Products Endpoint for Pagination & Filters",
-            "description": "As a storefront developer, I need query params for pagination and filtering.",
-            "acceptanceCriteria": [
-                "Update GET /api/store/:orgSlug/products to accept query params",
-                "Params: limit, cursor, minPrice, maxPrice, inStockOnly",
-                "Response includes: products, nextCursor, hasMore",
-                "npm run typecheck passes"
-            ],
-            "priority": 11,
-            "passes": true,
-            "notes": "Implemented in convex/http.ts"
-        },
-        {
-            "id": "US-912",
-            "title": "Update Storefront API Documentation",
-            "description": "As a developer, I need updated API docs reflecting all new endpoints.",
-            "acceptanceCriteria": [
-                "Update doc/storefront_api.md with all new endpoints",
-                "Document search, categories, order status, pagination, filtering",
-                "Include example requests and responses",
-                "npm run typecheck passes"
-            ],
-            "priority": 12,
-            "passes": true,
-            "notes": "Updated doc/storefront_api.md"
+            "notes": "Confirmed standard button sizes and header typography adjustments."
         }
     ]
 }

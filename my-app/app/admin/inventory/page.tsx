@@ -150,7 +150,7 @@ export default function InventoryPage() {
 
             <div className="bg-card rounded-xl shadow-sm border border-border overflow-hidden">
                 <div className="overflow-x-auto">
-                    <table className="w-full text-left">
+                    <table className="w-full text-left min-w-[700px]">
                         <thead className="bg-muted/30 border-b border-border">
                             <tr>
                                 <th className="px-6 py-4 font-semibold text-xs text-muted-foreground uppercase tracking-wider">Product</th>
