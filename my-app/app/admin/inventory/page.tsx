@@ -70,17 +70,17 @@ export default function InventoryPage() {
     }
 
     return (
-        <div className="p-8 max-w-7xl mx-auto">
+        <div className="p-4 md:p-8 max-w-7xl mx-auto">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight text-foreground">Inventory</h1>
+                    <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">Inventory</h1>
                     <p className="text-muted-foreground mt-1">Real-time stock management for <span className="capitalize">{currentOrg.name}</span></p>
                 </div>
 
                 <div className="flex items-center gap-3">
                     <button
                         onClick={() => setLowStockOnly(!lowStockOnly)}
-                        className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-medium transition-all ${lowStockOnly
+                        className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-medium transition-all min-h-[44px] ${lowStockOnly
                             ? "bg-amber-100 text-amber-700 shadow-inner"
                             : "bg-card text-muted-foreground border border-border hover:bg-muted/50 hover:text-foreground shadow-sm"
                             }`}
@@ -93,16 +93,17 @@ export default function InventoryPage() {
 
             {/* Search and Filter Section */}
             <div className="bg-card rounded-xl shadow-sm border border-border p-4 mb-6">
-                <div className="flex flex-col sm:flex-row gap-4">
+                <div className="flex flex-col gap-4">
                     {/* Search Input */}
                     <div className="relative flex-1">
                         <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
                         <input
                             type="text"
+                            inputMode="search"
                             placeholder="Search by product name, SKU, or variant..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full pl-10 pr-4 py-2.5 bg-background border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 text-foreground placeholder:text-muted-foreground"
+                            className="w-full pl-10 pr-4 py-3 min-h-[48px] bg-background border border-border rounded-xl text-base focus:outline-none focus:ring-2 focus:ring-primary/50 text-foreground placeholder:text-muted-foreground"
                         />
                         {searchQuery && (
                             <button
@@ -114,8 +115,8 @@ export default function InventoryPage() {
                         )}
                     </div>
 
-                    {/* Stock Status Filter */}
-                    <div className="flex items-center gap-1 bg-muted rounded-xl p-1">
+                    {/* Stock Status Filter - Horizontally scrollable on mobile */}
+                    <div className="flex items-center gap-1 bg-muted rounded-xl p-1 overflow-x-auto scrollbar-hide -mx-4 px-4 sm:mx-0 sm:px-0">
                         {[
                             { value: "all", label: "All", count: statusCounts.all },
                             { value: "in_stock", label: "In Stock", count: statusCounts.in_stock },
@@ -125,7 +126,7 @@ export default function InventoryPage() {
                             <button
                                 key={filter.value}
                                 onClick={() => setStockFilter(filter.value as typeof stockFilter)}
-                                className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${stockFilter === filter.value
+                                className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors whitespace-nowrap min-h-[44px] ${stockFilter === filter.value
                                     ? "bg-card text-foreground shadow-sm"
                                     : "text-muted-foreground hover:text-foreground"
                                     }`}
@@ -148,9 +149,117 @@ export default function InventoryPage() {
                 )}
             </div>
 
-            <div className="bg-card rounded-xl shadow-sm border border-border overflow-hidden">
+            {/* Mobile: Card Layout */}
+            <div className="sm:hidden space-y-4">
+                {!inventory ? (
+                    // Loading State
+                    Array.from({ length: 5 }).map((_, i) => (
+                        <div key={i} className="bg-card rounded-xl p-4 border border-border animate-pulse">
+                            <div className="flex items-start gap-3 mb-3">
+                                <div className="w-12 h-12 bg-muted rounded-xl"></div>
+                                <div className="flex-1">
+                                    <div className="h-4 bg-muted rounded w-3/4 mb-2"></div>
+                                    <div className="h-3 bg-muted rounded w-1/2"></div>
+                                </div>
+                            </div>
+                            <div className="h-2 bg-muted rounded w-full mb-3"></div>
+                            <div className="h-8 bg-muted rounded w-full"></div>
+                        </div>
+                    ))
+                ) : filteredInventory && filteredInventory.length === 0 ? (
+                    <div className="bg-card rounded-xl p-12 text-center text-muted-foreground italic border border-border">
+                        {searchQuery || stockFilter !== "all"
+                            ? "No items match your search criteria."
+                            : "No inventory found."}
+                    </div>
+                ) : (
+                    filteredInventory?.map((item) => (
+                        <div key={item._id} className="bg-card rounded-xl p-4 border border-border">
+                            <div className="flex items-start gap-3 mb-3">
+                                <div className="w-12 h-12 bg-muted rounded-xl flex items-center justify-center shrink-0 border border-border overflow-hidden">
+                                    {item.images ? (
+                                        <img src={item.images} alt={item.productName} className="w-full h-full object-cover" />
+                                    ) : (
+                                        <Package size={20} className="text-muted-foreground" />
+                                    )}
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                    <h3 className="font-medium text-foreground truncate">{item.productName}</h3>
+                                    <p className="text-sm text-muted-foreground">{item.variantName}</p>
+                                </div>
+                            </div>
+
+                            {/* SKU Badge */}
+                            <div className="mb-3">
+                                <span className="font-mono text-xs text-muted-foreground bg-muted px-2 py-1 rounded inline-block border border-border">
+                                    {item.sku}
+                                </span>
+                            </div>
+
+                            {/* Stock Level Progress Bar */}
+                            <div className="mb-3">
+                                <div className="flex justify-between text-sm mb-1.5">
+                                    <span className="text-muted-foreground">Stock Level</span>
+                                    <span className={`font-bold font-mono ${item.stock === 0 ? "text-red-500" :
+                                        item.stock <= 10 ? "text-amber-500" :
+                                            "text-foreground"
+                                        }`}>
+                                        {item.stock}
+                                    </span>
+                                </div>
+                                <div className="h-2 bg-muted rounded-full overflow-hidden">
+                                    <div
+                                        className={`h-full ${
+                                            item.stock === 0 ? 'bg-red-500' :
+                                            item.stock <= 10 ? 'bg-amber-500' :
+                                            'bg-emerald-500'
+                                        }`}
+                                        style={{ width: `${Math.min((item.stock / 50) * 100, 100)}%` }}
+                                    />
+                                </div>
+                            </div>
+
+                            {/* Status Badge */}
+                            <div className="mb-3">
+                                {item.stock === 0 ? (
+                                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-500/10 text-red-500 border border-red-500/20">
+                                        Out of Stock
+                                    </span>
+                                ) : item.stock <= 10 ? (
+                                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-500/10 text-amber-500 border border-amber-500/20">
+                                        Low Stock
+                                    </span>
+                                ) : (
+                                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
+                                        In Stock
+                                    </span>
+                                )}
+                            </div>
+
+                            {/* Actions */}
+                            <div className="flex gap-2">
+                                <button
+                                    onClick={() => setAdjustmentItem(item)}
+                                    className="flex-1 px-4 py-2.5 bg-primary text-primary-foreground font-medium rounded-xl text-sm min-h-[44px] flex items-center justify-center"
+                                >
+                                    Adjust Stock
+                                </button>
+                                <button
+                                    className="px-3 py-2.5 text-muted-foreground hover:text-foreground bg-muted/50 rounded-xl min-h-[44px] min-w-[48px] flex items-center justify-center"
+                                    title="View History (Next Sprint)"
+                                >
+                                    <History size={18} />
+                                </button>
+                            </div>
+                        </div>
+                    ))
+                )}
+            </div>
+
+            {/* Desktop: Table Layout */}
+            <div className="hidden sm:block bg-card rounded-xl shadow-sm border border-border overflow-hidden">
                 <div className="overflow-x-auto">
-                    <table className="w-full text-left min-w-[700px]">
+                    <table className="w-full text-left">
                         <thead className="bg-muted/30 border-b border-border">
                             <tr>
                                 <th className="px-6 py-4 font-semibold text-xs text-muted-foreground uppercase tracking-wider">Product</th>
@@ -294,11 +403,19 @@ function AdjustmentModal({ item, onClose }: { item: any, onClose: () => void }) 
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fadeIn">
-            <div className="bg-card rounded-xl shadow-xl max-w-md w-full overflow-hidden border border-border">
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/50 backdrop-blur-sm animate-fadeIn">
+            {/* Swipe handle for mobile */}
+            <div className="relative bg-card w-full sm:max-w-md rounded-t-2xl sm:rounded-xl shadow-2xl max-h-[90vh] overflow-y-auto slide-up-sheet border border-border">
+                <div className="flex justify-center pt-3 pb-1 sm:hidden">
+                    <div className="w-12 h-1.5 bg-muted rounded-full" />
+                </div>
+
                 <div className="px-6 py-4 border-b border-border flex justify-between items-center">
                     <h3 className="font-semibold text-lg text-foreground">Adjust Stock</h3>
-                    <button onClick={onClose} className="text-muted-foreground hover:text-foreground">
+                    <button
+                        onClick={onClose}
+                        className="text-muted-foreground hover:text-foreground p-2 -mr-2 min-h-[44px] min-w-[44px] flex items-center justify-center"
+                    >
                         <X size={20} />
                     </button>
                 </div>
@@ -322,7 +439,7 @@ function AdjustmentModal({ item, onClose }: { item: any, onClose: () => void }) 
                         <button
                             type="button"
                             onClick={() => setType("add")}
-                            className={`flex-1 py-1.5 text-sm font-medium rounded-md transition-all ${type === "add"
+                            className={`flex-1 py-2.5 text-sm font-medium rounded-md transition-all min-h-[44px] ${type === "add"
                                 ? "bg-card text-emerald-500 shadow-sm"
                                 : "text-muted-foreground hover:text-foreground"
                                 }`}
@@ -332,7 +449,7 @@ function AdjustmentModal({ item, onClose }: { item: any, onClose: () => void }) 
                         <button
                             type="button"
                             onClick={() => setType("remove")}
-                            className={`flex-1 py-1.5 text-sm font-medium rounded-md transition-all ${type === "remove"
+                            className={`flex-1 py-2.5 text-sm font-medium rounded-md transition-all min-h-[44px] ${type === "remove"
                                 ? "bg-card text-red-500 shadow-sm"
                                 : "text-muted-foreground hover:text-foreground"
                                 }`}
@@ -347,11 +464,12 @@ function AdjustmentModal({ item, onClose }: { item: any, onClose: () => void }) 
                         </label>
                         <input
                             type="number"
+                            inputMode="decimal"
                             min="1"
                             required
                             value={quantity}
                             onChange={(e) => setQuantity(e.target.value)}
-                            className="w-full px-4 py-2.5 bg-background border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary text-foreground"
+                            className="w-full px-4 py-3 min-h-[48px] bg-background border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary text-foreground"
                         />
                     </div>
 
@@ -364,22 +482,22 @@ function AdjustmentModal({ item, onClose }: { item: any, onClose: () => void }) 
                             value={reason}
                             onChange={(e) => setReason(e.target.value)}
                             placeholder="e.g. Stock count correction"
-                            className="w-full px-4 py-2.5 bg-background border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary text-foreground placeholder:text-muted-foreground"
+                            className="w-full px-4 py-3 min-h-[48px] bg-background border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary text-foreground placeholder:text-muted-foreground"
                         />
                     </div>
 
-                    <div className="flex justify-end gap-3 pt-2">
+                    <div className="flex flex-col-reverse sm:flex-row justify-end gap-3 pt-2">
                         <button
                             type="button"
                             onClick={onClose}
-                            className="px-4 py-2 text-sm font-medium text-muted-foreground hover:bg-muted/50 rounded-xl"
+                            className="px-4 py-3 text-sm font-medium text-muted-foreground hover:bg-muted/50 rounded-xl min-h-[44px]"
                         >
                             Cancel
                         </button>
                         <button
                             type="submit"
                             disabled={isSubmitting}
-                            className={`px-4 py-2 text-sm font-medium text-white rounded-xl transition-colors ${type === "add"
+                            className={`px-4 py-3 text-sm font-medium text-white rounded-xl transition-colors min-h-[44px] ${type === "add"
                                 ? "bg-emerald-600 hover:bg-emerald-700"
                                 : "bg-red-600 hover:bg-red-700"
                                 } disabled:opacity-50`}

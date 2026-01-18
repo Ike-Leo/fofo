@@ -10,7 +10,8 @@ import {
     Search,
     ShoppingBag,
     X,
-    Filter
+    Filter,
+    ChevronRight
 } from "lucide-react";
 import Link from "next/link";
 import { Id } from "../../../convex/_generated/dataModel";
@@ -27,6 +28,7 @@ export default function OrdersPage() {
     const [isCreateOpen, setIsCreateOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
     const [statusFilter, setStatusFilter] = useState<string>("all");
+    const [expandedOrderId, setExpandedOrderId] = useState<string | null>(null);
 
     const orders = useQuery(
         api.orders.list,
@@ -57,17 +59,17 @@ export default function OrdersPage() {
     }
 
     return (
-        <div className="p-8 max-w-7xl mx-auto">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+        <div className="p-4 sm:p-6 md:p-8 max-w-7xl mx-auto space-y-4 sm:space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight text-foreground">Orders</h1>
+                    <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">Orders</h1>
                     <p className="text-muted-foreground mt-1">Manage customer orders and fulfillment</p>
                 </div>
 
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-3 w-full sm:w-auto">
                     <button
                         onClick={() => setIsCreateOpen(true)}
-                        className="inline-flex items-center gap-2 px-4 py-2 bg-foreground text-card rounded-xl hover:bg-foreground/90 transition-colors shadow-sm font-medium"
+                        className="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-foreground text-card rounded-xl hover:bg-foreground/90 transition-colors shadow-sm font-medium min-h-[44px]"
                     >
                         <Plus size={18} />
                         Create Manual Order
@@ -75,58 +77,114 @@ export default function OrdersPage() {
                 </div>
             </div>
 
-            {/* Search and Filter Section */}
-            <div className="bg-card rounded-xl shadow-sm border border-border p-4 mb-6">
-                <div className="flex flex-col sm:flex-row gap-4">
-                    {/* Search Input */}
-                    <div className="relative flex-1">
-                        <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-                        <input
-                            type="text"
-                            placeholder="Search by order #, customer name or email..."
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full pl-10 pr-4 py-2.5 bg-card border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-input text-foreground placeholder:text-muted-foreground"
-                        />
-                        {searchQuery && (
-                            <button
-                                onClick={() => setSearchQuery("")}
-                                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                            >
-                                <X size={16} />
-                            </button>
-                        )}
-                    </div>
-
-                    {/* Status Filter */}
-                    <div className="flex items-center gap-2 w-full sm:w-auto">
-                        <Filter size={16} className="text-muted-foreground shrink-0" />
-                        <select
-                            value={statusFilter}
-                            onChange={(e) => setStatusFilter(e.target.value)}
-                            className="w-full sm:w-auto px-4 py-2.5 border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-input bg-card text-foreground"
+            {/* Search and Filter Section - Mobile Stacked */}
+            <div className="bg-card rounded-xl shadow-sm border border-border p-4 space-y-3">
+                {/* Search Input - Full Width on Mobile */}
+                <div className="relative">
+                    <Search size={18} className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                    <input
+                        type="text"
+                        inputMode="search"
+                        placeholder="Search by order #, customer name or email..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="w-full pl-10 sm:pl-12 pr-10 sm:pr-4 py-3 sm:py-2.5 bg-card border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-input text-foreground placeholder:text-muted-foreground min-h-[48px] sm:min-h-0"
+                    />
+                    {searchQuery && (
+                        <button
+                            onClick={() => setSearchQuery("")}
+                            className="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground p-1"
                         >
-                            <option value="all">All Statuses</option>
-                            <option value="pending">Pending</option>
-                            <option value="paid">Paid</option>
-                            <option value="processing">Processing</option>
-                            <option value="shipped">Shipped</option>
-                            <option value="delivered">Delivered</option>
-                            <option value="cancelled">Cancelled</option>
-                        </select>
-                    </div>
+                            <X size={16} />
+                        </button>
+                    )}
+                </div>
+
+                {/* Status Filter - Full Width on Mobile */}
+                <div className="flex items-center gap-2">
+                    <Filter size={16} className="text-muted-foreground shrink-0" />
+                    <select
+                        value={statusFilter}
+                        onChange={(e) => setStatusFilter(e.target.value)}
+                        className="flex-1 px-4 py-3 sm:py-2.5 border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-input bg-card text-foreground min-h-[48px] sm:min-h-0"
+                    >
+                        <option value="all">All Statuses</option>
+                        <option value="pending">Pending</option>
+                        <option value="paid">Paid</option>
+                        <option value="processing">Processing</option>
+                        <option value="shipped">Shipped</option>
+                        <option value="delivered">Delivered</option>
+                        <option value="cancelled">Cancelled</option>
+                    </select>
                 </div>
 
                 {/* Results count */}
                 {orders && (
-                    <div className="mt-3 text-sm text-muted-foreground">
+                    <div className="pt-1 text-sm text-muted-foreground">
                         Showing {filteredOrders?.length || 0} of {orders.length} orders
-                        {searchQuery && <span className="ml-1">matching &quot;{searchQuery}&quot;</span>}
+                        {searchQuery && <span className="ml-1">matching "{searchQuery}"</span>}
                     </div>
                 )}
             </div>
 
-            <div className="bg-card rounded-xl shadow-sm border border-border overflow-hidden">
+            {/* Mobile: Card Layout */}
+            <div className="sm:hidden space-y-4">
+                {!orders ? (
+                    Array.from({ length: 5 }).map((_, i) => (
+                        <div key={i} className="bg-card rounded-xl p-4 border border-border animate-pulse">
+                            <div className="h-4 bg-muted rounded w-1/3 mb-3"></div>
+                            <div className="h-3 bg-muted rounded w-full mb-2"></div>
+                            <div className="h-3 bg-muted rounded w-2/3"></div>
+                        </div>
+                    ))
+                ) : filteredOrders && filteredOrders.length === 0 ? (
+                    <div className="bg-card rounded-xl p-8 text-center text-muted-foreground border border-border">
+                        {searchQuery || statusFilter !== "all"
+                            ? "No orders match your search criteria."
+                            : "No orders found."}
+                    </div>
+                ) : (
+                    filteredOrders?.map((order) => (
+                        <div key={order._id} className="bg-card rounded-xl p-4 border border-border">
+                            {/* Header - Order # and Status */}
+                            <div className="flex justify-between items-start mb-3">
+                                <div className="flex-1 min-w-0">
+                                    <Link
+                                        href={`/admin/orders/${order._id}`}
+                                        className="text-base font-bold text-foreground hover:text-primary truncate block"
+                                    >
+                                        {order.orderNumber}
+                                    </Link>
+                                    <p className="text-xs text-muted-foreground mt-0.5">
+                                        {new Date(order.createdAt).toLocaleDateString()}
+                                    </p>
+                                </div>
+                                <OrderStatusBadge status={order.status} />
+                            </div>
+
+                            {/* Customer Info */}
+                            <div className="mb-3 pb-3 border-b border-border">
+                                <p className="text-sm font-medium text-foreground truncate">{order.customerInfo.name}</p>
+                                <p className="text-xs text-muted-foreground truncate">{order.customerInfo.email}</p>
+                            </div>
+
+                            {/* Total and View Action */}
+                            <div className="flex justify-between items-center">
+                                <span className="text-lg font-bold text-foreground">{formatPrice(order.totalAmount)}</span>
+                                <Link
+                                    href={`/admin/orders/${order._id}`}
+                                    className="inline-flex items-center gap-1 text-sm font-medium text-primary hover:text-primary/80 min-h-[40px] px-3"
+                                >
+                                    View <ChevronRight size={16} />
+                                </Link>
+                            </div>
+                        </div>
+                    ))
+                )}
+            </div>
+
+            {/* Desktop: Table Layout */}
+            <div className="hidden sm:block bg-card rounded-xl shadow-sm border border-border overflow-hidden">
                 <div className="overflow-x-auto">
                     <table className="w-full text-left min-w-[800px]">
                         <thead className="bg-muted/30 border-b border-border">
@@ -323,22 +381,27 @@ function CreateOrderModal({ orgId, onClose }: { orgId: Id<"organizations">, onCl
     const total = lineItems.reduce((acc, item) => acc + (item.price * item.quantity), 0);
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-            <div className="bg-card rounded-xl shadow-xl w-[95vw] md:max-w-2xl overflow-hidden flex flex-col max-h-[90vh] border border-border">
-                <div className="px-6 py-4 border-b border-border flex justify-between items-center bg-muted/30">
-                    <h3 className="font-semibold text-lg text-foreground">Create Manual Order</h3>
-                    <button onClick={onClose} className="text-muted-foreground hover:text-foreground">
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/50 backdrop-blur-sm">
+            <div className="bg-card w-full sm:max-w-2xl rounded-t-2xl sm:rounded-xl shadow-xl overflow-hidden flex flex-col max-h-[90vh] sm:max-h-full border border-border slide-up-sheet">
+                {/* Mobile Swipe Handle */}
+                <div className="flex justify-center pt-3 pb-1 sm:hidden">
+                    <div className="w-12 h-1.5 bg-muted rounded-full" />
+                </div>
+
+                <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-border flex justify-between items-center bg-muted/30">
+                    <h3 className="font-semibold text-base sm:text-lg text-foreground">Create Manual Order</h3>
+                    <button onClick={onClose} className="text-muted-foreground hover:text-foreground p-2 -mr-2 min-h-[44px] min-w-[44px] flex items-center justify-center">
                         <X size={20} />
                     </button>
                 </div>
 
-                <div className="p-6 overflow-y-auto flex-1 font-sans">
+                <div className="p-4 sm:p-6 overflow-y-auto flex-1 font-sans space-y-4 sm:space-y-6">
                     {/* Item Selection */}
-                    <div className="mb-6 p-4 bg-muted/30 rounded-xl border border-border">
-                        <h4 className="text-sm font-medium text-foreground mb-3">Add Items</h4>
-                        <div className="flex gap-2">
+                    <div className="p-3 sm:p-4 bg-muted/30 rounded-xl border border-border space-y-2 sm:space-y-3">
+                        <h4 className="text-sm font-medium text-foreground">Add Items</h4>
+                        <div className="flex flex-col sm:flex-row gap-2">
                             <select
-                                className="flex-1 px-4 py-2.5 bg-card border border-border rounded-xl text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+                                className="flex-1 px-4 py-3 sm:py-2.5 bg-card border border-border rounded-xl text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 min-h-[48px] sm:min-h-0"
                                 value={selectedVariantId}
                                 onChange={(e) => {
                                     setSelectedVariantId(e.target.value);
@@ -354,7 +417,8 @@ function CreateOrderModal({ orgId, onClose }: { orgId: Id<"organizations">, onCl
                             </select>
                             <input
                                 type="number"
-                                className="w-20 px-4 py-2.5 bg-card border border-border rounded-xl text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+                                inputMode="decimal"
+                                className="w-full sm:w-20 px-4 py-3 sm:py-2.5 bg-card border border-border rounded-xl text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 min-h-[48px] sm:min-h-0"
                                 value={quantity}
                                 onChange={(e) => setQuantity(e.target.value)}
                                 min="1"
@@ -363,7 +427,7 @@ function CreateOrderModal({ orgId, onClose }: { orgId: Id<"organizations">, onCl
                                 type="button"
                                 onClick={addItem}
                                 disabled={!selectedVariantId}
-                                className="px-4 py-2 bg-foreground text-background rounded-xl text-sm font-medium disabled:opacity-50 hover:opacity-90 transition-opacity"
+                                className="w-full sm:w-auto px-4 py-3 sm:py-2 bg-foreground text-background rounded-xl text-sm font-medium disabled:opacity-50 hover:opacity-90 transition-opacity min-h-[48px] sm:min-h-0"
                             >
                                 Add
                             </button>
@@ -371,31 +435,31 @@ function CreateOrderModal({ orgId, onClose }: { orgId: Id<"organizations">, onCl
                     </div>
 
                     {/* Cart Table */}
-                    <div className="mb-6 border border-border rounded-xl overflow-hidden">
+                    <div className="border border-border rounded-xl overflow-hidden">
                         <table className="w-full text-sm text-left">
                             <thead className="bg-muted/30 text-muted-foreground border-b border-border">
                                 <tr>
-                                    <th className="px-4 py-2">Item</th>
-                                    <th className="px-4 py-2 text-right">Qty</th>
-                                    <th className="px-4 py-2 text-right">Price</th>
-                                    <th className="px-4 py-2 text-right">Total</th>
-                                    <th className="w-10"></th>
+                                    <th className="px-3 sm:px-4 py-2">Item</th>
+                                    <th className="px-3 sm:px-4 py-2 text-right">Qty</th>
+                                    <th className="px-3 sm:px-4 py-2 text-right">Price</th>
+                                    <th className="px-3 sm:px-4 py-2 text-right">Total</th>
+                                    <th className="w-8 sm:w-10"></th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-border">
                                 {lineItems.length === 0 ? (
                                     <tr>
-                                        <td colSpan={5} className="px-4 py-8 text-center text-muted-foreground italic">No items added</td>
+                                        <td colSpan={5} className="px-3 sm:px-4 py-6 sm:py-8 text-center text-muted-foreground italic">No items added</td>
                                     </tr>
                                 ) : (
                                     lineItems.map((item, idx) => (
                                         <tr key={idx}>
-                                            <td className="px-4 py-2 text-foreground">{item.name}</td>
-                                            <td className="px-4 py-2 text-right text-foreground">{item.quantity}</td>
-                                            <td className="px-4 py-2 text-right text-foreground">{formatPrice(item.price)}</td>
-                                            <td className="px-4 py-2 text-right font-medium text-foreground">{formatPrice(item.price * item.quantity)}</td>
-                                            <td className="px-4 py-2 text-right">
-                                                <button onClick={() => removeItem(idx)} className="text-red-500 hover:text-red-400">
+                                            <td className="px-3 sm:px-4 py-2 text-foreground text-xs sm:text-sm">{item.name}</td>
+                                            <td className="px-3 sm:px-4 py-2 text-right text-foreground">{item.quantity}</td>
+                                            <td className="px-3 sm:px-4 py-2 text-right text-foreground">{formatPrice(item.price)}</td>
+                                            <td className="px-3 sm:px-4 py-2 text-right font-medium text-foreground">{formatPrice(item.price * item.quantity)}</td>
+                                            <td className="px-3 sm:px-4 py-2 text-right">
+                                                <button onClick={() => removeItem(idx)} className="text-red-500 hover:text-red-400 p-1">
                                                     <X size={16} />
                                                 </button>
                                             </td>
@@ -405,8 +469,8 @@ function CreateOrderModal({ orgId, onClose }: { orgId: Id<"organizations">, onCl
                             </tbody>
                             <tfoot className="bg-muted/30 font-semibold text-foreground border-t border-border">
                                 <tr>
-                                    <td colSpan={3} className="px-4 py-3 text-right">Total:</td>
-                                    <td className="px-4 py-3 text-right">{formatPrice(total)}</td>
+                                    <td colSpan={3} className="px-3 sm:px-4 py-2 sm:py-3 text-right text-xs sm:text-sm">Total:</td>
+                                    <td className="px-3 sm:px-4 py-2 sm:py-3 text-right text-xs sm:text-sm">{formatPrice(total)}</td>
                                     <td></td>
                                 </tr>
                             </tfoot>
@@ -414,7 +478,7 @@ function CreateOrderModal({ orgId, onClose }: { orgId: Id<"organizations">, onCl
                     </div>
 
                     {/* Customer Info */}
-                    <div className="space-y-4">
+                    <div className="space-y-3 sm:space-y-4">
                         <div className="flex items-center justify-between">
                             <h4 className="text-sm font-medium text-foreground">Customer Details</h4>
                             {(customerName || customerEmail) && (
@@ -430,14 +494,15 @@ function CreateOrderModal({ orgId, onClose }: { orgId: Id<"organizations">, onCl
 
                         {/* Customer Search */}
                         <div className="relative">
-                            <label className="block text-xs font-medium text-muted-foreground mb-1">
+                            <label className="block text-xs font-medium text-muted-foreground mb-1.5">
                                 Search Existing Customers
                             </label>
                             <div className="relative">
-                                <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                                <Search size={16} className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 text-muted-foreground" />
                                 <input
                                     type="text"
-                                    className="w-full pl-10 pr-4 py-2 bg-card border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 text-foreground"
+                                    inputMode="text"
+                                    className="w-full pl-10 sm:pl-12 pr-4 py-3 sm:py-2 bg-card border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 text-foreground min-h-[48px] sm:min-h-0"
                                     placeholder="Search by name, email, or phone..."
                                     value={customerSearch}
                                     onChange={(e) => {
@@ -480,14 +545,15 @@ function CreateOrderModal({ orgId, onClose }: { orgId: Id<"organizations">, onCl
 
                         <div className="text-center text-xs text-muted-foreground">- OR -</div>
 
-                        {/* New Customer Form */}
-                        <div className="grid grid-cols-2 gap-4">
+                        {/* New Customer Form - Stacked on mobile */}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             <div>
-                                <label className="block text-xs font-medium text-muted-foreground mb-1">Name</label>
+                                <label className="block text-xs font-medium text-muted-foreground mb-1.5">Name</label>
                                 <input
                                     type="text"
+                                    inputMode="text"
                                     required
-                                    className="w-full px-4 py-2.5 bg-card border border-border rounded-xl text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+                                    className="w-full px-4 py-3 sm:py-2.5 bg-card border border-border rounded-xl text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 min-h-[48px] sm:min-h-0"
                                     value={customerName}
                                     onChange={(e) => {
                                         setCustomerName(e.target.value);
@@ -497,11 +563,12 @@ function CreateOrderModal({ orgId, onClose }: { orgId: Id<"organizations">, onCl
                                 />
                             </div>
                             <div>
-                                <label className="block text-xs font-medium text-muted-foreground mb-1">Email</label>
+                                <label className="block text-xs font-medium text-muted-foreground mb-1.5">Email</label>
                                 <input
                                     type="email"
+                                    inputMode="email"
                                     required
-                                    className="w-full px-4 py-2.5 bg-card border border-border rounded-xl text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+                                    className="w-full px-4 py-3 sm:py-2.5 bg-card border border-border rounded-xl text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 min-h-[48px] sm:min-h-0"
                                     value={customerEmail}
                                     onChange={(e) => {
                                         setCustomerEmail(e.target.value);
@@ -510,11 +577,12 @@ function CreateOrderModal({ orgId, onClose }: { orgId: Id<"organizations">, onCl
                                     placeholder="customer@email.com"
                                 />
                             </div>
-                            <div className="col-span-2">
-                                <label className="block text-xs font-medium text-muted-foreground mb-1">Phone (optional)</label>
+                            <div className="sm:col-span-2">
+                                <label className="block text-xs font-medium text-muted-foreground mb-1.5">Phone (optional)</label>
                                 <input
                                     type="tel"
-                                    className="w-full px-4 py-2.5 bg-card border border-border rounded-xl text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+                                    inputMode="tel"
+                                    className="w-full px-4 py-3 sm:py-2.5 bg-card border border-border rounded-xl text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 min-h-[48px] sm:min-h-0"
                                     value={customerPhone}
                                     onChange={(e) => {
                                         setCustomerPhone(e.target.value);
@@ -527,20 +595,20 @@ function CreateOrderModal({ orgId, onClose }: { orgId: Id<"organizations">, onCl
                     </div>
 
                     {error && (
-                        <div className="mt-4 p-3 bg-red-500/10 border border-red-500/20 text-red-500 text-sm rounded-xl">
+                        <div className="p-3 bg-destructive/10 border border-destructive/20 text-destructive text-sm rounded-xl">
                             {error}
                         </div>
                     )}
                 </div>
 
-                <div className="p-4 border-t border-border bg-muted/30 flex justify-end gap-3">
-                    <button onClick={onClose} className="px-4 py-2 text-sm font-medium text-muted-foreground hover:bg-muted/50 rounded-xl">
+                <div className="p-4 sm:p-4 border-t border-border bg-muted/30 flex flex-col-reverse sm:flex-row justify-end gap-3">
+                    <button onClick={onClose} className="px-4 py-3 sm:py-2 text-sm font-medium text-muted-foreground hover:bg-muted/50 rounded-xl min-h-[48px] sm:min-h-0">
                         Cancel
                     </button>
                     <button
                         onClick={handleSubmit}
                         disabled={isSubmitting || lineItems.length === 0}
-                        className="px-6 py-2 text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl shadow-sm disabled:opacity-50"
+                        className="px-6 py-3 sm:py-2 text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl shadow-sm disabled:opacity-50 min-h-[48px] sm:min-h-0"
                     >
                         {isSubmitting ? "Placing Order..." : "Place Order"}
                     </button>

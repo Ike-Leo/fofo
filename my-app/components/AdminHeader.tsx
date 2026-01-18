@@ -32,10 +32,11 @@ export default function AdminHeader() {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between items-center h-16">
                     <div className="flex items-center gap-4 md:gap-8">
-                        {/* Mobile Menu Toggle */}
+                        {/* Mobile Menu Toggle - Enhanced touch target */}
                         <button
-                            className="md:hidden p-2 -ml-2 text-muted-foreground hover:text-foreground"
+                            className="md:hidden p-2 -ml-2 text-muted-foreground hover:text-foreground min-h-[48px] min-w-[48px] flex items-center justify-center"
                             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                            aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
                         >
                             {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
                         </button>
@@ -74,8 +75,9 @@ export default function AdminHeader() {
                         <div className="h-6 w-px bg-border hidden sm:block" />
                         <button
                             onClick={() => signOut()}
-                            className="text-muted-foreground hover:text-destructive transition-all p-2 rounded-xl hover:bg-destructive/10"
+                            className="text-muted-foreground hover:text-destructive transition-all p-2 rounded-xl hover:bg-destructive/10 min-h-[44px] min-w-[44px] flex items-center justify-center"
                             title="Sign out"
+                            aria-label="Sign out"
                         >
                             <LogOut size={18} />
                         </button>
@@ -83,10 +85,10 @@ export default function AdminHeader() {
                 </div>
             </div>
 
-            {/* Mobile Navigation Menu */}
+            {/* Mobile Navigation Menu - Enhanced with backdrop */}
             {isMobileMenuOpen && (
                 <div className="md:hidden border-t border-border bg-background/95 backdrop-blur-xl absolute w-full left-0 animate-in slide-in-from-top-5 fade-in duration-200 shadow-2xl">
-                    <div className="p-4 space-y-2">
+                    <div className="p-4 space-y-2 max-h-[calc(100vh-4rem)] overflow-y-auto">
                         {navItems.map((item) => {
                             const active = item.exact ? pathname === item.href : isActive(item.href);
                             return (
@@ -94,9 +96,9 @@ export default function AdminHeader() {
                                     key={item.href}
                                     href={item.href}
                                     onClick={() => setIsMobileMenuOpen(false)}
-                                    className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm transition-all duration-200 ${active
-                                        ? "bg-primary/10 text-primary font-bold"
-                                        : "text-muted-foreground hover:text-foreground hover:bg-muted/50 font-medium"
+                                    className={`flex items-center gap-3 px-4 py-3.5 rounded-xl text-sm font-medium transition-all duration-200 min-h-[52px] ${active
+                                        ? "bg-primary/10 text-primary"
+                                        : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
                                         }`}
                                 >
                                     <item.icon size={20} />

@@ -100,8 +100,8 @@ export default function AdminDashboard() {
         <div className="p-4 md:p-8 max-w-7xl mx-auto space-y-6 md:space-y-8">
             <h1 className="text-2xl md:text-3xl font-bold text-foreground">Dashboard</h1>
 
-            {/* KPI Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+            {/* KPI Cards - Responsive: 1 → 2 → 4 columns */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
                 <KPICard
                     title="Total Revenue"
                     value={formatPrice(stats.totalRevenue)}
@@ -132,13 +132,13 @@ export default function AdminDashboard() {
                 />
             </div>
 
-            {/* Sales Chart */}
-            <div className="bg-card rounded-xl shadow-sm border border-border p-6">
-                <h3 className="text-lg font-semibold text-foreground mb-6 flex items-center gap-2">
-                    <TrendingUp size={20} className="text-muted-foreground" />
-                    Sales Overview (Last 30 Days)
+            {/* Sales Chart - Responsive height */}
+            <div className="bg-card rounded-xl shadow-sm border border-border p-4 sm:p-6">
+                <h3 className="text-base sm:text-lg font-semibold text-foreground mb-4 sm:mb-6 flex items-center gap-2">
+                    <TrendingUp size={18} className="text-muted-foreground" />
+                    <span className="text-sm sm:text-base">Sales Overview (Last 30 Days)</span>
                 </h3>
-                <div className="h-80 w-full">
+                <div className="h-64 sm:h-80 lg:h-96 w-full">
                     {salesData && salesData.length > 0 ? (
                         <ResponsiveContainer width="100%" height="100%">
                             <BarChart data={salesData}>

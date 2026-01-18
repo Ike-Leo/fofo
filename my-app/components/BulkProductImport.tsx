@@ -198,33 +198,38 @@ export default function BulkProductImport({ orgId, onClose }: BulkProductImportP
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm">
-            <div className="bg-white rounded-xl shadow-xl max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col">
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-900/50 backdrop-blur-sm">
+            <div className="bg-card w-full sm:max-w-4xl sm:rounded-xl rounded-t-2xl max-h-[90vh] overflow-hidden flex flex-col slide-up-sheet shadow-xl">
+                {/* Mobile swipe handle */}
+                <div className="flex justify-center pt-3 pb-1 sm:hidden">
+                    <div className="w-12 h-1.5 bg-muted rounded-full" />
+                </div>
+
                 {/* Header */}
-                <div className="px-6 py-4 border-b border-slate-200 flex justify-between items-center bg-slate-50">
+                <div className="px-4 sm:px-6 py-4 border-b border-border flex justify-between items-center bg-muted/30">
                     <div className="flex items-center gap-3">
-                        <button onClick={onClose} className="text-slate-400 hover:text-slate-600">
+                        <button onClick={onClose} className="text-muted-foreground hover:text-foreground min-h-[44px] min-w-[44px] flex items-center justify-center">
                             <X size={20} />
                         </button>
-                        <h2 className="text-xl font-semibold text-slate-900">Bulk Import Products</h2>
+                        <h2 className="text-lg sm:text-xl font-semibold text-foreground">Bulk Import Products</h2>
                     </div>
                     <div className="flex items-center gap-2">
                         {step !== "upload" && step !== "importing" && step !== "complete" && (
                             <button
                                 onClick={step === "mapping" ? () => setStep("upload") : () => setStep("mapping")}
-                                className="text-sm text-slate-600 hover:text-slate-800 flex items-center gap-1"
+                                className="text-sm text-muted-foreground hover:text-foreground flex items-center gap-1 min-h-[44px]"
                             >
                                 <ArrowLeft size={16} />
-                                Back
+                                <span className="hidden sm:inline">Back</span>
                             </button>
                         )}
                     </div>
                 </div>
 
                 {/* Content */}
-                <div className="flex-1 overflow-y-auto p-6">
+                <div className="flex-1 overflow-y-auto p-4 sm:p-6">
                     {error && (
-                        <div className="mb-4 p-3 bg-red-50 text-red-700 text-sm rounded-lg flex items-start gap-2">
+                        <div className="mb-4 p-3 sm:p-4 bg-destructive/10 text-destructive text-sm rounded-lg flex items-start gap-2">
                             <AlertCircle size={16} className="flex-shrink-0 mt-0.5" />
                             {error}
                         </div>
@@ -232,15 +237,15 @@ export default function BulkProductImport({ orgId, onClose }: BulkProductImportP
 
                     {/* Step 1: Upload */}
                     {step === "upload" && (
-                        <div className="space-y-6">
+                        <div className="space-y-4 sm:space-y-6">
                             <div>
-                                <h3 className="text-lg font-semibold text-slate-900 mb-2">Upload CSV File</h3>
-                                <p className="text-slate-600 mb-4">
+                                <h3 className="text-base sm:text-lg font-semibold text-foreground mb-2">Upload CSV File</h3>
+                                <p className="text-muted-foreground mb-4 text-sm sm:text-base">
                                     Upload a CSV file with your product data. You&apos;ll map columns in the next step.
                                 </p>
                             </div>
 
-                            <div className="border-2 border-dashed border-slate-300 rounded-xl p-12 text-center hover:border-slate-400 transition-colors">
+                            <div className="border-2 border-dashed border-border rounded-xl p-6 sm:p-12 text-center hover:border-primary/50 transition-colors">
                                 <input
                                     type="file"
                                     accept=".csv"
@@ -252,22 +257,22 @@ export default function BulkProductImport({ orgId, onClose }: BulkProductImportP
                                     htmlFor="csv-upload"
                                     className="cursor-pointer flex flex-col items-center"
                                 >
-                                    <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mb-4">
-                                        <Upload className="text-slate-400" size={32} />
+                                    <div className="w-12 h-12 sm:w-16 sm:h-16 bg-muted rounded-full flex items-center justify-center mb-4">
+                                        <Upload className="text-muted-foreground" size={24} />
                                     </div>
-                                    <p className="text-lg font-medium text-slate-900 mb-1">
+                                    <p className="text-base sm:text-lg font-medium text-foreground mb-1">
                                         Click to upload or drag and drop
                                     </p>
-                                    <p className="text-sm text-slate-500">CSV files only</p>
+                                    <p className="text-sm text-muted-foreground">CSV files only</p>
                                 </label>
                             </div>
 
-                            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                                <h4 className="font-medium text-blue-900 mb-2 flex items-center gap-2">
+                            <div className="bg-primary/10 border border-primary/20 rounded-lg p-3 sm:p-4">
+                                <h4 className="font-medium text-primary mb-2 flex items-center gap-2 text-sm sm:text-base">
                                     <FileText size={16} />
                                     CSV Format Guidelines
                                 </h4>
-                                <ul className="text-sm text-blue-800 space-y-1 list-disc list-inside">
+                                <ul className="text-sm text-primary/90 space-y-1 list-disc list-inside">
                                     <li>First row should contain column headers</li>
                                     <li>Required columns: Name, Price</li>
                                     <li>Optional columns: Slug, Description, Compare At Price, Category Slug, Images (separate with |)</li>
@@ -279,17 +284,17 @@ export default function BulkProductImport({ orgId, onClose }: BulkProductImportP
 
                     {/* Step 2: Column Mapping */}
                     {step === "mapping" && (
-                        <div className="space-y-6">
+                        <div className="space-y-4 sm:space-y-6">
                             <div>
-                                <h3 className="text-lg font-semibold text-slate-900 mb-2">Map Columns</h3>
-                                <p className="text-slate-600">
+                                <h3 className="text-base sm:text-lg font-semibold text-foreground mb-2">Map Columns</h3>
+                                <p className="text-muted-foreground text-sm sm:text-base">
                                     Match your CSV columns to product fields. Required fields are marked with *.
                                 </p>
                             </div>
 
-                            <div className="space-y-4">
-                                <div className="grid grid-cols-[200px_1fr] gap-4 items-center">
-                                    <label className="text-sm font-medium text-slate-700">
+                            <div className="space-y-3 sm:space-y-4">
+                                <div className="grid grid-cols-1 sm:grid-cols-[200px_1fr] gap-3 sm:gap-4 items-center">
+                                    <label className="text-sm font-medium text-foreground">
                                         Name *
                                     </label>
                                     <select
@@ -300,7 +305,7 @@ export default function BulkProductImport({ orgId, onClose }: BulkProductImportP
                                                 name: parseInt(e.target.value),
                                             })
                                         }
-                                        className="px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                        className="w-full px-3 py-2.5 sm:py-2 border border-input rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary min-h-[44px]"
                                     >
                                         <option value="">-- Select Column --</option>
                                         {headers.map((header, index) => (
@@ -311,8 +316,8 @@ export default function BulkProductImport({ orgId, onClose }: BulkProductImportP
                                     </select>
                                 </div>
 
-                                <div className="grid grid-cols-[200px_1fr] gap-4 items-center">
-                                    <label className="text-sm font-medium text-slate-700">Price *</label>
+                                <div className="grid grid-cols-1 sm:grid-cols-[200px_1fr] gap-3 sm:gap-4 items-center">
+                                    <label className="text-sm font-medium text-foreground">Price *</label>
                                     <select
                                         value={columnMapping?.price ?? ""}
                                         onChange={(e) =>
@@ -321,7 +326,7 @@ export default function BulkProductImport({ orgId, onClose }: BulkProductImportP
                                                 price: parseInt(e.target.value),
                                             })
                                         }
-                                        className="px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                        className="w-full px-3 py-2.5 sm:py-2 border border-input rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary min-h-[44px]"
                                     >
                                         <option value="">-- Select Column --</option>
                                         {headers.map((header, index) => (
@@ -332,8 +337,8 @@ export default function BulkProductImport({ orgId, onClose }: BulkProductImportP
                                     </select>
                                 </div>
 
-                                <div className="grid grid-cols-[200px_1fr] gap-4 items-center">
-                                    <label className="text-sm font-medium text-slate-700">Slug</label>
+                                <div className="grid grid-cols-1 sm:grid-cols-[200px_1fr] gap-3 sm:gap-4 items-center">
+                                    <label className="text-sm font-medium text-foreground">Slug</label>
                                     <select
                                         value={columnMapping?.slug ?? ""}
                                         onChange={(e) =>
@@ -344,7 +349,7 @@ export default function BulkProductImport({ orgId, onClose }: BulkProductImportP
                                                     : undefined,
                                             })
                                         }
-                                        className="px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                        className="w-full px-3 py-2.5 sm:py-2 border border-input rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary min-h-[44px]"
                                     >
                                         <option value="">-- Skip --</option>
                                         {headers.map((header, index) => (
@@ -355,8 +360,8 @@ export default function BulkProductImport({ orgId, onClose }: BulkProductImportP
                                     </select>
                                 </div>
 
-                                <div className="grid grid-cols-[200px_1fr] gap-4 items-center">
-                                    <label className="text-sm font-medium text-slate-700">Description</label>
+                                <div className="grid grid-cols-1 sm:grid-cols-[200px_1fr] gap-3 sm:gap-4 items-center">
+                                    <label className="text-sm font-medium text-foreground">Description</label>
                                     <select
                                         value={columnMapping?.description ?? ""}
                                         onChange={(e) =>
@@ -367,7 +372,7 @@ export default function BulkProductImport({ orgId, onClose }: BulkProductImportP
                                                     : undefined,
                                             })
                                         }
-                                        className="px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                        className="w-full px-3 py-2.5 sm:py-2 border border-input rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary min-h-[44px]"
                                     >
                                         <option value="">-- Skip --</option>
                                         {headers.map((header, index) => (
@@ -378,8 +383,8 @@ export default function BulkProductImport({ orgId, onClose }: BulkProductImportP
                                     </select>
                                 </div>
 
-                                <div className="grid grid-cols-[200px_1fr] gap-4 items-center">
-                                    <label className="text-sm font-medium text-slate-700">
+                                <div className="grid grid-cols-1 sm:grid-cols-[200px_1fr] gap-3 sm:gap-4 items-center">
+                                    <label className="text-sm font-medium text-foreground">
                                         Compare At Price
                                     </label>
                                     <select
@@ -392,7 +397,7 @@ export default function BulkProductImport({ orgId, onClose }: BulkProductImportP
                                                     : undefined,
                                             })
                                         }
-                                        className="px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                        className="w-full px-3 py-2.5 sm:py-2 border border-input rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary min-h-[44px]"
                                     >
                                         <option value="">-- Skip --</option>
                                         {headers.map((header, index) => (
@@ -403,8 +408,8 @@ export default function BulkProductImport({ orgId, onClose }: BulkProductImportP
                                     </select>
                                 </div>
 
-                                <div className="grid grid-cols-[200px_1fr] gap-4 items-center">
-                                    <label className="text-sm font-medium text-slate-700">
+                                <div className="grid grid-cols-1 sm:grid-cols-[200px_1fr] gap-3 sm:gap-4 items-center">
+                                    <label className="text-sm font-medium text-foreground">
                                         Category Slug
                                     </label>
                                     <select
@@ -417,7 +422,7 @@ export default function BulkProductImport({ orgId, onClose }: BulkProductImportP
                                                     : undefined,
                                             })
                                         }
-                                        className="px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                        className="w-full px-3 py-2.5 sm:py-2 border border-input rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary min-h-[44px]"
                                     >
                                         <option value="">-- Skip --</option>
                                         {headers.map((header, index) => (
@@ -428,8 +433,8 @@ export default function BulkProductImport({ orgId, onClose }: BulkProductImportP
                                     </select>
                                 </div>
 
-                                <div className="grid grid-cols-[200px_1fr] gap-4 items-center">
-                                    <label className="text-sm font-medium text-slate-700">Images</label>
+                                <div className="grid grid-cols-1 sm:grid-cols-[200px_1fr] gap-3 sm:gap-4 items-center">
+                                    <label className="text-sm font-medium text-foreground">Images</label>
                                     <select
                                         value={columnMapping?.images ?? ""}
                                         onChange={(e) =>
@@ -440,7 +445,7 @@ export default function BulkProductImport({ orgId, onClose }: BulkProductImportP
                                                     : undefined,
                                             })
                                         }
-                                        className="px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                        className="w-full px-3 py-2.5 sm:py-2 border border-input rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary min-h-[44px]"
                                     >
                                         <option value="">-- Skip --</option>
                                         {headers.map((header, index) => (
@@ -449,7 +454,7 @@ export default function BulkProductImport({ orgId, onClose }: BulkProductImportP
                                             </option>
                                         ))}
                                     </select>
-                                    <p className="col-span-2 col-start-2 text-xs text-slate-500">
+                                    <p className="col-span-1 sm:col-span-2 text-xs text-muted-foreground">
                                         Separate multiple image URLs with a pipe symbol (|)
                                     </p>
                                 </div>
@@ -459,7 +464,7 @@ export default function BulkProductImport({ orgId, onClose }: BulkProductImportP
                                 <button
                                     onClick={handleMappingSubmit}
                                     disabled={!columnMapping || columnMapping.name === undefined || columnMapping.price === undefined}
-                                    className="px-6 py-2 bg-purple-600 text-white font-medium rounded-lg hover:bg-purple-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                    className="w-full sm:w-auto px-6 py-3 sm:py-2 bg-primary text-primary-foreground font-medium rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed min-h-[48px] sm:min-h-0"
                                 >
                                     Continue to Preview
                                 </button>
@@ -469,59 +474,61 @@ export default function BulkProductImport({ orgId, onClose }: BulkProductImportP
 
                     {/* Step 3: Preview */}
                     {step === "preview" && (
-                        <div className="space-y-6">
+                        <div className="space-y-4 sm:space-y-6">
                             <div>
-                                <h3 className="text-lg font-semibold text-slate-900 mb-2">
+                                <h3 className="text-base sm:text-lg font-semibold text-foreground mb-2">
                                     Preview Import ({parsedProducts.length} products)
                                 </h3>
-                                <p className="text-slate-600">
+                                <p className="text-muted-foreground text-sm sm:text-base">
                                     Review the products that will be imported. All products will be created as drafts.
                                 </p>
                             </div>
 
-                            <div className="border border-slate-200 rounded-lg overflow-hidden max-h-96 overflow-y-auto">
-                                <table className="w-full text-sm">
-                                    <thead className="bg-slate-50 sticky top-0">
-                                        <tr>
-                                            <th className="px-4 py-3 text-left font-semibold text-slate-700 border-b">
-                                                Name
-                                            </th>
-                                            <th className="px-4 py-3 text-left font-semibold text-slate-700 border-b">
-                                                Price
-                                            </th>
-                                            <th className="px-4 py-3 text-left font-semibold text-slate-700 border-b">
-                                                Category
-                                            </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {parsedProducts.map((product, index) => (
-                                            <tr key={index} className="border-b border-slate-100 hover:bg-slate-50">
-                                                <td className="px-4 py-3 font-medium text-slate-900">
-                                                    {product.name}
-                                                </td>
-                                                <td className="px-4 py-3 text-slate-600">
-                                                    ${(product.price / 100).toFixed(2)}
-                                                </td>
-                                                <td className="px-4 py-3 text-slate-600">
-                                                    {product.categorySlug || "-"}
-                                                </td>
+                            <div className="border border-border rounded-lg overflow-hidden max-h-96 overflow-y-auto">
+                                <div className="overflow-x-auto">
+                                    <table className="w-full text-sm">
+                                        <thead className="bg-muted/50 sticky top-0">
+                                            <tr>
+                                                <th className="px-3 sm:px-4 py-3 text-left font-semibold text-foreground border-b">
+                                                    Name
+                                                </th>
+                                                <th className="px-3 sm:px-4 py-3 text-left font-semibold text-foreground border-b">
+                                                    Price
+                                                </th>
+                                                <th className="px-3 sm:px-4 py-3 text-left font-semibold text-foreground border-b hidden sm:table-cell">
+                                                    Category
+                                                </th>
                                             </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
+                                        </thead>
+                                        <tbody>
+                                            {parsedProducts.map((product, index) => (
+                                                <tr key={index} className="border-b border-border hover:bg-muted/30">
+                                                    <td className="px-3 sm:px-4 py-3 font-medium text-foreground">
+                                                        {product.name}
+                                                    </td>
+                                                    <td className="px-3 sm:px-4 py-3 text-muted-foreground">
+                                                        ${(product.price / 100).toFixed(2)}
+                                                    </td>
+                                                    <td className="px-3 sm:px-4 py-3 text-muted-foreground hidden sm:table-cell">
+                                                        {product.categorySlug || "-"}
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
 
-                            <div className="flex justify-end gap-3 pt-4">
+                            <div className="flex flex-col sm:flex-row justify-end gap-3 pt-4">
                                 <button
                                     onClick={() => setStep("mapping")}
-                                    className="px-4 py-2 text-slate-700 hover:bg-slate-100 rounded-lg font-medium"
+                                    className="w-full sm:w-auto px-4 py-3 sm:py-2 text-foreground hover:bg-muted rounded-lg font-medium min-h-[48px] sm:min-h-0"
                                 >
                                     Back
                                 </button>
                                 <button
                                     onClick={handleImport}
-                                    className="px-6 py-2 bg-purple-600 text-white font-medium rounded-lg hover:bg-purple-700 transition-colors"
+                                    className="w-full sm:w-auto px-6 py-3 sm:py-2 bg-primary text-primary-foreground font-medium rounded-lg hover:bg-primary/90 transition-colors min-h-[48px] sm:min-h-0"
                                 >
                                     Import Products
                                 </button>
@@ -532,36 +539,36 @@ export default function BulkProductImport({ orgId, onClose }: BulkProductImportP
                     {/* Step 4: Importing */}
                     {step === "importing" && (
                         <div className="flex flex-col items-center justify-center py-12">
-                            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mb-4"></div>
-                            <p className="text-lg font-medium text-slate-900">Importing products...</p>
-                            <p className="text-slate-500">This may take a moment</p>
+                            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mb-4"></div>
+                            <p className="text-lg font-medium text-foreground">Importing products...</p>
+                            <p className="text-muted-foreground">This may take a moment</p>
                         </div>
                     )}
 
                     {/* Step 5: Complete */}
                     {step === "complete" && importResults && (
-                        <div className="space-y-6">
+                        <div className="space-y-4 sm:space-y-6">
                             <div className="text-center">
-                                <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                                    <Check className="text-emerald-600" size={32} />
+                                <div className="w-16 h-16 bg-emerald-500/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                                    <Check className="text-emerald-500" size={32} />
                                 </div>
-                                <h3 className="text-xl font-semibold text-slate-900 mb-2">
+                                <h3 className="text-xl font-semibold text-foreground mb-2">
                                     Import Complete!
                                 </h3>
-                                <p className="text-slate-600">
+                                <p className="text-muted-foreground">
                                     {importResults.success} products imported successfully
                                     {importResults.failed > 0 && `, ${importResults.failed} failed`}
                                 </p>
                             </div>
 
                             {importResults.errors.length > 0 && (
-                                <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-                                    <h4 className="font-semibold text-red-900 mb-3">Errors</h4>
+                                <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-4">
+                                    <h4 className="font-semibold text-destructive mb-3">Errors</h4>
                                     <div className="space-y-2 max-h-64 overflow-y-auto">
                                         {importResults.errors.map((err, index) => (
                                             <div
                                                 key={index}
-                                                className="text-sm text-red-800 flex items-start gap-2"
+                                                className="text-sm text-destructive flex items-start gap-2"
                                             >
                                                 <AlertCircle size={14} className="flex-shrink-0 mt-0.5" />
                                                 <span>
@@ -573,17 +580,17 @@ export default function BulkProductImport({ orgId, onClose }: BulkProductImportP
                                 </div>
                             )}
 
-                            <div className="flex justify-center gap-3 pt-4">
+                            <div className="flex flex-col sm:flex-row justify-center gap-3 pt-4">
                                 <button
                                     onClick={reset}
-                                    className="px-4 py-2 text-slate-700 hover:bg-slate-100 rounded-lg font-medium"
+                                    className="w-full sm:w-auto px-4 py-3 sm:py-2 text-foreground hover:bg-muted rounded-lg font-medium min-h-[48px] sm:min-h-0"
                                 >
                                     Import More
                                 </button>
                                 <Link
                                     href="/admin/products"
                                     onClick={onClose}
-                                    className="px-6 py-2 bg-purple-600 text-white font-medium rounded-lg hover:bg-purple-700 transition-colors"
+                                    className="w-full sm:w-auto px-6 py-3 sm:py-2 bg-primary text-primary-foreground font-medium rounded-lg hover:bg-primary/90 transition-colors text-center min-h-[48px] sm:min-h-0"
                                 >
                                     View Products
                                 </Link>

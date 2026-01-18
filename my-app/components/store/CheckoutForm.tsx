@@ -80,61 +80,91 @@ export function CheckoutForm({ orgSlug }: { clientSecret: string; orgSlug: strin
     };
 
     return (
-        <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm space-y-4">
-                <h3 className="font-semibold text-gray-900 border-b pb-2">Contact Information</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-1">
-                        <label className="text-sm font-medium text-gray-700">Email</label>
+        <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
+            {/* Contact Information - Mobile Stacked */}
+            <div className="bg-card p-4 sm:p-6 rounded-xl border border-border shadow-sm space-y-3 sm:space-y-4">
+                <h3 className="font-semibold text-foreground border-b border-border pb-2 text-base sm:text-lg">Contact Information</h3>
+                <div className="grid grid-cols-1 gap-4">
+                    <div className="space-y-1.5 sm:space-y-2">
+                        <label htmlFor="email" className="text-sm font-medium text-foreground">
+                            Email
+                        </label>
                         <input
+                            id="email"
                             type="email"
+                            inputMode="email"
+                            autoComplete="email"
                             required
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none"
+                            placeholder="you@example.com"
+                            className="w-full border border-border bg-background rounded-xl px-4 py-3.5 text-base sm:text-sm focus:ring-2 focus:ring-primary focus:border-transparent outline-none min-h-[48px] transition-shadow"
                         />
                     </div>
-                    <div className="space-y-1">
-                        <label className="text-sm font-medium text-gray-700">Full Name</label>
+                    <div className="space-y-1.5 sm:space-y-2">
+                        <label htmlFor="name" className="text-sm font-medium text-foreground">
+                            Full Name
+                        </label>
                         <input
+                            id="name"
                             type="text"
+                            inputMode="text"
+                            autoComplete="name"
                             required
                             value={name}
                             onChange={(e) => setName(e.target.value)}
-                            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none"
+                            placeholder="John Doe"
+                            className="w-full border border-border bg-background rounded-xl px-4 py-3.5 text-base sm:text-sm focus:ring-2 focus:ring-primary focus:border-transparent outline-none min-h-[48px] transition-shadow"
                         />
                     </div>
-                    <div className="col-span-full space-y-1">
-                        <label className="text-sm font-medium text-gray-700">Shipping Address</label>
+                    <div className="space-y-1.5 sm:space-y-2">
+                        <label htmlFor="address" className="text-sm font-medium text-foreground">
+                            Shipping Address
+                        </label>
                         <input
+                            id="address"
                             type="text"
+                            inputMode="text"
+                            autoComplete="shipping street-address"
                             required
                             value={address}
                             onChange={(e) => setAddress(e.target.value)}
                             placeholder="123 Main St, City, Country"
-                            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none"
+                            className="w-full border border-border bg-background rounded-xl px-4 py-3.5 text-base sm:text-sm focus:ring-2 focus:ring-primary focus:border-transparent outline-none min-h-[48px] transition-shadow"
                         />
                     </div>
                 </div>
             </div>
 
-            <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm space-y-4">
-                <h3 className="font-semibold text-gray-900 border-b pb-2 flex items-center gap-2">
-                    <Lock className="w-4 h-4 text-gray-400" />
+            {/* Payment Details */}
+            <div className="bg-card p-4 sm:p-6 rounded-xl border border-border shadow-sm space-y-3 sm:space-y-4">
+                <h3 className="font-semibold text-foreground border-b border-border pb-2 flex items-center gap-2 text-base sm:text-lg">
+                    <Lock className="w-4 h-4 text-muted-foreground" />
                     Payment Details
                 </h3>
-                <PaymentElement />
+                <PaymentElement options={{
+                    layout: {
+                        type: 'tabs',
+                        defaultCollapsed: false,
+                    }
+                }} />
             </div>
 
+            {/* Error Message */}
             {errorMessage && (
-                <div className="p-4 bg-red-50 text-red-600 rounded-lg text-sm flex items-center gap-2">
-                    {errorMessage}
+                <div className="p-3 sm:p-4 bg-destructive/10 text-destructive rounded-xl text-sm flex items-center gap-2 border border-destructive/20">
+                    <svg className="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                    </svg>
+                    <span>{errorMessage}</span>
                 </div>
             )}
 
+            {/* Submit Button - Full Width, Touch Friendly */}
             <button
+                type="submit"
                 disabled={!stripe || isProcessing}
-                className="w-full h-14 bg-black text-white font-bold rounded-lg hover:bg-gray-800 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                className="w-full h-12 sm:h-14 bg-primary text-primary-foreground font-bold rounded-xl hover:bg-primary/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 min-h-[48px] shadow-lg text-base sm:text-lg"
             >
                 {isProcessing ? (
                     <>
@@ -148,6 +178,12 @@ export function CheckoutForm({ orgSlug }: { clientSecret: string; orgSlug: strin
                     </>
                 )}
             </button>
+
+            {/* Security Note */}
+            <p className="text-center text-xs text-muted-foreground flex items-center justify-center gap-1.5 px-4">
+                <Lock className="w-3 h-3" />
+                Secured by Stripe. Your payment information is encrypted.
+            </p>
         </form>
     );
 }
