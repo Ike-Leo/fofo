@@ -36,21 +36,21 @@ export function MobileBottomNav({ storeSlug }: MobileBottomNavProps) {
           >
             {/* Active indicator */}
             {isActive(`/store/${storeSlug}`) && (
-              <div className="absolute inset-x-0 top-0 h-0.5 bg-gradient-to-r from-transparent via-accent-primary to-transparent" />
+              <div className="absolute inset-x-0 top-0 h-0.5 bg-gradient-to-r from-transparent via-amber-400 to-transparent" />
             )}
             <Home
               size={22}
               strokeWidth={isActive(`/store/${storeSlug}`) ? 2.5 : 2}
               className={`transition-colors ${
                 isActive(`/store/${storeSlug}`)
-                  ? "text-accent-primary"
+                  ? "text-amber-400"
                   : "text-secondary group-hover:text-primary"
               }`}
             />
             <span
               className={`text-xs mt-1 font-medium transition-colors ${
                 isActive(`/store/${storeSlug}`)
-                  ? "text-accent-primary"
+                  ? "text-amber-400"
                   : "text-secondary group-hover:text-primary"
               }`}
             >
@@ -65,21 +65,21 @@ export function MobileBottomNav({ storeSlug }: MobileBottomNavProps) {
           >
             {/* Active indicator */}
             {isActive(`/store/${storeSlug}/products`) && (
-              <div className="absolute inset-x-0 top-0 h-0.5 bg-gradient-to-r from-transparent via-accent-primary to-transparent" />
+              <div className="absolute inset-x-0 top-0 h-0.5 bg-gradient-to-r from-transparent via-amber-400 to-transparent" />
             )}
             <Package
               size={22}
               strokeWidth={isActive(`/store/${storeSlug}/products`) ? 2.5 : 2}
               className={`transition-colors ${
                 isActive(`/store/${storeSlug}/products`)
-                  ? "text-accent-primary"
+                  ? "text-amber-400"
                   : "text-secondary group-hover:text-primary"
               }`}
             />
             <span
               className={`text-xs mt-1 font-medium transition-colors ${
                 isActive(`/store/${storeSlug}/products`)
-                  ? "text-accent-primary"
+                  ? "text-amber-400"
                   : "text-secondary group-hover:text-primary"
               }`}
             >
@@ -98,7 +98,7 @@ export function MobileBottomNav({ storeSlug }: MobileBottomNavProps) {
           >
             {/* Active indicator */}
             {isCartOpen && (
-              <div className="absolute inset-x-0 top-0 h-0.5 bg-gradient-to-r from-transparent via-accent-primary to-transparent" />
+              <div className="absolute inset-x-0 top-0 h-0.5 bg-gradient-to-r from-transparent via-amber-400 to-transparent" />
             )}
             <div className="relative">
               <ShoppingCart
@@ -106,19 +106,19 @@ export function MobileBottomNav({ storeSlug }: MobileBottomNavProps) {
                 strokeWidth={isCartOpen ? 2.5 : 2}
                 className={`transition-colors ${
                   isCartOpen
-                    ? "text-accent-primary"
+                    ? "text-amber-400"
                     : "text-secondary group-hover:text-primary"
                 }`}
               />
               {itemCount > 0 && (
-                <span className="absolute -top-1 -right-1 w-4 h-4 bg-accent-danger rounded-full text-[10px] font-bold text-white flex items-center justify-center">
+                <span className="absolute -top-1 -right-1 w-4 h-4 bg-gradient-to-br from-red-500 to-red-600 rounded-full text-[10px] font-bold text-white flex items-center justify-center shadow-lg shadow-red-500/20">
                   {itemCount > 9 ? "9+" : itemCount}
                 </span>
               )}
             </div>
             <span
               className={`text-xs mt-1 font-medium transition-colors ${
-                isCartOpen ? "text-accent-primary" : "text-secondary group-hover:text-primary"
+                isCartOpen ? "text-amber-400" : "text-secondary group-hover:text-primary"
               }`}
             >
               Cart
