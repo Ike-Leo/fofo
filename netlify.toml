@@ -1,15 +1,9 @@
 [build]
-  # Directory with your app's source code
-
-  # Command to build the site
   command = "npm run build"
-  # Directory with the output files
   publish = ".next"
 
 [build.environment]
-  # Use Node 20 for Next.js 16
   NODE_VERSION = "20"
 
-# Netlify Next.js plugin handles the rest
 [[plugins]]
   package = "@netlify/plugin-nextjs"
