@@ -1,6 +1,6 @@
 [build]
   # Directory with your app's source code
-  base = "my-app"
+
   # Command to build the site
   command = "npm run build"
   # Directory with the output files
